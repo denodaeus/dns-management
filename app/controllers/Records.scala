@@ -17,7 +17,6 @@ import play.api.data.Forms.{mapping, longNumber, nonEmptyText}
 import play.api.data.format.Formats._
 import play.api.libs.json._
 
-
 object Records extends Controller {
   implicit object RecordFormat extends Format[Record] {
     def writes(r: Record): JsValue = JsObject(
@@ -44,23 +43,42 @@ object Records extends Controller {
     ))
   }
   
+  val record = new Record(1, 1, "new record", "A", "foo.bar.com", 600, 1, 123456)
+  val record2 = new Record(2, 2, "second    ", "A", "foo.bar.com", 600, 1, 12345)
+  val records = (record, record2)
+  
+  def listAll = Action { implicit request =>
+    val json = Json.arr("GET /records -> Records.listAll", record, record2)
+    Ok(json) as JSON
+  }
+  
   def create = Action { implicit request =>
-    val json = "create"
+    val json = Json.arr("POST /records -> Records.create", record, record2)
     Ok(json) as JSON
   }
   
-  def read = Action { implicit request =>
-    val json = "read"
+  def updateAll = Action { implicit request =>
+    val json = Json.arr("PUT /records -> Records.updateAll", record, record2)
     Ok(json) as JSON
   }
   
-  def update = Action { implicit request =>
-    val json = "update"
+  def deleteAll = Action { implicit request =>
+    val json = Json.arr("DELETE /records -> Records.deleteAll", record, record2)
     Ok(json) as JSON
   }
   
-  def delete = Action { implicit request =>
-    val json = "delete"
+  def get(id: Int) = Action { implicit request =>
+    val json = Json.arr(s"GET /records/$id -> Records.get $id", record)
+    Ok(json) as JSON
+  }
+  
+  def updateIfExists(id: Int) = Action { implicit request =>
+    val json = Json.arr(s"PUT /records/$id -> Records.updateIfExists $id", record)
+    Ok(json) as JSON
+  }
+  
+  def deleteOne(id: Int) = Action { implicit request =>
+    val json = Json.arr(s"DELETE /records/$id -> Records.deleteOne $id", record)
     Ok(json) as JSON
   }
 }
