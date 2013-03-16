@@ -8,6 +8,7 @@ import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
 import play.api.Play.current
 import play.api.db.slick.DB
+import play.api.data._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Format
@@ -71,7 +72,7 @@ object Records extends Controller {
   
   def create = Action { implicit request =>
     val created = recordForm.bindFromRequest.value map(Record.RecordTable createOne _)
-    val json = Json.arr("POST /records -> Records.create UNIMPLEMENTED")
+    val json = Json.arr(s"POST /records -> Records.create $created ", created)
     Ok(json) as JSON
   }
   
@@ -97,7 +98,8 @@ object Records extends Controller {
   }
   
   def deleteOne(id: Int) = Action { implicit request =>
-    val json = Json.arr(s"DELETE /records/$id -> Records.deleteOne $id UNIMPLEMENTED")
+    val deleted = Record.delete(id)
+    val json = Json.arr(s"DELETE /records/$id -> Records.deleteOne $id")
     Ok(json) as JSON
   }
 }

@@ -49,9 +49,17 @@ object Record extends RecordDAO {
   }
   
   def create(r: Record) = {
-    DB.withSession { implicit session =>
+    val record = DB.withSession { implicit session =>
       RecordTable.createOne(r)
     }
+    record
+  }
+  
+  def delete(id: Int) = {
+    val deleted = DB.withSession { implicit session =>
+      RecordTable.delete(id)
+    }
+    deleted
   }
 }
 
@@ -68,10 +76,14 @@ trait RecordDAO {
     def domainFK = foreignKey("domain_exists", domainId, DomainTable)(_.id)
     def * = id ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ modified <> (Record.apply _, Record.unapply _)
     
+    def autoInc = * returning id
+    
     // Queries
+    
     def create = id ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ modified <> (Record.apply _, Record.unapply _) returning id
     def findAll(implicit session: Session) = (for (r <- RecordTable) yield r).list
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).firstOption(id)
     def createOne(r: Record)(implicit session: Session) = RecordTable.insert(r)
+    def delete(id: Int)(implicit session: Session) = RecordTable.where(_.id === id).mutate(_.delete)
   }
 }
