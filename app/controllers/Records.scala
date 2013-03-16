@@ -14,10 +14,17 @@ import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.data.Forms.{mapping, longNumber, nonEmptyText}
 
+import play.api.db.slick.DB
+
 import play.api.data.format.Formats._
 import play.api.libs.json._
 
+import models.current.dao._
+import models.current.dao.profile.simple._
+
 object Records extends Controller {
+  import play.api.Play.current
+  
   implicit object RecordFormat extends Format[Record] {
     def writes(r: Record): JsValue = JsObject(
       List("id" -> JsNumber(r.id),
@@ -68,6 +75,9 @@ object Records extends Controller {
   }
   
   def get(id: Int) = Action { implicit request =>
+    val record = DB.withSession { implicit session =>
+      RecordTable.findById(id)
+    }
     val json = Json.arr(s"GET /records/$id -> Records.get $id", record)
     Ok(json) as JSON
   }

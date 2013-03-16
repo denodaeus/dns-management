@@ -1,6 +1,7 @@
 package controllers
 
 import models.Domain
+import data.DataStore
 
 import play.api.data.Form
 import play.api.data.Forms.{mapping, longNumber, nonEmptyText}
@@ -20,7 +21,8 @@ object Domains extends Controller {
           "master" -> JsString(d.master),
           "lastCheck" -> JsNumber(d.lastCheck),
           "type" -> JsString(d.domainType),
-          "notifiedSerial" -> JsNumber(d.notifiedSerial)
+          "notifiedSerial" -> JsNumber(d.notifiedSerial),
+          "provider" -> JsString(d.provider)
       )
     )
     
@@ -30,16 +32,20 @@ object Domains extends Controller {
       (json \ "master").as[String],
       (json \ "lastCheck").as[Long],
       (json \ "type").as[String],
-      (json \ "notifiedSerial").as[Long]
+      (json \ "notifiedSerial").as[Long],
+      (json \ "provider").as[String]
     ))
   }
   
-  val domain = new Domain(1, "accounts.vocalocity.com", "atlsvppdns01.atldc.vocalocity.com", 2123145525, "SLAVE", 600)
-  val domain2 = new Domain(1, "media.vocalocity.com", "atlsvppdns01.atldc.vocalocity.com", 2123145525, "SLAVE", 600)
-  val domains = (domain, domain2)
+  val domain = new Domain(1, "accounts.vocalocity.com", "atlsvppdns01.atldc.vocalocity.com", 2123145525, "SLAVE", 600, "Route53")
+  val domain2 = new Domain(2, "media.vocalocity.com", "atlsvppdns01.atldc.vocalocity.com", 2123145525, "SLAVE", 600, "PowerDNS")
+  var db = DataStore.domains
+  db.put(domain.id, domain)
+  db.put(domain2.id, domain2)
   
   def listAll = Action { implicit request =>
-    val json = Json.arr("GET /domains -> Domains.listAll", domain, domain2)
+    var array = Json.arr(domain, domain2)
+    val json = Json.arr("GET /domains -> Domains.listAll", array)
     Ok(json) as JSON
   }
   
@@ -59,7 +65,7 @@ object Domains extends Controller {
   }
   
   def get(id: Int) = Action { implicit request =>
-    val json = Json.arr(s"GET /domains/$id -> Domains.get $id", domain)
+    val json = Json.arr(s"GET /domains/$id -> Domains.get $id", db.get(id))
     Ok(json) as JSON
   }
   
