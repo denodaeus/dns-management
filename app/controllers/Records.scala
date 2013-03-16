@@ -3,14 +3,10 @@ package controllers
 import scala.math.BigDecimal.int2bigDecimal
 
 import models.Record
-import models.current.dao.RecordTable
-import scala.slick.driver.PostgresDriver.simple._
-import Database.threadLocalSession
-import play.api.Play.current
-import play.api.db.slick.DB
-import play.api.data._
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.mapping
+import play.api.data.Forms.nonEmptyText
+import play.api.data.Forms.number
 import play.api.libs.json.Format
 import play.api.libs.json.JsNumber
 import play.api.libs.json.JsObject
@@ -22,7 +18,6 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import play.Logger
 
 object Records extends Controller {
   import play.api.Play.current

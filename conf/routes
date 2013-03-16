@@ -7,3 +7,35 @@ GET     /                           controllers.Application.index
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Application Routes
+
+# Records
+GET     /records                    controllers.Records.listAll
+POST    /records                    controllers.Records.create
+PUT     /records                    controllers.Records.updateAll
+DELETE  /records                    controllers.Records.deleteAll
+
+GET     /records/:id                controllers.Records.get(id: Int)
+PUT     /records/:id                controllers.Records.updateIfExists(id: Int)
+DELETE  /records/:id                controllers.Records.deleteOne(id: Int)
+
+# Domains
+GET     /domains                    controllers.Domains.listAll
+POST    /domains                    controllers.Domains.create
+PUT     /domains                    controllers.Domains.updateAll
+DELETE  /domains                    controllers.Domains.deleteAll
+
+GET     /domains/:id                controllers.Domains.get(id: Int)
+PUT     /domains/:id                controllers.Domains.updateIfExists(id: Int)
+DELETE  /domains/:id                controllers.Domains.deleteOne(id: Int)
+
+# Zones
+GET     /zones                      controllers.Zones.listAll
+POST    /zones                      controllers.Zones.create
+PUT     /zones                      controllers.Zones.updateAll
+DELETE  /zones                      controllers.Zones.deleteAll
+
+GET     /zones/:id                  controllers.Zones.get(id: Int)
+PUT     /zones/:id                  controllers.Zones.updateIfExists(id: Int)
+DELETE  /zones/:id                  controllers.Zones.deleteOne(id: Int)
