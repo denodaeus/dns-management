@@ -1,7 +1,9 @@
 package models
 
-import play.api.db.slick.Config.driver.simple._
 import models.Domain.DomainTable
+import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick.DB
+
 
 case class Record (
   id: Int,
@@ -29,7 +31,22 @@ object RecordType extends Enumeration {
       URL = Value
 }
 
-object Record extends RecordDAO { 
+object Record extends RecordDAO {
+  import play.api.Play.current
+  
+  def findById (id: Int): Option[Record] = {
+    val record = DB.withSession { implicit session =>
+      RecordTable.findById(id)
+    }
+    record
+  }
+  
+  def find(): List[Record] = {
+    val records = DB.withSession { implicit session =>
+      RecordTable.findAll
+    }
+    records
+  }
 }
 
 trait RecordDAO {
@@ -44,6 +61,10 @@ trait RecordDAO {
     def modified = column[Int]("change_date")
     def domainFK = foreignKey("domain_exists", domainId, DomainTable)(_.id)
     def * = id ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ modified <> (Record.apply _, Record.unapply _)
+    
+    // Queries
+    def findAll(implicit session: Session) = (for (r <- RecordTable) yield r).list
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).firstOption(id)
+
   }
 }

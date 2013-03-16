@@ -22,7 +22,7 @@ object Domains extends Controller {
           "lastCheck" -> JsNumber(d.lastCheck),
           "type" -> JsString(d.domainType),
           "notifiedSerial" -> JsNumber(d.notifiedSerial),
-          "provider" -> JsString(d.provider)
+          "account" -> JsString(d.account)
       )
     )
     
@@ -33,7 +33,7 @@ object Domains extends Controller {
       (json \ "lastCheck").as[Long],
       (json \ "type").as[String],
       (json \ "notifiedSerial").as[Long],
-      (json \ "provider").as[String]
+      (json \ "account").as[String]
     ))
   }
   

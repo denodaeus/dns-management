@@ -1,10 +1,5 @@
 package services
 
-import models._
-import play.api.db.slick.Profile
-import play.api.db.slick.Config.driver.simple._
-
-
 trait PowerDnsService { self =>
   
   case class PdnsRecord(

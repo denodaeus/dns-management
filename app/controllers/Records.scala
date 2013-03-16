@@ -1,26 +1,22 @@
 package controllers
 
-import models._
+import scala.math.BigDecimal.int2bigDecimal
 
-import play.api._
-import play.api.mvc._
-import play.api.data._
-import play.api.data.Form
-import play.api.data.Forms._
-import play.api.data.format.Formats._
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
+import models.Record
+import models.current.dao.RecordTable
 import play.api.Play.current
-import play.api.i18n.Messages
-import play.api.data.Forms.{mapping, longNumber, nonEmptyText}
-
 import play.api.db.slick.DB
-
-import play.api.data.format.Formats._
-import play.api.libs.json._
-
-import models.current.dao._
-import models.current.dao.profile.simple._
+import play.api.libs.json.Format
+import play.api.libs.json.JsNumber
+import play.api.libs.json.JsObject
+import play.api.libs.json.JsResult
+import play.api.libs.json.JsString
+import play.api.libs.json.JsSuccess
+import play.api.libs.json.JsValue
+import play.api.libs.json.Json
+import play.api.libs.json.Json.toJsFieldJsValueWrapper
+import play.api.mvc.Action
+import play.api.mvc.Controller
 
 object Records extends Controller {
   import play.api.Play.current
@@ -75,9 +71,7 @@ object Records extends Controller {
   }
   
   def get(id: Int) = Action { implicit request =>
-    val record = DB.withSession { implicit session =>
-      RecordTable.findById(id)
-    }
+    val record = Record.findById(id)
     val json = Json.arr(s"GET /records/$id -> Records.get $id", record)
     Ok(json) as JSON
   }
