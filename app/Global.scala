@@ -1,5 +1,4 @@
 import play.api.Application
-import anorm._
 import play.api.db.DB 
 import play.api.GlobalSettings
 

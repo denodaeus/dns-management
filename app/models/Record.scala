@@ -47,11 +47,17 @@ object Record extends RecordDAO {
     }
     records
   }
+  
+  def create(r: Record) = {
+    DB.withSession { implicit session =>
+      RecordTable.createOne(r)
+    }
+  }
 }
 
 trait RecordDAO {
   object RecordTable extends Table[Record]("records") {
-    def id = column[Int]("id", O.NotNull, O.AutoInc, O.PrimaryKey)
+    def id = column[Int]("id", O.AutoInc, O.PrimaryKey)
     def domainId = column[Int]("domain_id", O.NotNull)
     def name = column[String]("name", O.Default(null))
     def recordType = column[String]("type", O.Default(null))
@@ -63,8 +69,9 @@ trait RecordDAO {
     def * = id ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ modified <> (Record.apply _, Record.unapply _)
     
     // Queries
+    def create = id ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ modified <> (Record.apply _, Record.unapply _) returning id
     def findAll(implicit session: Session) = (for (r <- RecordTable) yield r).list
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).firstOption(id)
-
+    def createOne(r: Record)(implicit session: Session) = RecordTable.insert(r)
   }
 }

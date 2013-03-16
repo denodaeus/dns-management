@@ -4,8 +4,12 @@ import scala.math.BigDecimal.int2bigDecimal
 
 import models.Record
 import models.current.dao.RecordTable
+import scala.slick.driver.PostgresDriver.simple._
+import Database.threadLocalSession
 import play.api.Play.current
 import play.api.db.slick.DB
+import play.api.data.Form
+import play.api.data.Forms._
 import play.api.libs.json.Format
 import play.api.libs.json.JsNumber
 import play.api.libs.json.JsObject
@@ -42,31 +46,42 @@ object Records extends Controller {
       (json \ "content").as[String],
       (json \ "ttl").as[Int],
       (json \ "priority").as[Int],
-      (json \ "changeDate").as[Int]
+      (json \ "modified").as[Int]
     ))
   }
   
-  val record = new Record(1, 1, "new record", "A", "foo.bar.com", 600, 1, 123456)
-  val record2 = new Record(2, 2, "second    ", "A", "foo.bar.com", 600, 1, 12345)
-  val records = (record, record2)
+  val recordForm = Form(
+    mapping(
+      "id" -> number,
+      "domainId" -> number,
+      "name" -> nonEmptyText,
+      "recordType" -> nonEmptyText,
+      "content" -> nonEmptyText,
+      "ttl" -> number,
+      "priority" -> number,
+      "modified" -> number
+    ) (Record.apply)(Record.unapply)
+  )
   
   def listAll = Action { implicit request =>
-    val json = Json.arr("GET /records -> Records.listAll", record, record2)
+    val records = Record.find
+    val json = Json.arr("GET /records -> Records.listAll", records)
     Ok(json) as JSON
   }
   
   def create = Action { implicit request =>
-    val json = Json.arr("POST /records -> Records.create", record, record2)
+    val created = recordForm.bindFromRequest.value map(Record.RecordTable createOne _)
+    val json = Json.arr("POST /records -> Records.create UNIMPLEMENTED")
     Ok(json) as JSON
   }
   
   def updateAll = Action { implicit request =>
-    val json = Json.arr("PUT /records -> Records.updateAll", record, record2)
+    val json = Json.arr("PUT /records -> Records.updateAll UNIMPLEMENTED")
     Ok(json) as JSON
   }
   
   def deleteAll = Action { implicit request =>
-    val json = Json.arr("DELETE /records -> Records.deleteAll", record, record2)
+    val json = Json.arr("DELETE /records -> Records.deleteAll UNIMPLEMENTED")
     Ok(json) as JSON
   }
   
@@ -77,12 +92,12 @@ object Records extends Controller {
   }
   
   def updateIfExists(id: Int) = Action { implicit request =>
-    val json = Json.arr(s"PUT /records/$id -> Records.updateIfExists $id", record)
+    val json = Json.arr(s"PUT /records/$id -> Records.updateIfExists $id UNIMPLEMENTED")
     Ok(json) as JSON
   }
   
   def deleteOne(id: Int) = Action { implicit request =>
-    val json = Json.arr(s"DELETE /records/$id -> Records.deleteOne $id", record)
+    val json = Json.arr(s"DELETE /records/$id -> Records.deleteOne $id UNIMPLEMENTED")
     Ok(json) as JSON
   }
 }
