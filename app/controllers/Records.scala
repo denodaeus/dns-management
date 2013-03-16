@@ -3,10 +3,12 @@ package controllers
 import scala.math.BigDecimal.int2bigDecimal
 
 import models.Record
+import play.api.data._
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.Forms.nonEmptyText
 import play.api.data.Forms.number
+import play.api.data.Forms.optional
 import play.api.libs.json.Format
 import play.api.libs.json.JsNumber
 import play.api.libs.json.JsObject
@@ -18,6 +20,8 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.mvc.Action
 import play.api.mvc.Controller
+import play.api.mvc._
+import play.Logger
 
 object Records extends Controller {
   import play.api.Play.current
@@ -31,7 +35,7 @@ object Records extends Controller {
           "content" -> JsString(r.content),
           "ttl" -> JsNumber(r.ttl),
           "priority" -> JsNumber(r.priority),
-          "changeDate" -> JsNumber(r.modified)
+          "changeDate" -> JsNumber(r.changeDate)
       )
     )
     
@@ -43,7 +47,7 @@ object Records extends Controller {
       (json \ "content").as[String],
       (json \ "ttl").as[Int],
       (json \ "priority").as[Int],
-      (json \ "modified").as[Int]
+      (json \ "changeDate").as[Int]
     ))
   }
   
@@ -56,23 +60,30 @@ object Records extends Controller {
       "content" -> nonEmptyText,
       "ttl" -> number,
       "priority" -> number,
-      "modified" -> number
+      "changeDate" -> number
     ) (Record.apply)(Record.unapply)
   )
   
   def listAll = Action { implicit request =>
     val records = Record.find
-    val json = Json.arr("GET /records -> Records.listAll", records)
+    val json = Json.arr(records)
+    Logger.debug(s"${request.method} ${request.path} -> Records.listAll")
     Ok(json) as JSON
   }
   
   def create = Action { implicit request =>
-    val created = recordForm.bindFromRequest.value map { 
-      record =>
-        Record.create(record)
-    }
-    val json = Json.arr(s"POST /records -> Records.create $created")
-    Ok(json) as JSON
+    val created = recordForm.bindFromRequest
+    created.fold(
+      hasErrors = { form =>
+        Logger.debug(" create has errors: " + form.errors.toString)
+        BadRequest(Json.arr(form.errorsAsJson))
+      },
+      success = { implicit data =>
+        Logger.debug(s"${request.method} ${request.path} -> Records.create $data")
+        Record.create(data)
+        Ok(Json.arr(data)) as JSON
+      }
+    )
   }
   
   def updateAll = Action { implicit request =>

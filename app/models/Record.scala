@@ -4,6 +4,8 @@ import models.Domain.DomainTable
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 import play.Logger
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 case class Record (
   id: Int,
@@ -13,7 +15,7 @@ case class Record (
   content: String,
   ttl: Int,
   priority: Int,
-  modified: Int
+  changeDate: Int
 )
 
 object RecordType extends Enumeration {
