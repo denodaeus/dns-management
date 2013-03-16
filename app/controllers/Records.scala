@@ -72,12 +72,11 @@ object Records extends Controller {
   }
   
   def create = Action { implicit request =>
-    recordForm.bindFromRequest.value map { 
+    val created = recordForm.bindFromRequest.value map { 
       record =>
         Record.create(record)
     }
-    Logger.debug(s"create: creating record from $request with value and content ${request.body.toString()} and recordForm $recordForm and value ${recordForm.bindFromRequest.value}")
-    val json = Json.arr(s"POST /records -> Records.create")
+    val json = Json.arr(s"POST /records -> Records.create $created")
     Ok(json) as JSON
   }
   
@@ -87,7 +86,8 @@ object Records extends Controller {
   }
   
   def deleteAll = Action { implicit request =>
-    val json = Json.arr("DELETE /records -> Records.deleteAll UNIMPLEMENTED")
+    Record.deleteAll
+    val json = Json.arr(s"DELETE /records -> Records.deleteAll")
     Ok(json) as JSON
   }
   

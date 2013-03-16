@@ -64,6 +64,13 @@ object Record extends RecordDAO {
     }
     deleted
   }
+  
+  def deleteAll = {
+    val deleted = DB.withSession { implicit session =>
+      RecordTable.deleteAll
+    }
+    deleted
+  }
 }
 
 trait RecordDAO {
@@ -82,11 +89,11 @@ trait RecordDAO {
     def autoInc = * returning id
     
     // Queries
-    
     def create = id ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ modified <> (Record.apply _, Record.unapply _) returning id
     def findAll(implicit session: Session) = (for (r <- RecordTable) yield r).list
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).firstOption(id)
     def createOne(r: Record)(implicit session: Session) = RecordTable.insert(r)
     def delete(id: Int)(implicit session: Session) = RecordTable.where(_.id === id).mutate(_.delete)
+    def deleteAll(implicit session: Session): Record = RecordTable.deleteAll
   }
 }
