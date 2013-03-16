@@ -3,7 +3,7 @@ package models
 import models.Domain.DomainTable
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
-
+import play.Logger
 
 case class Record (
   id: Int,
@@ -35,13 +35,15 @@ object Record extends RecordDAO {
   import play.api.Play.current
   
   def findById (id: Int): Option[Record] = {
+    Logger.debug(s"findById: finding by Id=$id")
     val record = DB.withSession { implicit session =>
       RecordTable.findById(id)
     }
     record
   }
   
-  def find(): List[Record] = {
+  def find: List[Record] = {
+    Logger.debug("find: finding " )
     val records = DB.withSession { implicit session =>
       RecordTable.findAll
     }
@@ -49,6 +51,7 @@ object Record extends RecordDAO {
   }
   
   def create(r: Record) = {
+    Logger.debug(s"create :: created $r")
     val record = DB.withSession { implicit session =>
       RecordTable.createOne(r)
     }

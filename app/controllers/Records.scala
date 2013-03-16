@@ -22,6 +22,7 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.mvc.Action
 import play.api.mvc.Controller
+import play.Logger
 
 object Records extends Controller {
   import play.api.Play.current
@@ -71,8 +72,12 @@ object Records extends Controller {
   }
   
   def create = Action { implicit request =>
-    val created = recordForm.bindFromRequest.value map(Record.RecordTable createOne _)
-    val json = Json.arr(s"POST /records -> Records.create $created ", created)
+    recordForm.bindFromRequest.value map { 
+      record =>
+        Record.create(record)
+    }
+    Logger.debug(s"create: creating record from $request with value and content ${request.body.toString()} and recordForm $recordForm and value ${recordForm.bindFromRequest.value}")
+    val json = Json.arr(s"POST /records -> Records.create")
     Ok(json) as JSON
   }
   
