@@ -1,7 +1,9 @@
 package controllers
 
 import scala.math.BigDecimal.int2bigDecimal
+import scala.util.{Try, Success, Failure}
 
+import models._
 import models.Record
 import play.api.data._
 import play.api.data.Form
@@ -28,7 +30,7 @@ object Records extends Controller {
   
   implicit object RecordFormat extends Format[Record] {
     def writes(r: Record): JsValue = JsObject(
-      List("id" -> JsNumber(r.id),
+      List("id" -> JsNumber((r.id).get),
           "domainId" -> JsNumber(r.domainId),
           "name" -> JsString(r.name),
           "recordType" -> JsString(r.recordType.toString()),
@@ -40,7 +42,7 @@ object Records extends Controller {
     )
     
     def reads(json: JsValue): JsResult[Record] = JsSuccess(Record(
-      (json \ "id").as[Int],
+      (json \ "id").asOpt[Int],
       (json \ "domainId").as[Int],
       (json \ "name").as[String],
       (json \ "recordType").as[String],
@@ -53,7 +55,7 @@ object Records extends Controller {
   
   val recordForm = Form(
     mapping(
-      "id" -> number,
+      "id" -> optional(number),
       "domainId" -> number,
       "name" -> nonEmptyText,
       "recordType" -> nonEmptyText,
@@ -72,18 +74,22 @@ object Records extends Controller {
   }
   
   def create = Action { implicit request =>
-    val created = recordForm.bindFromRequest
-    created.fold(
-      hasErrors = { form =>
-        Logger.debug(" create has errors: " + form.errors.toString)
-        BadRequest(Json.arr(form.errorsAsJson))
-      },
-      success = { implicit data =>
-        Logger.debug(s"${request.method} ${request.path} -> Records.create $data")
-        Record.create(data)
-        Ok(Json.arr(data)) as JSON
-      }
-    )
+    implicit val writes = Json.writes[RecordId]
+    implicit val reads = Json.reads[RecordForCreate]
+    request.body.asJson.map { json =>
+      json.validate[RecordForCreate].fold(
+        invalid => {
+          BadRequest(Json.toJson(Map("error" -> invalid.head.toString)))
+        },
+        valid => {
+          Record.create(valid) match {
+            case Success(r) => {
+              Ok(Json.toJson(r))
+            }
+            case Failure(e) => BadRequest(Json.toJson(Map("error" -> e.getMessage)))
+          }
+        })
+    }.getOrElse(BadRequest (Json.toJson(Map("status" -> "error request.body", "message" -> "Content Type Not Json"))))
   }
   
   def updateAll = Action { implicit request =>
@@ -104,8 +110,26 @@ object Records extends Controller {
   }
   
   def updateIfExists(id: Int) = Action { implicit request =>
-    val json = Json.arr(s"PUT /records/$id -> Records.updateIfExists $id UNIMPLEMENTED")
-    Ok(json) as JSON
+    implicit val writes = Json.writes[RecordId]
+    implicit val reads = Json.reads[RecordForUpdate]
+    request.body.asJson.map { json =>
+      json.validate[RecordForUpdate].fold(
+        invalid => {
+          BadRequest(Json.toJson(Map("error" -> invalid.head.toString)))
+        },
+        valid => {
+          Record.update(valid) match {
+            case Success(r) => {
+              Ok (Json.toJson(RecordId(valid.id)))
+            }
+            case Failure(e) => {
+              Logger.error(s"updateIfExists :: error updating record $id, cause=", e)
+              BadRequest(Json.toJson(Map("error" -> e.getMessage)))
+            }
+          }
+        }
+      )
+    }.getOrElse(BadRequest (Json.toJson(Map("status" -> "error request.body", "message" -> "Content Type Not Json"))))
   }
   
   def deleteOne(id: Int) = Action { implicit request =>
