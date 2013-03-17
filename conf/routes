@@ -8,34 +8,35 @@ GET     /                           controllers.Application.index
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-# Application Routes
+
+# Application API Routes, Route API requests as json
 
 # Records
-GET     /records                    controllers.Records.listAll
-POST    /records                    controllers.Records.create
-PUT     /records                    controllers.Records.updateAll
-DELETE  /records                    controllers.Records.deleteAll
+GET     /api/records                    controllers.Records.listAll
+POST    /api/records                    controllers.Records.create
+PUT     /api/records                    controllers.Records.updateAll
+DELETE  /api/records                    controllers.Records.deleteAll
 
-GET     /records/:id                controllers.Records.get(id: Int)
-PUT     /records/:id                controllers.Records.updateIfExists(id: Int)
-DELETE  /records/:id                controllers.Records.deleteOne(id: Int)
+GET     /api/records/:id                controllers.Records.get(id: Int)
+PUT     /api/records/:id                controllers.Records.updateIfExists(id: Int)
+DELETE  /api/records/:id                controllers.Records.deleteOne(id: Int)
 
 # Domains
-GET     /domains                    controllers.Domains.listAll
-POST    /domains                    controllers.Domains.create
-PUT     /domains                    controllers.Domains.updateAll
-DELETE  /domains                    controllers.Domains.deleteAll
+GET     /api/domains                    controllers.Domains.listAll
+POST    /api/domains                    controllers.Domains.create
+PUT     /api/domains                    controllers.Domains.updateAll
+DELETE  /api/domains                    controllers.Domains.deleteAll
 
-GET     /domains/:id                controllers.Domains.get(id: Int)
-PUT     /domains/:id                controllers.Domains.updateIfExists(id: Int)
-DELETE  /domains/:id                controllers.Domains.deleteOne(id: Int)
+GET     /api/domains/:id                controllers.Domains.get(id: Int)
+PUT     /api/domains/:id                controllers.Domains.updateIfExists(id: Int)
+DELETE  /api/domains/:id                controllers.Domains.deleteOne(id: Int)
 
 # Zones
-GET     /zones                      controllers.Zones.listAll
-POST    /zones                      controllers.Zones.create
-PUT     /zones                      controllers.Zones.updateAll
-DELETE  /zones                      controllers.Zones.deleteAll
+GET     /api/zones                      controllers.Zones.listAll
+POST    /api/zones                      controllers.Zones.create
+PUT     /api/zones                      controllers.Zones.updateAll
+DELETE  /api/zones                      controllers.Zones.deleteAll
 
-GET     /zones/:id                  controllers.Zones.get(id: Int)
-PUT     /zones/:id                  controllers.Zones.updateIfExists(id: Int)
-DELETE  /zones/:id                  controllers.Zones.deleteOne(id: Int)
+GET     /api/zones/:id                  controllers.Zones.get(id: Int)
+PUT     /api/zones/:id                  controllers.Zones.updateIfExists(id: Int)
+DELETE  /api/zones/:id                  controllers.Zones.deleteOne(id: Int)
