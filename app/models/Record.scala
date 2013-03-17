@@ -62,7 +62,7 @@ object Record {
     def findAll(implicit session: Session) = (for (r <- this) yield r).list
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).first(id)
     def delete(id: Int)(implicit session: Session) = this.where(_.id === id).mutate(_.delete)
-    def deleteAll(implicit session: Session): Record = this.deleteAll
+    def deleteAll(implicit session: Session) = (for (r <- this) yield r).delete
     def forInsert = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate <>
       ({ (domainId, name, recordType, content, ttl, priority, changeDate) => Record(None, domainId, name, recordType, content, ttl, priority, changeDate )},
         {r: Record => Some((r.domainId, r.name, r.recordType, r.content, r.ttl, r.priority, r.changeDate)) }) returning id

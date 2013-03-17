@@ -1,13 +1,11 @@
 package controllers
 
-import scala.math.BigDecimal.int2bigDecimal
 import scala.util.Failure
 import scala.util.Success
 
 import models.Record
 import models.RecordForCreate
 import models.RecordForUpdate
-import models.RecordForRead
 import models.RecordId
 
 import play.Logger
@@ -16,17 +14,9 @@ import play.api.data.Forms.mapping
 import play.api.data.Forms.nonEmptyText
 import play.api.data.Forms.number
 import play.api.data.Forms.optional
-import play.api.data.validation.Constraints.pattern
 import play.api.libs.functional.syntax.functionalCanBuildApplicative
 import play.api.libs.functional.syntax.toContraFunctorOps
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.Format
-import play.api.libs.json.JsNumber
-import play.api.libs.json.JsObject
-import play.api.libs.json.JsResult
-import play.api.libs.json.JsString
-import play.api.libs.json.JsSuccess
-import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.mvc.Action
@@ -36,6 +26,7 @@ object Records extends Controller {
   import play.api.Play.current
   
   implicit val writes = Json.writes[Record]
+  
   val recordForm = Form(
     mapping(
       "id" -> optional(number),
@@ -50,8 +41,7 @@ object Records extends Controller {
   )
   
   def listAll = Action { implicit request =>
-    val records = Record.findAll
-    val json = Json.toJson(records.map(r => Json.toJson(r)))
+    val json = Json.toJson(Record.findAll.map(r => Json.toJson(r)))
     Logger.debug(s"${request.method} ${request.path} -> Records.listAll")
     Ok(json) as JSON
   }
