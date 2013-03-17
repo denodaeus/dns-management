@@ -23,6 +23,7 @@ case class Record (
 case class RecordId(id: Int)
 case class RecordForCreate(domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int)
 case class RecordForUpdate(id: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int)
+case class RecordForRead(id: Int, domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int, changeDate: Int)
 
 object RecordType extends Enumeration {
   type Type = Value
@@ -59,7 +60,7 @@ object Record {
     // Queries
     def create = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate <> (Record.apply _, Record.unapply _) returning id
     def findAll(implicit session: Session) = (for (r <- this) yield r).list
-    def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).firstOption(id)
+    def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).first(id)
     def delete(id: Int)(implicit session: Session) = this.where(_.id === id).mutate(_.delete)
     def deleteAll(implicit session: Session): Record = this.deleteAll
     def forInsert = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate <>
@@ -67,20 +68,17 @@ object Record {
         {r: Record => Some((r.domainId, r.name, r.recordType, r.content, r.ttl, r.priority, r.changeDate)) }) returning id
   }
   
-  def findById (id: Int): Option[Record] = {
-    Logger.debug(s"findById: finding by Id=$id")
-    val record = DB.withSession { implicit session =>
-      RecordTable.findById(id)
-    }
-    record
+  def findById (id: Int): Try[Record] = DB.withSession { implicit session =>
+    Logger.debug(s"findById :: finding by Id=$id")
+    Try(RecordTable.findById(id))
   }
   
-  def find: List[Record] = {
+  def findAll: List[Record] = {
     Logger.debug("find: finding " )
     val records = DB.withSession { implicit session =>
       RecordTable.findAll
     }
-    records
+    records.toList
   }
   
   def create(record: RecordForCreate): Try[RecordId] = DB.withSession { implicit session =>

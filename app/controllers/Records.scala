@@ -1,16 +1,25 @@
 package controllers
 
 import scala.math.BigDecimal.int2bigDecimal
-import scala.util.{Try, Success, Failure}
+import scala.util.Failure
+import scala.util.Success
 
-import models._
 import models.Record
-import play.api.data._
+import models.RecordForCreate
+import models.RecordForUpdate
+import models.RecordForRead
+import models.RecordId
+
+import play.Logger
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.Forms.nonEmptyText
 import play.api.data.Forms.number
 import play.api.data.Forms.optional
+import play.api.data.validation.Constraints.pattern
+import play.api.libs.functional.syntax.functionalCanBuildApplicative
+import play.api.libs.functional.syntax.toContraFunctorOps
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.Format
 import play.api.libs.json.JsNumber
 import play.api.libs.json.JsObject
@@ -22,37 +31,11 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import play.api.mvc._
-import play.Logger
 
 object Records extends Controller {
   import play.api.Play.current
   
-  implicit object RecordFormat extends Format[Record] {
-    def writes(r: Record): JsValue = JsObject(
-      List("id" -> JsNumber((r.id).get),
-          "domainId" -> JsNumber(r.domainId),
-          "name" -> JsString(r.name),
-          "recordType" -> JsString(r.recordType.toString()),
-          "content" -> JsString(r.content),
-          "ttl" -> JsNumber(r.ttl),
-          "priority" -> JsNumber(r.priority),
-          "changeDate" -> JsNumber(r.changeDate)
-      )
-    )
-    
-    def reads(json: JsValue): JsResult[Record] = JsSuccess(Record(
-      (json \ "id").asOpt[Int],
-      (json \ "domainId").as[Int],
-      (json \ "name").as[String],
-      (json \ "recordType").as[String],
-      (json \ "content").as[String],
-      (json \ "ttl").as[Int],
-      (json \ "priority").as[Int],
-      (json \ "changeDate").as[Int]
-    ))
-  }
-  
+  implicit val writes = Json.writes[Record]
   val recordForm = Form(
     mapping(
       "id" -> optional(number),
@@ -67,10 +50,19 @@ object Records extends Controller {
   )
   
   def listAll = Action { implicit request =>
-    val records = Record.find
-    val json = Json.arr(records)
+    val records = Record.findAll
+    val json = Json.toJson(records.map(r => Json.toJson(r)))
     Logger.debug(s"${request.method} ${request.path} -> Records.listAll")
     Ok(json) as JSON
+  }
+  
+  def get(id: Int) = Action { implicit request =>
+    Record.findById(id) match {
+      case Success(r) => {
+        Ok(Json.toJson(r))
+      }
+      case Failure(e) => NotFound
+    }
   }
   
   def create = Action { implicit request =>
@@ -100,12 +92,6 @@ object Records extends Controller {
   def deleteAll = Action { implicit request =>
     Record.deleteAll
     val json = Json.arr(s"DELETE /records -> Records.deleteAll")
-    Ok(json) as JSON
-  }
-  
-  def get(id: Int) = Action { implicit request =>
-    val record = Record.findById(id)
-    val json = Json.arr(s"GET /records/$id -> Records.get $id", record)
     Ok(json) as JSON
   }
   
