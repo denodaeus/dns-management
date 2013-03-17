@@ -80,8 +80,9 @@ object Records extends Controller {
   }
   
   def deleteAll = Action { implicit request =>
-    Record.deleteAll
-    val json = Json.arr(s"DELETE /records -> Records.deleteAll")
+    val count = Record.deleteAll
+    Logger.debug(s"deleteAll :: deleted all records, count=$count")
+    val json = Json.arr()
     Ok(json) as JSON
   }
   

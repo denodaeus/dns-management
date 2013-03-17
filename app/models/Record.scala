@@ -53,12 +53,10 @@ object Record {
     def priority = column[Int]("prio")
     def changeDate = column[Int]("change_date")
     def domainFK = foreignKey("domain_exists", domainId, DomainTable)(_.id)
-    def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate <> (Record.apply _, Record.unapply _)
-    
+    def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate <> (Record.apply _, Record.unapply _)    
     def autoInc = * returning id
     
     // Queries
-    def create = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate <> (Record.apply _, Record.unapply _) returning id
     def findAll(implicit session: Session) = (for (r <- this) yield r).list
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).first(id)
     def delete(id: Int)(implicit session: Session) = this.where(_.id === id).mutate(_.delete)
@@ -78,7 +76,7 @@ object Record {
     val records = DB.withSession { implicit session =>
       RecordTable.findAll
     }
-    records.toList
+    records
   }
   
   def create(record: RecordForCreate): Try[RecordId] = DB.withSession { implicit session =>
