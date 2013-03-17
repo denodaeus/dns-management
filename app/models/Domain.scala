@@ -1,15 +1,20 @@
 package models
 
-import play.api.db.slick.Config.driver.simple._
-import play.api.db.slick.Profile
-import models.Domain.DomainTable
-import play.api.db.slick.Config.driver.simple._
-import play.api.db.slick.DB
-import play.Logger
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-import scala.language.reflectiveCalls
 import scala.util.Try
+
+import play.Logger
+import play.api.Play.current
+import play.api.db.slick.Config.driver.simple.Session
+import play.api.db.slick.Config.driver.simple.columnBaseToInsertInvoker
+import play.api.db.slick.Config.driver.simple.columnExtensionMethods
+import play.api.db.slick.Config.driver.simple.productQueryToUpdateInvoker
+import play.api.db.slick.Config.driver.simple.queryToDeleteInvoker
+import play.api.db.slick.Config.driver.simple.queryToQueryInvoker
+import play.api.db.slick.Config.driver.simple.Table
+import play.api.db.slick.Config.driver.simple.tableToQuery
+import play.api.db.slick.Config.driver.simple.valueToConstColumn
+import play.api.db.slick.DB
+import play.api.db.slick.Profile
 
 case class Domain (
     id: Option[Int] = None,
