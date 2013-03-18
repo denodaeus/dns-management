@@ -39,6 +39,10 @@ object Domains extends Controller {
     ) (Domain.apply)(Domain.unapply)
   )
   
+  def index = Action {
+    Ok(views.html.domains.index("Domains List"))
+  }
+  
   def listAll = Action { implicit request =>
     val json = Json.toJson(Domain.findAll.map(d => Json.toJson(d)))
     Ok(json) as JSON

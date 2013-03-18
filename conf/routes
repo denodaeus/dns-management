@@ -49,4 +49,6 @@ DELETE  /api/zones/:id                  controllers.Zones.deleteOne(id: Int)
 # Demo pages for testing purposes
 ########################################################
 
-GET     /records                        controllers.Records.index        
+GET     /records                        controllers.Records.index
+
+GET     /domains                        controllers.Domains.index        
