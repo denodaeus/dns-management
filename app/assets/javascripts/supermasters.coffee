@@ -42,6 +42,7 @@ jQuery ($) ->
       $label = $('<span/>').addClass('label label-important')
       message = data.responseText || data.statusText
       $row.children().last().append $label.text(message)
+      $label.delay(3000).fadeOut()
       
   $('[contenteditable]').live 'blur', ->
     saveRow $(this)
