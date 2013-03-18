@@ -40,6 +40,10 @@ object Records extends Controller {
     ) (Record.apply)(Record.unapply)
   )
   
+  def index = Action {
+    Ok(views.html.records.index("Records List"))
+  }
+  
   def listAll = Action { implicit request =>
     val json = Json.toJson(Record.findAll.map(r => Json.toJson(r)))
     Logger.debug(s"${request.method} ${request.path} -> Records.listAll")

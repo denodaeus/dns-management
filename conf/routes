@@ -9,7 +9,10 @@ GET     /                           controllers.Application.index
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 
+
+#################### API ###########################
 # Application API Routes, Route API requests as json
+####################################################
 
 # Records
 GET     /api/records                    controllers.Records.listAll
@@ -40,3 +43,10 @@ DELETE  /api/zones                      controllers.Zones.deleteAll
 GET     /api/zones/:id                  controllers.Zones.get(id: Int)
 PUT     /api/zones/:id                  controllers.Zones.updateIfExists(id: Int)
 DELETE  /api/zones/:id                  controllers.Zones.deleteOne(id: Int)
+
+
+################### DEMO ###############################
+# Demo pages for testing purposes
+########################################################
+
+GET     /records                        controllers.Records.index        
