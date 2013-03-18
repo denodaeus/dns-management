@@ -44,6 +44,16 @@ GET     /api/zones/:id                  controllers.Zones.get(id: Int)
 PUT     /api/zones/:id                  controllers.Zones.updateIfExists(id: Int)
 DELETE  /api/zones/:id                  controllers.Zones.deleteOne(id: Int)
 
+# Supermasters
+GET     /api/supermasters               controllers.Supermasters.listAll
+POST    /api/supermasters               controllers.Supermasters.create
+PUT     /api/supermasters               controllers.Supermasters.updateAll
+DELETE  /api/supermasters               controllers.Supermasters.deleteAll
+
+GET     /api/supermasters/:id           controllers.Supermasters.get(id: Int)
+PUT     /api/supermasters/:id           controllers.Supermasters.updateIfExists(id: Int)
+DELETE  /api/supermasters/:id           controllers.Supermasters.deleteOne(id: Int)
+
 
 ################### DEMO ###############################
 # Demo pages for testing purposes
@@ -51,4 +61,6 @@ DELETE  /api/zones/:id                  controllers.Zones.deleteOne(id: Int)
 
 GET     /records                        controllers.Records.index
 
-GET     /domains                        controllers.Domains.index        
+GET     /domains                        controllers.Domains.index
+
+GET     /supermasters                   controllers.Supermasters.index        
