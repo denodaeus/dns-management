@@ -38,7 +38,7 @@ object Supermasters extends Controller {
   )
   
   def index = Action {
-    Ok(views.html.records.index("Supermasters List"))
+    Ok(views.html.supermasters.index("Supermasters List"))
   }
   
   def listAll = Action { implicit request =>
