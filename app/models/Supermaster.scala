@@ -73,8 +73,8 @@ object Supermaster {
   
     
   def update(supermaster: SupermasterForUpdate): Try[Unit] = DB.withSession { implicit session =>
-    Logger.debug("update :: updating for domain " + supermaster + " with id=" + supermaster.ip)
-    Try((SupermasterTable.filter(s => s.ip === supermaster.ip).map(s => s.ip ~ s.nameServer ~ s.account))
+    Logger.debug("update :: updating for domain " + supermaster + " with id=" + supermaster.id)
+    Try((SupermasterTable.filter(s => s.id === supermaster.id).map(s => s.ip ~ s.nameServer ~ s.account))
         .update(supermaster.ip, supermaster.nameServer, supermaster.account))
   }
   
