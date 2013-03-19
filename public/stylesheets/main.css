@@ -12,7 +12,8 @@ body, p, label { font-size:15px; }
 .screenshot > .container { width: 760px; padding: 20px; }
 
 table { border-collapse: collapse; width:100%; position:relative; }
-td { text-align:left; padding: 0.3em 0; border-bottom: 1px solid white; vertical-align:top; }
+th { text-align:left; border-bottom: 2px solid white; vertical-align: top; font-weight: bold;}
+td { text-align:left; padding: 0.3em 0; border-bottom: 1px solid white; vertical-align:top;}
 tr:hover td, tr:focus td { background-color:white; }
 tr:focus { outline:0; }
 td .label { position:absolute; right:0; }
