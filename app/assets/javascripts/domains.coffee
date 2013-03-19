@@ -1,5 +1,6 @@
 jQuery ($) ->
   $table = $('.container table')
+  $table.append "<thead><tr><th>ID</th><th>Name</th><th>Master</th><th>LastCheck</th><th>DomainType</th><th>NotifiedSerial</th><th>Account</th></tr></thead>"
   domainListUrl = $table.data('list')
   
   loadDomainsTable = ->
@@ -41,8 +42,9 @@ jQuery ($) ->
       contentType: "application/json"
       data: JSON.stringify domain
     jqxhr.done (response) ->
+      response = 'saved'
       $label = $('<span/>').addClass('label label-success')
-      $row.children().last().append $label.text('success')
+      $row.children().last().append $label.text(saved)
       $label.delay(3000).fadeOut()
     jqxhr.fail (data) ->
       $label = $('<span/>').addClass('label label-important')

@@ -1,5 +1,6 @@
 jQuery ($) ->
   $table = $('.container table')
+  $table.append "<thead><tr><th>ID</th><th>IP</th><th>Nameserver</th><th>Account</th></tr></thead>"
   supermasterListUrl = $table.data('list')
   
   loadSupermastersTable = ->
@@ -28,15 +29,16 @@ jQuery ($) ->
       id: parseInt(id)
       ip: ip
       nameServer: nameServer
-      account: parseInt(lastCheck)
+      account: account
     jqxhr = $.ajax
       type: "PUT"
       url: supermasterDetailsUrl(id)
       contentType: "application/json"
       data: JSON.stringify supermaster
     jqxhr.done (response) ->
+      response = 'saved'
       $label = $('<span/>').addClass('label label-success')
-      $row.children().last().append $label.text('success')
+      $row.children().last().append $label.text(response)
       $label.delay(3000).fadeOut()
     jqxhr.fail (data) ->
       $label = $('<span/>').addClass('label label-important')
