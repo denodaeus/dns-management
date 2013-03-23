@@ -1,2 +1,23 @@
-@* show Template File *@
-@(param: Any)
+@(record: Record)
+
+@main("Showing Record ${@record.id}") {
+<div class="screenshot">
+    <div class="navbar navbar-fixed-top"><div class="navbar-inner"><div class="container"><a class="brand" href="/records/list">Record Details</a><ul class="nav"></ul></div></div></div>
+    <div class="container">
+        <dl class="records">
+            <dt>Name: </dt><dd>@record.name</dd>
+            <dt>Domain Id: </dt><dd>@record.domainId</dd>
+            <dt>Record Type: </dt><dd>@record.recordType</dd>
+            <dt>Record Content: </dt><dd>@record.content</dd>
+            <dt>TTL: </dt><dd>@record.ttl</dd>
+            <dt>Priority: </dt><dd>@record.priority</dd>
+            <dt>Change Date</dt><dd>@record.changeDate</dd>
+        </dl>
+    </div>
+</div>
+    <p>
+        <a href="@controllers.routes.Records.create()" class="btn">
+        <i class="icon-plus"></i>@Messages("record.new.command")</a>
+    </p>
+
+}

@@ -7,6 +7,8 @@ import models.Record
 import models.RecordForCreate
 import models.RecordForUpdate
 import models.RecordId
+import models.RecordForRead
+import models.RecordsAsList
 
 import play.Logger
 import play.api.data.Form
@@ -121,5 +123,20 @@ object Records extends Controller {
     val deleted = Record.delete(id)
     val json = Json.arr(s"DELETE /records/$id -> Records.deleteOne $id")
     Ok(json) as JSON
+  }
+
+  // VIEWS SECTION FOR TEMPORARY VIEWS
+
+  def list() = Action { implicit request =>
+    Ok(views.html.records.list(Record.findAll))
+  }
+  
+  def show(id: Int) = Action { implicit request =>
+    Record.findById(id) match {
+      case Success(r) => {
+        Ok(views.html.records.show(r))
+      }
+      case Failure(e) => NotFound
+    }
   }
 }

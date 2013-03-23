@@ -62,3 +62,6 @@ DELETE  /api/supermasters/:id           controllers.Supermasters.deleteOne(id: I
 GET     /records                        controllers.Records.index
 GET     /domains                        controllers.Domains.index
 GET     /supermasters                   controllers.Supermasters.index
+
+GET     /records/list                   controllers.Records.list
+GET     /records/show/:id               controllers.Records.show(id: Int)

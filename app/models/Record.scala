@@ -24,6 +24,7 @@ case class RecordId(id: Int)
 case class RecordForCreate(domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int)
 case class RecordForUpdate(id: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int)
 case class RecordForRead(id: Int, domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int, changeDate: Int)
+case class RecordsAsList(records: List[Record])
 
 object RecordType extends Enumeration {
   type Type = Value
