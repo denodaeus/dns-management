@@ -59,9 +59,10 @@ DELETE  /api/supermasters/:id           controllers.Supermasters.deleteOne(id: I
 # Demo pages for testing purposes
 ########################################################
 
-GET     /records                        controllers.Records.index
+GET     /records                        controllers.Records.list
 GET     /domains                        controllers.Domains.index
 GET     /supermasters                   controllers.Supermasters.index
 
+GET     /records/list/:id               controllers.Records.listForAccountId(id: Int)
 GET     /records/list                   controllers.Records.list
 GET     /records/show/:id               controllers.Records.show(id: Int)

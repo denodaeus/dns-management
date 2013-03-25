@@ -38,12 +38,13 @@ object Records extends Controller {
       "content" -> nonEmptyText,
       "ttl" -> number,
       "priority" -> number,
-      "changeDate" -> number
+      "changeDate" -> number,
+      "accountid" -> number
     ) (Record.apply)(Record.unapply)
   )
   
-  def index = Action {
-    Ok(views.html.records.index("Records List"))
+  def index = Action { implicit request =>
+    Ok(views.html.records.list(Record.findAll))
   }
   
   def search = Action {
@@ -137,6 +138,15 @@ object Records extends Controller {
         Ok(views.html.records.show(r))
       }
       case Failure(e) => NotFound
+    }
+  }
+  
+  def listForAccountId(id: Int) = Action { implicit request =>
+    Record.findByAccountId(id) match {
+      case Success(r) => {
+        Ok(views.html.records.list(r))
+      }
+      case Failure(r) => NotFound
     }
   }
 }

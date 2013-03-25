@@ -17,14 +17,16 @@ case class Record (
   content: String,
   ttl: Int,
   priority: Int,
-  changeDate: Int
+  changeDate: Int,
+  accountId: Int
 )
 
 case class RecordId(id: Int)
-case class RecordForCreate(domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int)
+case class RecordForCreate(domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int, accountId: Int)
 case class RecordForUpdate(id: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int)
 case class RecordForRead(id: Int, domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int, changeDate: Int)
 case class RecordsAsList(records: List[Record])
+case class RecordWithAccount(id: Int, domainId: Int, name: String, content: String, accountId: Int)
 
 object RecordType extends Enumeration {
   type Type = Value
@@ -53,23 +55,31 @@ object Record {
     def ttl = column[Int]("ttl")
     def priority = column[Int]("prio")
     def changeDate = column[Int]("change_date")
+    def accountId = column[Int]("account_id")
     def domainFK = foreignKey("domain_exists", domainId, DomainTable)(_.id)
-    def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate <> (Record.apply _, Record.unapply _)    
+    def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <> (Record.apply _, Record.unapply _)    
     def autoInc = * returning id
     
     // Queries
     def findAll(implicit session: Session) = (for (r <- this) yield r).list
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).first(id)
+    def findByAccountId(accountId: Int)(implicit session: Session) = (for (r <- this if r.accountId === accountId) yield r).list
     def delete(id: Int)(implicit session: Session) = this.where(_.id === id).mutate(_.delete)
     def deleteAll(implicit session: Session) = (for (r <- this) yield r).delete
-    def forInsert = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate <>
-      ({ (domainId, name, recordType, content, ttl, priority, changeDate) => Record(None, domainId, name, recordType, content, ttl, priority, changeDate )},
-        {r: Record => Some((r.domainId, r.name, r.recordType, r.content, r.ttl, r.priority, r.changeDate)) }) returning id
+    def forInsert = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <>
+      ({ (domainId, name, recordType, content, ttl, priority, changeDate, accountId) => Record(None, domainId, name, recordType, content, ttl, priority, changeDate, accountId )},
+        {r: Record => Some((r.domainId, r.name, r.recordType, r.content, r.ttl, r.priority, r.changeDate, r.accountId)) }) returning id
   }
   
   def findById (id: Int): Try[Record] = DB.withSession { implicit session =>
     Logger.debug(s"findById :: finding by Id=$id")
     Try(RecordTable.findById(id))
+  }
+  
+  def findByAccountId(id: Int): Try[List[Record]] = DB.withSession { implicit session =>
+    val records: List[Record] = RecordTable.findByAccountId(id)
+    Logger.debug(s"findByAccountId :: finding for account=$id returned records: $records" )
+    Try(records)
   }
   
   def findAll: List[Record] = {
@@ -92,7 +102,8 @@ object Record {
             record.content,
             record.ttl,
             record.priority,
-            nowInUnixTime
+            nowInUnixTime,
+            record.accountId
           ))))
   }
     

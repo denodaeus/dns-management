@@ -1,6 +1,6 @@
 @(record: Record)
 
-@main("Showing Record ${@record.id}") {
+@main("Showing Record: ") {
 <div class="screenshot">
     <div class="navbar navbar-fixed-top"><div class="navbar-inner"><div class="container"><a class="brand" href="/records/list">Record Details</a><ul class="nav"></ul></div></div></div>
     <div class="container">
@@ -12,6 +12,7 @@
             <dt>TTL: </dt><dd>@record.ttl</dd>
             <dt>Priority: </dt><dd>@record.priority</dd>
             <dt>Change Date</dt><dd>@record.changeDate</dd>
+            <dt>Account Id</dt><dd>@record.accountId</dd>
         </dl>
     </div>
 </div>

@@ -9,19 +9,20 @@
 		  		<tr>
 		    		<th>ID</th>
 			    	<th>Name</th>
-			    	<th>DomainID</th>
+			    	<th>DomainId</th>
 			    	<th>RecordType</th>
 			    	<th>Content</th>
 			    	<th>TTL</th>
 			    	<th>Priority</th>
 			    	<th>ChangeDate</th>
+			    	<th>AccountId</th>
 				</tr>
 		  	</thead>
 		  	<tbody>
 		    	@for(record <- records){
 		    	<tr>
 		    		<td>
-		    			<a href="@controllers.routes.Records.get((record.id).getOrElse(0))">
+		    			<a href="@controllers.routes.Records.show((record.id).getOrElse(0))">
 		      			@record.id
 		    			</a>
 		    		</td>
@@ -32,6 +33,7 @@
 					<td>@record.ttl</dd>
 					<td>@record.priority</dd>
 					<td>@record.changeDate</dd>
+					<td>@record.accountId</dd>
 				</tr>
 		}
 			</tbody>
