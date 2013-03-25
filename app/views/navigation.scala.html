@@ -1,5 +1,5 @@
 @()
-    <div id="menu">
+    <!--div id="menu">
         <table class="computers zebra-striped">
             <thead>
                 <tr></tr>
@@ -16,4 +16,31 @@
                 </tr>
             </tbody>
         </table>
+    </div-->
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="@routes.Application.index()">
+                    @Messages("application.name")
+                </a>
+                <ul class="nav">
+                    <li class="divider-vertical"></li>
+                    <li class="active">
+                        <a href="@routes.Records.list()">
+                            @Messages("records.list.navigation")
+                        </a>
+                    </li>
+                    <li class="active"><a href="@routes.Records.create()"><i class="icon-plus icon-white"></i>
+                        @Messages("records.new.command")</a></li>
+                    <li class="divider-vertical"></li>
+                </ul>
+            </div>
+        </div>
     </div>
+    <!--div id="navigation">
+        <ul>
+            <li><a href="@routes.Application.index">Home</a></li>
+            <li><a href="@routes.Domains.listAll">Domains</a></li>
+            <li><a href="@routes.Records.list">Records</a></li>        
+        </ul>
+    </div-->

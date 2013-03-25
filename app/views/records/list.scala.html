@@ -1,8 +1,6 @@
 @(records: List[Record])
 
 @main("Records List") {
-<div class="screenshot">
-<div class="navbar navbar-fixed-top"><div class="navbar-inner"><div class="container"><a class="brand" href="/records/list">Records List</a><ul class="nav"></ul></div></div></div>
 	<div class="container">
 		<table>
 			<thead>
@@ -38,10 +36,12 @@
 		}
 			</tbody>
 		</table>
-	</div>
-</div>
+	<!--/div-->
+<!--/div-->
+    <br/>
 
 	<p><a href="@controllers.routes.Records.create()" class="btn">
-	  <i class="icon-plus"/>@Messages("record.new.command")</a>
+	  <i class="icon-plus"/></i>@Messages("records.new.command")</a>
 	</p>
+	</div>
 }

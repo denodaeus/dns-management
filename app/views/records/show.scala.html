@@ -1,8 +1,6 @@
 @(record: Record)
 
 @main("Showing Record: ") {
-<div class="screenshot">
-    <div class="navbar navbar-fixed-top"><div class="navbar-inner"><div class="container"><a class="brand" href="/records/list">Record Details</a><ul class="nav"></ul></div></div></div>
     <div class="container">
         <dl class="records">
             <dt>Name: </dt><dd>@record.name</dd>
@@ -15,10 +13,9 @@
             <dt>Account Id</dt><dd>@record.accountId</dd>
         </dl>
     </div>
-</div>
     <p>
         <a href="@controllers.routes.Records.create()" class="btn">
-        <i class="icon-plus"></i>@Messages("record.new.command")</a>
+        <i class="icon-plus"></i>@Messages("records.new.command")</a>
     </p>
 
 }
