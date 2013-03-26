@@ -40,7 +40,7 @@ object Domains extends Controller {
   )
   
   def index = Action {
-    Ok(views.html.domains.list(Domain.findAll))
+    Ok(views.html.domains.index("Domains"))
   }
   
   def listAll = Action { implicit request =>

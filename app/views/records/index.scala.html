@@ -1,17 +1,10 @@
 @(title: String)
 @main("DNS App") {
     <script src="@routes.Assets.at("javascripts/records.js")" type="text/javascript"></script>
-    <div class="screenshot">
-      <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-          <div class="container">
-            <a class="brand" href="@routes.Application.index()">Records List</a>
-            <ul class="nav"></ul>
-          </div>
-        </div>
-      </div>
       <div class="container">
         <table data-list="@routes.Records.listAll" data-details="@routes.Records.get(0)"></table>
+        <br/>
+        <p><input type="button" class="btn primary" id="button" value='@Messages("records.edit.submit")'></p>
       </div>
     </div>
 }

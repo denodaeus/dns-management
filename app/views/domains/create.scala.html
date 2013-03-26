@@ -5,14 +5,6 @@
 @main(Messages("domains.form")) {
   <h2>@Messages("domains.form")</h2>
 
-    <script type="text/javascript" src="http://jashkenas.github.com/coffee-script/extras/coffee-script.js">
-      $jQuery ($) ->
-        $("input[submit]").click ->
-          $.post '/api/domains'
-            contentType: "application/json"
-            data: JSON.stringify $(this)
-    </script>
-
   @helper.form(action = id.map(routes.Domains.updateIfExists(_)).getOrElse(routes.Domains.create())) {
     <fieldset>
       <legend>
@@ -25,6 +17,21 @@
       @helper.inputText(domainForm("notifiedSerial"))
       @helper.inputText(domainForm("account"))
     </fieldset>
-    <p><input type="submit" class="btn primary" value='@id.map(_=> Messages("domains.edit.submit")).getOrElse(Messages("domains.new.submit"))'></p>
+
+      <script type="text/coffeescript">
+          $("#button").click ->
+            $.ajax '/api/domains',
+                type: 'POST'
+                contentType: 'application/json'
+                data: '{ "name": "testme123", "master": "testme123", "lastCheck": 12345, "domainType": "A", "notifiedSerial": 12345, "account": "12345" }'
+                error: (jqXHR, textStatus, errorThrown) ->
+                    alert errorThrown
+                    console.log "Post success"
+                success: (data, textStatus, jqXHR) ->
+                    console.log "Post success"
+
+      </script>
+    <p><!--input type="submit" class="btn primary" id="button" value='@id.map(_=> Messages("domains.edit.submit")).getOrElse(Messages("domains.new.submit"))'--></p>
+    <p><input type="button" class="btn primary" id="button" value='@id.map(_=> Messages("domains.edit.submit")).getOrElse(Messages("domains.new.submit"))'></p>
   }
 }

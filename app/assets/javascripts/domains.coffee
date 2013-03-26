@@ -1,6 +1,7 @@
 jQuery ($) ->
   $table = $('.container table')
   $table.append "<thead><tr><th>ID</th><th>Name</th><th>Master</th><th>LastCheck</th><th>DomainType</th><th>NotifiedSerial</th><th>Account</th></tr></thead>"
+  changed = []
   domainListUrl = $table.data('list')
   
   loadDomainsTable = ->
@@ -53,4 +54,10 @@ jQuery ($) ->
       $label.delay(3000).fadeOut()
       
   $('[contenteditable]').live 'blur', ->
-    saveRow $(this)
+    changed.push(this)
+    console.log('contenteditable: edited content', changed)
+    
+  $("#button").click ->
+    console.log('submitting changes ...')
+    for row in changed
+      saveRow $(row)

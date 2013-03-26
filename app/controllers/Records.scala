@@ -44,7 +44,7 @@ object Records extends Controller {
   )
   
   def index = Action { implicit request =>
-    Ok(views.html.records.list(Record.findAll))
+    Ok(views.html.records.index("Records List"))
   }
   
   def search = Action {

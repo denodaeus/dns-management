@@ -19,6 +19,7 @@ domain.new = {new}
 domains.new.command = New Domain
 domains.new.submit = Create Domain
 domain.new.success = Successfully added domain {0}.
+domains.edit.submit = Commit Changes
 
 validation.errors = Please correct the following errors:
 validation.name.duplicate = A domain with this name already exists.
@@ -26,3 +27,4 @@ validation.name.duplicate = A domain with this name already exists.
 
 records.new.command = New Record
 records.list.navigation = List Records
+records.edit.submit = Commit Changes
