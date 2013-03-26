@@ -158,4 +158,8 @@ object Records extends Controller {
       case Failure(r) => NotFound
     }
   }
+  
+  def newRecord() = Action { implicit request =>
+    Ok(views.html.records.create(recordForm))
+  }
 }

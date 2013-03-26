@@ -29,5 +29,7 @@ records.new.command = New Record
 records.list.navigation = List Records
 records.edit.submit = Commit Changes
 
-records.list.title = Records
-domains.list.title = Domains
+records.list.title = List Records
+domains.list.title = List Domains
+domains.create.new = New Domain
+records.create.new = New Record

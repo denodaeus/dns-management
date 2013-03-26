@@ -67,6 +67,7 @@ GET     /records/index                  controllers.Records.index
 GET     /records/list                   controllers.Records.list
 GET     /records/list/:id               controllers.Records.listForAccountId(id: Int)
 GET     /records/show/:id               controllers.Records.show(id: Int)
+GET     /records/create                 controllers.Records.newRecord()
 
 GET     /domains/list                   controllers.Domains.list
 GET     /domains/list/:id               controllers.Domains.show(id: Int)
