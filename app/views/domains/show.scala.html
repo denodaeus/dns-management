@@ -1,0 +1,20 @@
+@(domain: Domain)
+
+@main("Showing Domain: ") {
+    <div class="container">
+        <dl class="domains">
+            <dt>Id: </dt><dd>@domain.id</dd>
+            <dt>Name: </dt><dd>@domain.name</dd>
+            <dt>Master: </dt><dd>@domain.master</dd>
+            <dt>Last Check: </dt><dd>@domain.lastCheck</dd>
+            <dt>Domain Type: </dt><dd>@domain.domainType</dd>
+            <dt>Notified Serial: </dt><dd>@domain.notifiedSerial</dd>
+            <dt>Account</dt><dd>@domain.account</dd>
+        </dl>
+    </div>
+    <p>
+        <a href="@controllers.routes.Domains.create()" class="btn">
+        <i class="icon-plus"></i>@Messages("domains.new.command")</a>
+    </p>
+
+}

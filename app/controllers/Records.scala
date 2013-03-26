@@ -149,4 +149,13 @@ object Records extends Controller {
       case Failure(r) => NotFound
     }
   }
+  
+  def listByDomainId(id: Int) = Action { implicit request =>
+    Record.findByDomainId(id) match {
+      case Success(r) => {
+        Ok(views.html.records.list(r))
+      }
+      case Failure(r) => NotFound
+    }
+  }
 }

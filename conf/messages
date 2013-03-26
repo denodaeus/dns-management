@@ -1,0 +1,28 @@
+# Messages for localization support
+
+application.name = Cluster DNS Management
+
+# Domain Messages
+domain.id = "Id"
+domain.name = "Name"
+domain.master = "Master"
+domain.lastCheck = "Last Check"
+domain.type = "Type"
+domain.notifiedSerial = "Notified Serial"
+domain.account = "Account"
+domain.details = Domain: {0}
+
+domains.form = Domain details
+domain.list.navigation = List Domains
+domains.new = new
+domain.new = {new}
+domains.new.command = New Domain
+domains.new.submit = Create Domain
+domain.new.success = Successfully added domain {0}.
+
+validation.errors = Please correct the following errors:
+validation.name.duplicate = A domain with this name already exists.
+
+
+records.new.command = New Record
+records.list.navigation = List Records

@@ -61,9 +61,10 @@ object Record {
     def autoInc = * returning id
     
     // Queries
-    def findAll(implicit session: Session) = (for (r <- this) yield r).list
+    def findAll(implicit session: Session) = (for (r <- this) yield r).sortBy(r => r.id).list
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).first(id)
-    def findByAccountId(accountId: Int)(implicit session: Session) = (for (r <- this if r.accountId === accountId) yield r).list
+    def findByAccountId(accountId: Int)(implicit session: Session) = ((for (r <- this if r.accountId === accountId) yield r)).sortBy(r => r.accountId).list
+    def findByDomainId(domainId: Int)(implicit session: Session) = (for (r <- this if r.domainId === domainId) yield r).list
     def delete(id: Int)(implicit session: Session) = this.where(_.id === id).mutate(_.delete)
     def deleteAll(implicit session: Session) = (for (r <- this) yield r).delete
     def forInsert = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <>
@@ -79,6 +80,11 @@ object Record {
   def findByAccountId(id: Int): Try[List[Record]] = DB.withSession { implicit session =>
     val records: List[Record] = RecordTable.findByAccountId(id)
     Logger.debug(s"findByAccountId :: finding for account=$id returned records: $records" )
+    Try(records)
+  }
+  
+  def findByDomainId(id: Int): Try[List[Record]] = DB.withSession { implicit session =>
+    val records: List[Record] = RecordTable.findByDomainId(id)
     Try(records)
   }
   

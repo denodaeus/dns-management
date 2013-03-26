@@ -1,0 +1,30 @@
+@(domainForm: Form[Domain], id: Option[Int] = None)
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages("domains.form")) {
+  <h2>@Messages("domains.form")</h2>
+
+    <script type="text/javascript" src="http://jashkenas.github.com/coffee-script/extras/coffee-script.js">
+      $jQuery ($) ->
+        $("input[submit]").click ->
+          $.post '/api/domains'
+            contentType: "application/json"
+            data: JSON.stringify $(this)
+    </script>
+
+  @helper.form(action = id.map(routes.Domains.updateIfExists(_)).getOrElse(routes.Domains.create())) {
+    <fieldset>
+      <legend>
+        @Messages("domain.details", domainForm("id").value.getOrElse(Messages("domains.new")))
+      </legend>
+      @helper.inputText(domainForm("name"))
+      @helper.inputText(domainForm("master"))
+      @helper.inputText(domainForm("lastCheck"))
+      @helper.inputText(domainForm("domainType"))
+      @helper.inputText(domainForm("notifiedSerial"))
+      @helper.inputText(domainForm("account"))
+    </fieldset>
+    <p><input type="submit" class="btn primary" value='@id.map(_=> Messages("domains.edit.submit")).getOrElse(Messages("domains.new.submit"))'></p>
+  }
+}

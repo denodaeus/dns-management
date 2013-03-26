@@ -40,7 +40,7 @@ object Domains extends Controller {
   )
   
   def index = Action {
-    Ok(views.html.domains.index("Domains List"))
+    Ok(views.html.domains.list(Domain.findAll))
   }
   
   def listAll = Action { implicit request =>
@@ -116,4 +116,25 @@ object Domains extends Controller {
     val json = Json.arr(s"DELETE /domain/$id -> Domain.deleteOne $id")
     Ok(json) as JSON
   }
+
+
+  // VIEWS SECTION FOR TEMPORARY VIEWS
+
+  def list() = Action { implicit request =>
+    Ok(views.html.domains.list(Domain.findAll))
+  }
+
+  def show(id: Int) = Action { implicit request =>
+    Domain.findById(id) match {
+      case Success(r) => {
+        Ok(views.html.domains.show(r))
+      }
+      case Failure(e) => NotFound
+    }
+  }
+  
+  def newDomain() = Action { implicit request =>
+    Ok(views.html.domains.create(domainForm))
+  }
+
 }  

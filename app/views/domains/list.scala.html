@@ -1,0 +1,45 @@
+@(domains: List[Domain])
+
+@main("Domains List") {
+	<div class="container">
+		<table>
+			<thead>
+		  		<tr>
+		    		<th>ID</th>
+			    	<th>Name</th>
+			    	<th>Master</th>
+			    	<th>LastCheck</th>
+			    	<th>DomainType</th>
+			    	<th>NotifiedSerial</th>
+			    	<th>Account</th>
+				</tr>
+		  	</thead>
+		  	<tbody>
+		    	@for(domain <- domains){
+		    	<tr>
+		    		<td>
+		    			<a href="@controllers.routes.Domains.show((domain.id).getOrElse(0))">
+		      			@domain.id
+		    			</a>
+		    		</td>
+					<td>
+					   <a href="@controllers.routes.Records.list()">
+					     @domain.name
+                       </a>
+					</dd>
+					<td>@domain.master</dd>
+					<td>@domain.lastCheck</dd>
+					<td>@domain.domainType</dd>
+					<td>@domain.notifiedSerial</dd>
+					<td>@domain.account</dd>
+				</tr>
+		}
+			</tbody>
+		</table>
+    <br/>
+
+	<p><a href="@controllers.routes.Domains.newDomain()" class="btn">
+	  <i class="icon-plus"/></i>@Messages("domains.new.command")</a>
+	</p>
+	</div>
+}
