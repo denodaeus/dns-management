@@ -2,19 +2,30 @@
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="@routes.Application.index()">
+                <a class="brand" href="@routes.Domains.index()">
                     @Messages("application.name")
                 </a>
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="nav-collapse collapse">
+                </div>
                 <ul class="nav">
                     <li class="divider-vertical"></li>
                     <li class="active">
-                        <a href="@routes.Records.list()">
-                            @Messages("records.list.navigation")
+                        <a href="@routes.Domains.index()">
+                            @Messages("domains.list.title")
                         </a>
                     </li>
-                    <li class="active"><a href="@routes.Records.create()"><i class="icon-plus icon-white"></i>
-                        @Messages("records.new.command")</a></li>
+                    <li>
+                        <a href="@routes.Records.index()">
+                            @Messages("records.list.title")
+                        </a>
+                    </li>
                     <li class="divider-vertical"></li>
+                    <form class="navbar-search pull-right">
+                        <input type="text" class="search-query" placeholder="Search">
+                    </form>
                 </ul>
             </div>
         </div>

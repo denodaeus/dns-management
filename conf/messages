@@ -28,3 +28,6 @@ validation.name.duplicate = A domain with this name already exists.
 records.new.command = New Record
 records.list.navigation = List Records
 records.edit.submit = Commit Changes
+
+records.list.title = Records
+domains.list.title = Domains

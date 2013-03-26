@@ -50,7 +50,7 @@ object Domain {
     def * = id.? ~ name ~ master ~ lastCheck ~ domainType ~ notifiedSerial ~ account <> (Domain.apply _, Domain.unapply _)
     def autoInc = * returning id
     
-    def findAll(implicit session: Session) = (for (d <- this) yield d).list
+    def findAll(implicit session: Session) = (for (d <- this) yield d).sortBy(d => d.id.asc).list
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).first(id)
     def delete(id: Int)(implicit session: Session) = this.where(_.id === id).mutate(_.delete)
     def deleteAll(implicit session: Session) = (for (d <- this) yield d).delete

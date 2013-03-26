@@ -45,7 +45,7 @@ jQuery ($) ->
     jqxhr.done (response) ->
       response = 'saved'
       $label = $('<span/>').addClass('label label-success')
-      $row.children().last().append $label.text(saved)
+      $row.children().last().append $label.text(response)
       $label.delay(3000).fadeOut()
     jqxhr.fail (data) ->
       $label = $('<span/>').addClass('label label-important')
