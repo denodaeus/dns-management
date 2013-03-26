@@ -1,6 +1,6 @@
 jQuery ($) ->
   $table = $('.container table')
-  $table.append "<thead><tr><th>ID</th><th>Name</th><th>DomainID</th><th>RecordType</th><th>Content</th><th>TTL</th><th>Priority</th><th>ChangeDate</th></tr></thead>"
+  $table.append "<thead><tr><th>ID</th><th>Name</th><th>DomainID</th><th>RecordType</th><th>Content</th><th>TTL</th><th>Priority</th><th>ChangeDate</th><th>AccountId</th></tr></thead>"
   changed = []
   recordListUrl = $table.data('list')
   
@@ -25,6 +25,7 @@ jQuery ($) ->
       tableRow.append $('<td/>').text(record.ttl)
       tableRow.append $('<td/>').text(record.priority)
       tableRow.append $('<td/>').text(record.changeDate)
+      tableRow.append $('<td/>').text(record.accountId)
         
   loadRecordsTable()
    
@@ -39,6 +40,7 @@ jQuery ($) ->
       ttl: parseInt(ttl)
       priority: parseInt(priority)
       changeDate: parseInt(changeDate)
+      accountId: accountId
     jqxhr = $.ajax
       type: "PUT"
       url: recordDetailsUrl(id)

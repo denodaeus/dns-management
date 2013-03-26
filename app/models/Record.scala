@@ -62,6 +62,7 @@ object Record {
     
     // Queries
     def findAll(implicit session: Session) = (for (r <- this) yield r).sortBy(r => r.id).list
+    def listByAccountIds(implicit session: Session) = (for (r <- this) yield r.accountId).list.distinct
     def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).first(id)
     def findByAccountId(accountId: Int)(implicit session: Session) = ((for (r <- this if r.accountId === accountId) yield r)).sortBy(r => r.accountId).list
     def findByDomainId(domainId: Int)(implicit session: Session) = (for (r <- this if r.domainId === domainId) yield r).list
@@ -70,6 +71,14 @@ object Record {
     def forInsert = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <>
       ({ (domainId, name, recordType, content, ttl, priority, changeDate, accountId) => Record(None, domainId, name, recordType, content, ttl, priority, changeDate, accountId )},
         {r: Record => Some((r.domainId, r.name, r.recordType, r.content, r.ttl, r.priority, r.changeDate, r.accountId)) }) returning id
+  }
+  
+  def listAccountIds() = DB.withSession { implicit session =>
+    RecordTable.listByAccountIds
+  }
+  
+  def findWithConstraints(page: Int, orderBy: Int, filter: String) = DB.withSession { implicit session =>
+    Record.findAll
   }
   
   def findById (id: Int): Try[Record] = DB.withSession { implicit session =>

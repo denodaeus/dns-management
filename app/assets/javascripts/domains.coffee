@@ -18,7 +18,7 @@ jQuery ($) ->
   loadDomainDetails = (tableRow) ->
     id = tableRow.text()
     $.get domainDetailsUrl(id), (domain) ->
-      tableRow.append $('<td/>').text(domain.name)
+      tableRow.append $('<td/>').append("<a contenteditable=\"false\" href=\"/records/list/domain/#{domain.id}\">" + domain.name + '</a>')
       tableRow.append $('<td/>').text(domain.master)
       tableRow.append $('<td/>').text(domain.lastCheck)
       tableRow.append $('<td/>').text(domain.domainType)

@@ -68,9 +68,15 @@ GET     /records/list                   controllers.Records.list
 GET     /records/list/:id               controllers.Records.listForAccountId(id: Int)
 GET     /records/show/:id               controllers.Records.show(id: Int)
 GET     /records/create                 controllers.Records.newRecord()
+GET     /records/list/domain/:id        controllers.Records.listByDomainId(id: Int)
 
 GET     /domains/list                   controllers.Domains.list
 GET     /domains/list/:id               controllers.Domains.show(id: Int)
 GET     /domains/show/:id               controllers.Domains.show(id: Int)
 GET     /domains/create                 controllers.Domains.newDomain()
 GET     /domains/index                  controllers.Domains.index
+
+GET     /accounts                       controllers.Records.listAllAccountIds
+GET     /accounts/list                  controllers.Records.listAllAccountIds
+
+GET     /accounts/migrate               controllers.BulkOperations.migrate

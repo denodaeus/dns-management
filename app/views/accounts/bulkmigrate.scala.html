@@ -1,0 +1,41 @@
+@()
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("Bulk Migration") {
+  <div class="container">
+  <h2>Bulk Migration</h2>
+
+  @helper.form(action = routes.Records.updateIfExists(0)) {
+    <fieldset>
+      <legend>
+      Filter: <input type="text" size="20"><br/>
+      Expression: <select name="expression"><option value="gt">gt</option><option value="lt">lt</option></select><br/>
+      Type: <select name="value"><option value="extensions">Extensions</option><option value="dollars">Dollars Per Month</option></select><br/>
+      Value: <input type="text" size="30"><br/>
+      <input type="button" value="Apply Filter"><br><br/></br>
+      <h3>Apply To Type:</h3>
+      Type: <select name="object"><option value="records">Records</option><option value="domains">Domains</option></select><br/>
+      Field To Update: <select name="fields"><option value="content">Content</option><option value="type">Type</option></select><br/>
+      Update With Value: <input type="text" size="40"></br>                                     
+      List of Accounts: <br/><textarea rows="10" cols="30"></textarea><br/>
+      </legend>
+    </fieldset>
+
+      <script type="text/coffeescript">
+          $("#button").click ->
+            $.ajax '/api/domains',
+                type: 'POST'
+                contentType: 'application/json'
+                data: '{ "name": "testme123", "master": "testme123", "lastCheck": 12345, "domainType": "A", "notifiedSerial": 12345, "account": "12345" }'
+                error: (jqXHR, textStatus, errorThrown) ->
+                    alert errorThrown
+                    console.log "Post success"
+                success: (data, textStatus, jqXHR) ->
+                    console.log "Post success"
+
+      </script>
+    <p><input type="button" class="btn primary" id="button" value='Migrate Accounts'></p>
+    </div>
+  }
+}

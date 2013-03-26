@@ -1,0 +1,30 @@
+@(accountIds: List[Int])
+@main("DNS App") {
+    <!--script src="@routes.Assets.at("javascripts/accounts.js")" type="text/javascript"></script-->
+      <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>AccountId</th>
+                    <th>Records Count</th>
+                </tr>    
+            </thead>
+            <tbody>
+
+                @for(accountId <- accountIds.sorted) {
+                    <tr>
+                        <td><a href="@controllers.routes.Records.listForAccountId(accountId)">
+                            @accountId
+                            </a>
+                        </td>
+                        <td>@controllers.Records.getRecordCount(accountId)</td>
+                    </tr>   
+                }
+            </tbody>
+        </table>
+        <!--table data-list="@routes.Records.listAll" data-details="@routes.Records.get(0)"></table>
+        <br/>
+        <p><input type="button" class="btn primary" id="button" value='@Messages("records.edit.submit")'></p-->
+      </div>
+    </div>
+}

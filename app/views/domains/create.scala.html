@@ -3,6 +3,7 @@
 @import helper.twitterBootstrap._
 
 @main(Messages("domains.form")) {
+  <div class="container">
   <h2>@Messages("domains.form")</h2>
 
   @helper.form(action = id.map(routes.Domains.updateIfExists(_)).getOrElse(routes.Domains.create())) {
@@ -20,10 +21,16 @@
 
       <script type="text/coffeescript">
           $("#button").click ->
+            array = $('form').serialize()
+            val = JSON.parse('{"' + decodeURI(array.replace(/&/g, "\",\"").replace(/\=/g,"\":\"")) + '"}')
+            val.lastCheck = parseInt(val.lastCheck)
+            val.notifiedSerial = parseInt(val.notifiedSerial)
+            console.log(val)
             $.ajax '/api/domains',
                 type: 'POST'
                 contentType: 'application/json'
-                data: '{ "name": "testme123", "master": "testme123", "lastCheck": 12345, "domainType": "A", "notifiedSerial": 12345, "account": "12345" }'
+                #data: '{ "name": "testme123", "master": "testme123", "lastCheck": 12345, "domainType": "A", "notifiedSerial": 12345, "account": "12345" }'
+                data: JSON.stringify val
                 error: (jqXHR, textStatus, errorThrown) ->
                     alert errorThrown
                     console.log "Post success"
@@ -33,5 +40,6 @@
       </script>
     <p><!--input type="submit" class="btn primary" id="button" value='@id.map(_=> Messages("domains.edit.submit")).getOrElse(Messages("domains.new.submit"))'--></p>
     <p><input type="button" class="btn primary" id="button" value='@id.map(_=> Messages("domains.edit.submit")).getOrElse(Messages("domains.new.submit"))'></p>
+    </div>
   }
 }

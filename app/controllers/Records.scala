@@ -57,6 +57,11 @@ object Records extends Controller {
     Ok(json) as JSON
   }
   
+  def listAllPagination(page: Int, orderBy: Int, filter: String )= Action { implicit request =>
+    val json = Json.toJson(Record.findWithConstraints(page = page, orderBy = orderBy, filter = ("")).map(r => Json.toJson(r)))
+    Ok(json) as JSON
+  }
+  
   def get(id: Int) = Action { implicit request =>
     Record.findById(id) match {
       case Success(r) => {
@@ -141,6 +146,12 @@ object Records extends Controller {
     }
   }
   
+  def getRecordCount(id: Int) : Int =  {
+    Record.findByAccountId(id) match {
+      case Success(r) => r.length
+    }
+  }
+  
   def listForAccountId(id: Int) = Action { implicit request =>
     Record.findByAccountId(id) match {
       case Success(r) => {
@@ -148,6 +159,10 @@ object Records extends Controller {
       }
       case Failure(r) => NotFound
     }
+  }
+  
+  def listAllAccountIds() = Action { implicit request =>
+    Ok(views.html.accounts.list(Record.listAccountIds()))
   }
   
   def listByDomainId(id: Int) = Action { implicit request =>
