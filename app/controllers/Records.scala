@@ -133,8 +133,9 @@ object Records extends Controller {
 
   // VIEWS SECTION FOR TEMPORARY VIEWS
 
-  def list() = Action { implicit request =>
-    Ok(views.html.records.list(Record.findAll))
+  def list(page: Int, orderBy: Int) = Action { implicit request =>
+    val records = Record.findPage(page, orderBy)
+    Ok(views.html.records.list(records.items))
   }
   
   def show(id: Int) = Action { implicit request =>
@@ -149,6 +150,7 @@ object Records extends Controller {
   def getRecordCount(id: Int) : Int =  {
     Record.findByAccountId(id) match {
       case Success(r) => r.length
+      case Failure(r) => 0
     }
   }
   

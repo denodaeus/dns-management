@@ -46,6 +46,8 @@ object RecordType extends Enumeration {
 object Record {
   import play.api.Play.current
   
+  lazy val pageSize = 20
+  
   val RecordTable = new Table[Record]("records") {
     def id = column[Int]("id", O.AutoInc, O.PrimaryKey)
     def domainId = column[Int]("domain_id", O.NotNull)
@@ -59,6 +61,11 @@ object Record {
     def domainFK = foreignKey("domain_exists", domainId, DomainTable)(_.id)
     def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <> (Record.apply _, Record.unapply _)    
     def autoInc = * returning id
+
+    val byId = createFinderBy(_.id)
+    val byDomainId = createFinderBy(_.domainId)
+    val byName = createFinderBy(_.name)
+    val byContent = createFinderBy(_.content)
     
     // Queries
     def findAll(implicit session: Session) = (for (r <- this) yield r).sortBy(r => r.id).list
@@ -71,6 +78,27 @@ object Record {
     def forInsert = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <>
       ({ (domainId, name, recordType, content, ttl, priority, changeDate, accountId) => Record(None, domainId, name, recordType, content, ttl, priority, changeDate, accountId )},
         {r: Record => Some((r.domainId, r.name, r.recordType, r.content, r.ttl, r.priority, r.changeDate, r.accountId)) }) returning id
+  }
+  
+  def findPage(page: Int = 0, orderField: Int): Page[Record] = {
+    val offset = pageSize * page
+    
+    DB.withSession {
+      implicit session =>
+        val records = (
+          for {r <- RecordTable.sortBy(r => orderField match {
+            case 1 => r.id.asc
+            case -1 => r.id.desc
+            case 2 => r.name.asc
+            case -2 => r.name.desc
+          })
+            .drop(offset)
+            .take(pageSize)
+          } yield r).list
+          
+          val totalRows = (for (r <- RecordTable) yield r.id).list.size
+          Page(records, page, offset, totalRows)
+    }
   }
   
   def listAccountIds() = DB.withSession { implicit session =>
