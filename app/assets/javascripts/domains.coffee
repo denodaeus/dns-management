@@ -8,7 +8,7 @@ jQuery ($) ->
     $.get domainListUrl, (domains) ->
       $.each domains, (index, domain) ->
         row = $('<tr/>').append $('<td/>').text (domain.id)
-        row.attr 'contenteditable', true
+        row.attr 'contenteditable', false
         $table.append row
         loadDomainDetails row
         
