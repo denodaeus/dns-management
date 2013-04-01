@@ -21,6 +21,15 @@ case class Record (
   accountId: Int
 )
 
+object RecordType extends Enumeration {
+  type Type = Value
+  val A,
+  CNAME,
+  NAPTR,
+  SOA,
+  SRV = Value
+}
+
 object Records extends Table[Record]("records"){
   import play.api.Play.current
   
