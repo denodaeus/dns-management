@@ -10,7 +10,7 @@ import scala.language.reflectiveCalls
 import scala.util.Try
 
 case class Record (
-  id: Option[Int] = None,
+  id: Option[Int],
   domainId: Int,
   name: String,
   recordType: String,
@@ -21,34 +21,11 @@ case class Record (
   accountId: Int
 )
 
-case class RecordId(id: Int)
-case class RecordForCreate(domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int, accountId: Int)
-case class RecordForUpdate(id: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int)
-case class RecordForRead(id: Int, domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int, changeDate: Int)
-case class RecordsAsList(records: List[Record])
-case class RecordWithAccount(id: Int, domainId: Int, name: String, content: String, accountId: Int)
-
-object RecordType extends Enumeration {
-  type Type = Value
-  val A,
-      AAAA,
-      CNAME,
-      MX,
-      NAPTR,
-      NS,
-      PTR,
-      SOA,
-      SRV,
-      TXT,
-      URL = Value
-}
-
-object Record {
+object Records extends Table[Record]("records"){
   import play.api.Play.current
   
   lazy val pageSize = 20
-  
-  val RecordTable = new Table[Record]("records") {
+
     def id = column[Int]("id", O.AutoInc, O.PrimaryKey)
     def domainId = column[Int]("domain_id", O.NotNull)
     def name = column[String]("name", O.Default(null))
@@ -59,34 +36,70 @@ object Record {
     def changeDate = column[Int]("change_date")
     def accountId = column[Int]("account_id")
     def domainFK = foreignKey("domain_exists", domainId, DomainTable)(_.id)
-    def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <> (Record.apply _, Record.unapply _)    
-    def autoInc = * returning id
+    def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <> (Record, Record.unapply _)    
+    def autoInc = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <> (Record, Record.unapply _) returning id
 
     val byId = createFinderBy(_.id)
     val byDomainId = createFinderBy(_.domainId)
     val byName = createFinderBy(_.name)
     val byContent = createFinderBy(_.content)
+    val byAccountId = createFinderBy(_.accountId)
     
-    // Queries
-    def findAll(implicit session: Session) = (for (r <- this) yield r).sortBy(r => r.id).list
-    def listByAccountIds(implicit session: Session) = (for (r <- this) yield r.accountId).list.distinct
-    def findById(id: Int)(implicit session: Session) = createFinderBy(_.id).first(id)
-    def findByAccountId(accountId: Int)(implicit session: Session) = ((for (r <- this if r.accountId === accountId) yield r)).sortBy(r => r.accountId).list
-    def findByDomainId(domainId: Int)(implicit session: Session) = (for (r <- this if r.domainId === domainId) yield r).list
-    def delete(id: Int)(implicit session: Session) = this.where(_.id === id).mutate(_.delete)
-    def deleteAll(implicit session: Session) = (for (r <- this) yield r).delete
-    def forInsert = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <>
-      ({ (domainId, name, recordType, content, ttl, priority, changeDate, accountId) => Record(None, domainId, name, recordType, content, ttl, priority, changeDate, accountId )},
-        {r: Record => Some((r.domainId, r.name, r.recordType, r.content, r.ttl, r.priority, r.changeDate, r.accountId)) }) returning id
-  }
-  
+    def findAll = DB.withSession { 
+      implicit session =>
+        (for (r <- Records.sortBy(_.id) ) yield r).list 
+    }
+    
+    def findById(id: Int) = DB.withSession {
+      implicit session =>
+        Try(Records.byId(id).firstOption) 
+    }
+    
+    def findByAccountId(accountId: Int) = DB.withSession { 
+      implicit session => 
+        Try(Records.byAccountId(accountId).list) 
+    }
+    
+    def findByDomainId(domainId: Int) = DB.withSession {
+      implicit session =>
+        Try(Records.byDomainId(domainId).list) 
+    }
+    
+    def listAccountIds = DB.withSession { 
+      implicit session => 
+        (for (r <- Records) yield r.accountId).list.distinct  
+    }
+    
+    def delete(id: Int) = DB.withSession { 
+      implicit session => 
+        Try(Records.where(_.id === id).delete) 
+    }
+    
+    def deleteAll = DB.withSession { 
+      implicit session => 
+        Try((for (r <- Records) yield r).delete)
+    }
+    
+    def insert(record: Record) = DB.withSession { 
+      implicit session => 
+        Try(Records.autoInc.insert((record)))
+    }
+    
+    def update(id: Int, record: Record) = DB.withSession { 
+      implicit session => {
+        val recordToUpdate = record.copy(Some(id), record.domainId, record.name, record.recordType, record.content, record.ttl, record.priority, nowInUnixTime, record.accountId)
+        Logger.debug("update: updating recordid=" + id + ", record=" + record + ", previous=" + Records.findById(id))
+        Try(Records.where(_.id === id).update(recordToUpdate))
+      }
+    }
+
   def findPage(page: Int = 0, orderField: Int): Page[Record] = {
     val offset = pageSize * page
     
     DB.withSession {
       implicit session =>
         val records = (
-          for {r <- RecordTable.sortBy(r => orderField match {
+          for {r <- Records.sortBy(r => orderField match {
             case 1 => r.id.asc
             case -1 => r.id.desc
             case 2 => r.name.asc
@@ -96,80 +109,21 @@ object Record {
             .take(pageSize)
           } yield r).list
           
-          val totalRows = (for (r <- RecordTable) yield r.id).list.size
+          val totalRows = (for (r <- Records) yield r.id).list.size
           Page(records, page, offset, totalRows)
     }
   }
   
-  def listAccountIds() = DB.withSession { implicit session =>
-    RecordTable.listByAccountIds
+  def options: List[(String, String)] = DB.withSession {
+    implicit session =>
+      val query = (for {
+        record <- Records
+      } yield (record.id, record.name)
+        ).sortBy(_._2)
+      query.list.map(row => (row._1.toString, row._2))
   }
   
-  def findWithConstraints(page: Int, orderBy: Int, filter: String) = DB.withSession { implicit session =>
-    Record.findAll
-  }
+  implicit val recordFormat = Json.format[Record]
   
-  def findById (id: Int): Try[Record] = DB.withSession { implicit session =>
-    Logger.debug(s"findById :: finding by Id=$id")
-    Try(RecordTable.findById(id))
-  }
-  
-  def findByAccountId(id: Int): Try[List[Record]] = DB.withSession { implicit session =>
-    val records: List[Record] = RecordTable.findByAccountId(id)
-    Logger.debug(s"findByAccountId :: finding for account=$id returned records: $records" )
-    Try(records)
-  }
-  
-  def findByDomainId(id: Int): Try[List[Record]] = DB.withSession { implicit session =>
-    val records: List[Record] = RecordTable.findByDomainId(id)
-    Try(records)
-  }
-  
-  def findAll: List[Record] = {
-    Logger.debug("find: finding " )
-    val records = DB.withSession { implicit session =>
-      RecordTable.findAll
-    }
-    records
-  }
-  
-  def create(record: RecordForCreate): Try[RecordId] = DB.withSession { implicit session =>
-    Logger.debug("create for record " + record + " at time " + nowInUnixTime)
-    Try(
-      RecordId(
-        RecordTable.forInsert.insert(
-          Record(None,
-            record.domainId,
-            record.name,
-            record.recordType,
-            record.content,
-            record.ttl,
-            record.priority,
-            nowInUnixTime,
-            record.accountId
-          ))))
-  }
-    
-  def update(record: RecordForUpdate): Try[Unit] = DB.withSession { implicit session =>
-    Logger.debug("update :: updating for record " + record + " with id=" + record.id)
-    Try((RecordTable.filter(r => r.id === record.id).map(r => r.name ~ r.recordType ~ r.content ~ r.ttl ~ r.priority ~ r.changeDate))
-        .update(record.name, record.recordType, record.content, record.ttl, record.priority, nowInUnixTime))
-  }
-  
-  def delete(id: Int) = {
-    val deleted = DB.withSession { implicit session =>
-      RecordTable.delete(id)
-    }
-    deleted
-  }
-  
-  def deleteAll = {
-    val deleted = DB.withSession { implicit session =>
-      RecordTable.deleteAll
-    }
-    deleted
-  }
-  
-  def nowInUnixTime = { (System.currentTimeMillis / 1000L).toInt }
+  def nowInUnixTime = (System.currentTimeMillis / 1000L).toInt
 }
-
