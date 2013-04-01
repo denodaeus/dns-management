@@ -18,7 +18,6 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /api/records                    controllers.Records.listAll
 POST    /api/records                    controllers.Records.create
 PUT     /api/records                    controllers.Records.updateAll
-DELETE  /api/records                    controllers.Records.deleteAll
 
 GET     /api/records/:id                controllers.Records.get(id: Int)
 PUT     /api/records/:id                controllers.Records.updateIfExists(id: Int)

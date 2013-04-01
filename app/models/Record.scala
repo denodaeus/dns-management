@@ -84,11 +84,6 @@ object Records extends Table[Record]("records"){
       Try(Records.where(_.id === id).delete) 
   }
     
-  def deleteAll = DB.withSession { 
-    implicit session => 
-      Try((for (r <- Records) yield r).delete)
-  }
-    
   def insert(record: Record) = DB.withSession { 
     implicit session => 
       Try(Records.autoInc.insert((record)))
@@ -121,15 +116,6 @@ object Records extends Table[Record]("records"){
           val totalRows = (for (r <- Records) yield r.id).list.size
           Page(records, page, offset, totalRows)
     }
-  }
-  
-  def options: List[(String, String)] = DB.withSession {
-    implicit session =>
-      val query = (for {
-        record <- Records
-      } yield (record.id, record.name)
-        ).sortBy(_._2)
-      query.list.map(row => (row._1.toString, row._2))
   }
   
   implicit val recordFormat = Json.format[Record]

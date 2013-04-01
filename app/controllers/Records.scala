@@ -85,13 +85,6 @@ object Records extends Controller {
     Ok(json) as JSON
   }
   
-  def deleteAll = Action { implicit request =>
-    val count = models.Records.deleteAll
-    Logger.debug(s"deleteAll :: deleted all records, count=$count")
-    val json = Json.arr()
-    Ok(json) as JSON
-  }
-  
   def updateIfExists(id: Int) = Action { implicit request =>
     implicit val writes = Json.writes[Record]
     implicit val reads = Json.reads[Record]
