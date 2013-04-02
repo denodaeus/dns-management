@@ -110,8 +110,9 @@ object Domains extends Controller {
 
   // VIEWS SECTION FOR TEMPORARY VIEWS
 
-  def list() = Action { implicit request =>
-    Ok(views.html.domains.list(models.Domains.findAll))
+  def list(page: Int, orderBy: Int) = Action { implicit request =>
+    val records = models.Domains.findPage(page, orderBy)
+    Ok(views.html.domains.list(records.items))
   }
 
   def show(id: Int) = Action { implicit request =>
