@@ -27,7 +27,6 @@ DELETE  /api/records/:id                controllers.Records.deleteOne(id: Int)
 GET     /api/domains                    controllers.Domains.listAll
 POST    /api/domains                    controllers.Domains.create
 PUT     /api/domains                    controllers.Domains.updateAll
-DELETE  /api/domains                    controllers.Domains.deleteAll
 
 GET     /api/domains/:id                controllers.Domains.get(id: Int)
 PUT     /api/domains/:id                controllers.Domains.updateIfExists(id: Int)

@@ -1,6 +1,5 @@
 package models
 
-import models.Domain.DomainTable
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.DB
 import play.Logger
@@ -8,6 +7,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import scala.language.reflectiveCalls
 import scala.util.Try
+import utils.DateTimeUtils._
 
 case class Record (
   id: Option[Int],
@@ -44,9 +44,9 @@ object Records extends Table[Record]("records"){
   def priority = column[Int]("prio")
   def changeDate = column[Int]("change_date")
   def accountId = column[Int]("account_id")
-  def domainFK = foreignKey("domain_exists", domainId, DomainTable)(_.id)
+  def domainFK = foreignKey("domain_exists", domainId, Domains)(_.id)
   def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <> (Record, Record.unapply _)    
-  def autoInc = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <> (Record, Record.unapply _) returning id
+  def autoInc = * returning id
 
   val byId = createFinderBy(_.id)
   val byDomainId = createFinderBy(_.domainId)
@@ -119,6 +119,4 @@ object Records extends Table[Record]("records"){
   }
   
   implicit val recordFormat = Json.format[Record]
-  
-  def nowInUnixTime = (System.currentTimeMillis / 1000L).toInt
 }

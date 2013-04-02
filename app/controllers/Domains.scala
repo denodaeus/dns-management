@@ -4,9 +4,6 @@ import scala.util.Failure
 import scala.util.Success
 
 import models.Domain
-import models.DomainForCreate
-import models.DomainForUpdate
-import models.DomainId
 import play.Logger
 import play.api.data.Form
 import play.api.data.Forms.longNumber
@@ -44,12 +41,12 @@ object Domains extends Controller {
   }
   
   def listAll = Action { implicit request =>
-    val json = Json.toJson(Domain.findAll.map(d => Json.toJson(d)))
+    val json = Json.toJson(models.Domains.findAll.map(d => Json.toJson(d)))
     Ok(json) as JSON
   }
   
   def get(id: Int) = Action { implicit request =>
-    Domain.findById(id) match {
+    models.Domains.findById(id) match {
       case Success(d) => {
         Ok(Json.toJson(d))
       }
@@ -58,15 +55,15 @@ object Domains extends Controller {
   }
   
   def create = Action { implicit request =>
-    implicit val writes = Json.writes[DomainId]
-    implicit val reads = Json.reads[DomainForCreate]
+    implicit val writes = Json.writes[Domain]
+    implicit val reads = Json.reads[Domain]
     request.body.asJson.map { json =>
-      json.validate[DomainForCreate].fold(
+      json.validate[Domain].fold(
         invalid => {
           BadRequest(Json.toJson(Map("error" -> invalid.head.toString)))
         },
         valid => {
-          Domain.create(valid) match {
+          models.Domains.insert(valid) match {
             case Success(r) => {
               Ok(Json.toJson(r))
             }
@@ -81,25 +78,18 @@ object Domains extends Controller {
     Ok(json) as JSON
   }
   
-  def deleteAll = Action { implicit request =>
-    val count = Domain.deleteAll
-    Logger.debug(s"deleteAll :: deleted all records, count=$count")
-    val json = Json.arr()
-    Ok(json) as JSON
-  }
-  
   def updateIfExists(id: Int) = Action { implicit request =>
-    implicit val writes = Json.writes[DomainId]
-    implicit val reads = Json.reads[DomainForUpdate]
+    implicit val writes = Json.writes[Domain]
+    implicit val reads = Json.reads[Domain]
     request.body.asJson.map { json =>
-      json.validate[DomainForUpdate].fold(
+      json.validate[Domain].fold(
         invalid => {
           BadRequest(Json.toJson(Map("error" -> invalid.head.toString)))
         },
         valid => {
-          Domain.update(valid) match {
-            case Success(r) => {
-              Ok (Json.toJson(DomainId(valid.id)))
+          models.Domains.update(id, valid) match {
+            case Success(d) => {
+              Ok (Json.toJson(d))
             }
             case Failure(e) => {
               Logger.error(s"updateIfExists :: error updating domain $id, cause=", e)
@@ -112,7 +102,7 @@ object Domains extends Controller {
   }
   
   def deleteOne(id: Int) = Action { implicit request =>
-    val deleted = Domain.delete(id)
+    val deleted = models.Domains.delete(id)
     val json = Json.arr(s"DELETE /domain/$id -> Domain.deleteOne $id")
     Ok(json) as JSON
   }
@@ -121,13 +111,13 @@ object Domains extends Controller {
   // VIEWS SECTION FOR TEMPORARY VIEWS
 
   def list() = Action { implicit request =>
-    Ok(views.html.domains.list(Domain.findAll))
+    Ok(views.html.domains.list(models.Domains.findAll))
   }
 
   def show(id: Int) = Action { implicit request =>
-    Domain.findById(id) match {
-      case Success(r) => {
-        Ok(views.html.domains.show(r))
+    models.Domains.findById(id) match {
+      case Success(d) => {
+        Ok(views.html.domains.show(d.getOrElse(null)))
       }
       case Failure(e) => NotFound
     }
