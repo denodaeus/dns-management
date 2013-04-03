@@ -34,7 +34,7 @@ object Records extends Controller {
       "ttl" -> number,
       "priority" -> number,
       "changeDate" -> number,
-      "accountid" -> number
+      "accountId" -> number
     ) (Record.apply)(Record.unapply)
   )
   
@@ -115,11 +115,6 @@ object Records extends Controller {
   }
 
   // VIEWS SECTION FOR TEMPORARY VIEWS
-
-/*  def listAll(page: Int, orderBy: Int) = Action { implicit request =>
-    val records = models.Records.findPage(page, orderBy)
-    Ok(views.html.records.list(records.items))
-  }*/
   
   def show(id: Int) = Action { implicit request =>
     models.Records.findById(id) match {

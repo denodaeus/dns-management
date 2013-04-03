@@ -11,6 +11,7 @@ domain.type = "Type"
 domain.notifiedSerial = "Notified Serial"
 domain.account = "Account"
 domain.details = Domain: {0}
+record.details = Record: {0}
 
 domains.form = Domain details
 domain.list.navigation = List Domains
@@ -27,7 +28,7 @@ validation.name.duplicate = A domain with this name already exists.
 
 records.new.command = New Record
 records.list.navigation = List Records
-records.edit.submit = Commit Changes
+records.edit.submit = Update
 
 records.list.title = List Records
 domains.list.title = List Domains
