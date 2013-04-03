@@ -12,10 +12,14 @@
             <dt>Change Date</dt><dd>@record.changeDate</dd>
             <dt>Account Id</dt><dd>@record.accountId</dd>
         </dl>
-    </div>
+
+    <br/>
     <p>
-        <a href="@controllers.routes.Records.create()" class="btn">
-        <i class="icon-plus"></i>@Messages("records.new.command")</a>
+        <a href="@routes.Records.edit((record.id).getOrElse(0))" class="btn">
+            @Messages("records.edit.command")</a>
+        <a href="@controllers.routes.Records.deleteOne((record.id).getOrElse(0))" class="btn">
+            @Messages("records.delete.command")</a>
     </p>
+    </div>
 
 }

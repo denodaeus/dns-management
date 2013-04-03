@@ -33,3 +33,6 @@ records.list.title = List Records
 domains.list.title = List Domains
 domains.create.new = New Domain
 records.create.new = New Record
+
+records.delete.command = Delete
+records.edit.command = Edit

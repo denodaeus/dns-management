@@ -1,2 +1,25 @@
-@* edit Template File *@
-@(param: Any)
+@(record: Record, recordForm: Form[Record])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("Edit Record: ") {
+
+  <div class="container">
+  @helper.form(action = record.id.map(routes.Records.updateIfExists(_)).getOrElse(routes.Records.create())) {
+    <fieldset>
+      <legend>
+        @Messages("domain.details", recordForm("name").value.getOrElse(Messages("domains.new")))
+      </legend>
+      @helper.inputText(recordForm("domainId"), '_label -> "Domain Id")
+      @helper.inputText(recordForm("name"), '_label -> "Name")
+      @helper.inputText(recordForm("recordType"), '_label -> "Record Type")
+      @helper.inputText(recordForm("content"), '_label -> "Content")
+      @helper.inputText(recordForm("ttl"), '_label -> "TTL")
+      @helper.inputText(recordForm("priority"), '_label -> "Priority")
+      @helper.inputText(recordForm("changeDate"), '_label -> "Change Date")
+      @helper.inputText(recordForm("accountId"), '_label -> "Account Id")
+    </fieldset>
+  }
+  </div>
+}

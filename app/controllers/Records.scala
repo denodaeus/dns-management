@@ -116,15 +116,25 @@ object Records extends Controller {
 
   // VIEWS SECTION FOR TEMPORARY VIEWS
 
-  def list(page: Int, orderBy: Int) = Action { implicit request =>
+/*  def listAll(page: Int, orderBy: Int) = Action { implicit request =>
     val records = models.Records.findPage(page, orderBy)
     Ok(views.html.records.list(records.items))
-  }
+  }*/
   
   def show(id: Int) = Action { implicit request =>
     models.Records.findById(id) match {
       case Success(r) => {
         Ok(views.html.records.show(r.getOrElse(null)))
+      }
+      case Failure(e) => NotFound
+    }
+  }
+  
+  def edit(id: Int) = Action { implicit request =>
+    models.Records.findById(id) match {
+      case Success(r) => {
+        val form = recordForm.fill(r.getOrElse(null))
+        Ok(views.html.records.edit(r.getOrElse(null), form))
       }
       case Failure(e) => NotFound
     }
@@ -137,10 +147,10 @@ object Records extends Controller {
     }
   }
   
-  def listForAccountId(id: Int) = Action { implicit request =>
+  def listForAccountId(id: Int, page: Int, orderBy: Int) = Action { implicit request =>
     models.Records.findByAccountId(id) match {
       case Success(r) => {
-        Ok(views.html.records.list(r))
+        Ok(views.html.records.list(r, id))
       }
       case Failure(r) => NotFound
     }
@@ -153,13 +163,13 @@ object Records extends Controller {
   def listByDomainId(id: Int) = Action { implicit request =>
     models.Records.findByDomainId(id) match {
       case Success(r) => {
-        Ok(views.html.records.list(r))
+        Ok(views.html.records.list(r, id))
       }
       case Failure(r) => NotFound
     }
   }
   
-  def newRecord() = Action { implicit request =>
-    Ok(views.html.records.create(recordForm))
+  def newRecord(domainId: Int) = Action { implicit request =>
+    Ok(views.html.records.create(recordForm, domainId))
   }
 }

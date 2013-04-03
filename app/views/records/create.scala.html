@@ -1,2 +1,27 @@
-@* create Template File *@
-@(param: Any)
+@(recordForm: Form[Record], domainId: Int, id: Option[Int] = None)
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages("records.form")) {
+  <div class="container">
+  <h2>@Messages("records.form")</h2>
+
+    @helper.form(action = id.map(routes.Records.updateIfExists(_)).getOrElse(routes.Records.create())) {
+      <fieldset>
+        <legend>
+          @Messages("records.details", recordForm("id").value.getOrElse(Messages("domains.new")))
+        </legend>
+        @helper.inputText(recordForm("domainId"))
+        @helper.inputText(recordForm("name"))
+        @helper.inputText(recordForm("recordType"))
+        @helper.inputText(recordForm("content"))
+        @helper.inputText(recordForm("ttl"))
+        @helper.inputText(recordForm("priority"))
+        @helper.inputText(recordForm("changeDate"))
+        @helper.inputText(recordForm("accountId"))
+      </fieldset>
+    
+      <p><input type="button" class="btn primary" id="button" value='@id.map(_=> Messages("records.edit.submit")).getOrElse(Messages("records.new.submit"))'></p>
+    </div>
+  }
+}

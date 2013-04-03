@@ -62,11 +62,12 @@ GET     /domains                        controllers.Domains.index
 GET     /supermasters                   controllers.Supermasters.index
 GET     /records/index                  controllers.Records.index
 
-GET     /records/list                   controllers.Records.list(p:Int ?= 0, s:Int ?= 2)
-GET     /records/list/:id               controllers.Records.listForAccountId(id: Int)
 GET     /records/show/:id               controllers.Records.show(id: Int)
-GET     /records/create                 controllers.Records.newRecord()
+GET     /records/create/domain/:id      controllers.Records.newRecord(id: Int)
+GET     /records/create/account/:id     controllers.Records.newRecord(id: Int)
 GET     /records/list/domain/:id        controllers.Records.listByDomainId(id: Int)
+GET     /records/list/account/:id       controllers.Records.listForAccountId(id: Int, p:Int ?= 0, s:Int ?= 2)
+GET     /records/edit/:id               controllers.Records.edit(id: Int)
 
 GET     /domains/list                   controllers.Domains.list(p:Int ?= 0, s:Int ?= 2)
 GET     /domains/list/:id               controllers.Domains.show(id: Int)
