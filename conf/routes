@@ -57,6 +57,11 @@ DELETE  /api/supermasters/:id           controllers.Supermasters.deleteOne(id: I
 # Demo pages for testing purposes
 ########################################################
 
+# Authentication
+GET     /login                          controllers.Authentication.login
+POST    /login                          controllers.Authentication.authenticate
+GET     /logout                         controllers.Authentication.logout
+
 GET     /records                        controllers.Records.index
 GET     /domains                        controllers.Domains.index
 GET     /supermasters                   controllers.Supermasters.index

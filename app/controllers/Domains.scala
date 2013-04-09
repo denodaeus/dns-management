@@ -19,7 +19,7 @@ import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.mvc.Action
 import play.api.mvc.Controller
 
-object Domains extends Controller {
+object Domains extends Controller with Secured {
   import play.api.Play.current
   
   implicit val writes = Json.writes[Domain]
@@ -110,7 +110,7 @@ object Domains extends Controller {
 
   // VIEWS SECTION FOR TEMPORARY VIEWS
 
-  def list(page: Int, orderBy: Int) = Action { implicit request =>
+  def list(page: Int, orderBy: Int) = withAuth { username => implicit request =>
     val records = models.Domains.findPage(page, orderBy)
     Ok(views.html.domains.list(records.items))
   }
