@@ -19,7 +19,7 @@ import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.mvc.Action
 import play.api.mvc.Controller
 
-object Records extends Controller {
+object Records extends Controller with Secured {
   import play.api.Play.current
   
   implicit val writes = Json.writes[Record]
@@ -38,11 +38,11 @@ object Records extends Controller {
     ) (Record.apply)(Record.unapply)
   )
   
-  def index = Action { implicit request =>
+  def index = withAuth { username => implicit request =>
     Ok(views.html.records.index("Records List"))
   }
   
-  def search = Action {
+  def search = withAuth { username => implicit request =>
     Ok
   }
   
@@ -116,7 +116,7 @@ object Records extends Controller {
 
   // VIEWS SECTION FOR TEMPORARY VIEWS
   
-  def show(id: Int) = Action { implicit request =>
+  def show(id: Int) = withAuth { username => implicit request =>
     models.Records.findById(id) match {
       case Success(r) => {
         Ok(views.html.records.show(r.getOrElse(null)))
@@ -125,7 +125,7 @@ object Records extends Controller {
     }
   }
   
-  def edit(id: Int) = Action { implicit request =>
+  def edit(id: Int) = withAuth { username => implicit request =>
     models.Records.findById(id) match {
       case Success(r) => {
         val form = recordForm.fill(r.getOrElse(null))
@@ -135,14 +135,14 @@ object Records extends Controller {
     }
   }
   
-  def getRecordCount(id: Int) : Int =  {
+  def getRecordCount(id: Int) : Int = {
     models.Records.findByAccountId(id) match {
       case Success(r) => r.length
       case Failure(r) => 0
     }
   }
   
-  def listForAccountId(id: Int, page: Int, orderBy: Int) = Action { implicit request =>
+  def listForAccountId(id: Int, page: Int, orderBy: Int) = withAuth { username => implicit request =>
     models.Records.findByAccountId(id) match {
       case Success(r) => {
         Ok(views.html.records.list(r, id))
@@ -151,11 +151,11 @@ object Records extends Controller {
     }
   }
   
-  def listAllAccountIds() = Action { implicit request =>
+  def listAllAccountIds() = withAuth { username => implicit request =>
     Ok(views.html.accounts.list(models.Records.listAccountIds))
   }
   
-  def listByDomainId(id: Int) = Action { implicit request =>
+  def listByDomainId(id: Int) = withAuth { username => implicit request =>
     models.Records.findByDomainId(id) match {
       case Success(r) => {
         Ok(views.html.records.list(r, id))

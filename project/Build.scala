@@ -10,6 +10,7 @@ object ApplicationBuild extends Build {
     val appDependencies = Seq(
       filters,
       jdbc,
+      anorm,
       "com.typesafe" % "play-slick_2.10" % "0.3.0",
       "com.wordnik" %% "swagger-play2" % "1.2.1-SNAPSHOT",
       "org.scalatest" %% "scalatest" % "1.9.1" % "test",

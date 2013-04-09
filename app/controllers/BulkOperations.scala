@@ -14,17 +14,17 @@ import play.api.data.Forms.optional
 import play.api.mvc.Action
 import play.api.mvc.Controller
 
-object BulkOperations extends Controller {
+object BulkOperations extends Controller with Secured {
   
-  def index = Action { implicit request =>
+  def index = withAuth { username => implicit request =>
     Ok
   }
   
-  def migrate() = Action { implicit request =>
+  def migrate() = withAuth { username => implicit request =>
     Ok(views.html.accounts.bulkmigrate())
   }
   
-  def bulkMigrate = Action { implicit request =>
+  def bulkMigrate = withAuth { username => implicit request =>
     Ok
   }
 

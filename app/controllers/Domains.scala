@@ -36,7 +36,7 @@ object Domains extends Controller with Secured {
     ) (Domain.apply)(Domain.unapply)
   )
   
-  def index = Action {
+  def index = withAuth { username => implicit request =>
     Ok(views.html.domains.index("Domains"))
   }
   
@@ -115,7 +115,7 @@ object Domains extends Controller with Secured {
     Ok(views.html.domains.list(records.items))
   }
 
-  def show(id: Int) = Action { implicit request =>
+  def show(id: Int) = withAuth { username => implicit request =>
     models.Domains.findById(id) match {
       case Success(d) => {
         Ok(views.html.domains.show(d.getOrElse(null)))
@@ -124,7 +124,7 @@ object Domains extends Controller with Secured {
     }
   }
   
-  def newDomain() = Action { implicit request =>
+  def newDomain() = withAuth { username => implicit request =>
     Ok(views.html.domains.create(domainForm))
   }
 
