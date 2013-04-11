@@ -2,6 +2,8 @@
 
 @import helper._
 @import helper.twitterBootstrap._
+@import models.RecordType
+
 
 @main("Edit Record: ") {
 
@@ -13,7 +15,7 @@
       </legend>
       @inputText(recordForm("domainId"), '_label -> "Domain Id")
       @inputText(recordForm("name"), '_label -> "Name")
-      @inputText(recordForm("recordType"), '_label -> "Record Type")
+      @select(recordForm("recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "Record Type")
       @inputText(recordForm("content"), '_label -> "Content")
       @inputText(recordForm("ttl"), '_label -> "TTL")
       @inputText(recordForm("priority"), '_label -> "Priority")

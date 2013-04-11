@@ -116,6 +116,11 @@ object Records extends Controller with Secured {
 
   // VIEWS SECTION FOR TEMPORARY VIEWS
   
+  def list(page: Int, orderBy: Int) = withAuth { username => implicit request =>
+    val records = models.Records.findPage(page, orderBy)
+    Ok(views.html.records.list(records.items, 0))
+  }
+  
   def show(id: Int) = withAuth { username => implicit request =>
     models.Records.findById(id) match {
       case Success(r) => {
@@ -145,7 +150,8 @@ object Records extends Controller with Secured {
   def listForAccountId(id: Int, page: Int, orderBy: Int) = withAuth { username => implicit request =>
     models.Records.findByAccountId(id) match {
       case Success(r) => {
-        Ok(views.html.records.list(r, id))
+        val records = models.Records.findFilteredPage(r, page, orderBy)
+        Ok(views.html.records.list(records.items, id))
       }
       case Failure(r) => NotFound
     }
@@ -155,7 +161,7 @@ object Records extends Controller with Secured {
     Ok(views.html.accounts.list(models.Records.listAccountIds))
   }
   
-  def listByDomainId(id: Int) = withAuth { username => implicit request =>
+  def listByDomainId(id: Int, page: Int, orderBy: Int) = withAuth { username => implicit request =>
     models.Records.findByDomainId(id) match {
       case Success(r) => {
         Ok(views.html.records.list(r, id))

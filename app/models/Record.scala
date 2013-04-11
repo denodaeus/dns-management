@@ -96,6 +96,12 @@ object Records extends Table[Record]("records"){
       Try(Records.where(_.id === id).update(recordToUpdate))
     }
   }
+  
+  def findFilteredPage(records: List[Record], page: Int = 0, orderField: Int): Page[Record] = {
+    val offset = pageSize * page
+    val results = (records.sortBy(r => r.id)).drop(offset).take(pageSize)
+    Page(results, page, offset, records.size)
+  }
 
   def findPage(page: Int = 0, orderField: Int): Page[Record] = {
     val offset = pageSize * page
