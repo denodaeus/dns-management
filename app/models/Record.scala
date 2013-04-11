@@ -26,6 +26,7 @@ object RecordType extends Enumeration {
   val A,
   CNAME,
   NAPTR,
+  NS,
   SOA,
   SRV = Value
 }

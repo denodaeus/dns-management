@@ -13,7 +13,7 @@
       <legend>
         @Messages("record.details", recordForm("name").value.getOrElse(Messages("domains.new")))
       </legend>
-      @inputText(recordForm("domainId"), '_label -> "Domain Id")
+      @inputText(recordForm("domainId"), '_label -> "Domain Id", '_help -> "Domain Id", '_error -> "Wrong format")
       @inputText(recordForm("name"), '_label -> "Name")
       @select(recordForm("recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "Record Type")
       @inputText(recordForm("content"), '_label -> "Content")
@@ -22,7 +22,7 @@
       @inputText(recordForm("changeDate"), '_label -> "Change Date")
       @inputText(recordForm("accountId"), '_label -> "Account Id")
     </fieldset>
-    <p><input type="submit" class="btn primary" value='@record.id.map(_=> Messages("records.edit.submit")).getOrElse(Messages("records.new.submit"))'></p>
+    <p><div class="actions"><input type="submit" class="btn primary" value='@record.id.map(_=> Messages("records.edit.submit")).getOrElse(Messages("records.new.submit"))'></div></p>
   }
   <br/>
   </div>
