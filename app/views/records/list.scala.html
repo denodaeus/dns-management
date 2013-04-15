@@ -1,4 +1,4 @@
-@(records: List[Record], domainId: Int)
+@(records: List[Record], domainId: Int, page: Int, orderBy: Int, count: Int)
  
 @main("Records List") {
 	<div class="container">
@@ -43,6 +43,7 @@
 	<p><a href="@routes.Records.newRecord(domainId)" class="btn">
 	  <i class="icon-plus"/></i>@Messages("records.new.command")</a>
 	</p>
+    @(paginate(page, orderBy, count, routes.Records.get(_)))
         <div class="pagination pagination-right">
           <ul>
             <li><a href="#">&lt;&lt;</a></li>
