@@ -8,6 +8,7 @@ import play.api.libs.functional.syntax._
 import scala.language.reflectiveCalls
 import scala.util.Try
 import utils.DateTimeUtils._
+import collection.immutable.SortedMap
 
 case class Record (
   id: Option[Int],
@@ -78,6 +79,13 @@ object Records extends Table[Record]("records"){
   def listAccountIds = DB.withSession { 
     implicit session => 
       (for (r <- Records) yield r.accountId).list.distinct  
+  }
+  
+  def listAccountIdsWithCount: Map[Int, Int] = DB.withSession {
+    implicit session => {
+      val records = Records.groupBy(_.accountId).map{ case(id, c) => id -> id.count }
+      SortedMap(records.toMap.toSeq:_*)
+    }
   }
     
   def delete(id: Int) = DB.withSession { 

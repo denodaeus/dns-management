@@ -157,8 +157,8 @@ object Records extends Controller with Secured {
     }
   }
   
-  def listAllAccountIds() = withAuth { username => implicit request =>
-    Ok(views.html.accounts.list(models.Records.listAccountIds))
+  def listAllAccountIds() = withAuth { username => implicit request => 
+    Ok(views.html.accounts.list(models.Records.listAccountIdsWithCount))
   }
   
   def listByDomainId(id: Int, page: Int, orderBy: Int) = withAuth { username => implicit request =>
