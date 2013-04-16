@@ -14,6 +14,9 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 # Application API Routes, Route API requests as json
 ####################################################
 
+# Accounts
+GET     /api/accounts/:id               controllers.Accounts.get(id: Int)
+
 # Records
 GET     /api/records                    controllers.Records.listAll
 POST    /api/records                    controllers.Records.create
@@ -71,8 +74,7 @@ GET     /records/list                   controllers.Records.list(p: Int ?= 0, s:
 GET     /records/show/:id               controllers.Records.show(id: Int)
 GET     /records/create/domain/:id      controllers.Records.newRecord(id: Int)
 GET     /records/create/account/:id     controllers.Records.newRecord(id: Int)
-GET     /records/list/domain/:id        controllers.Records.listByDomainId(id: Int, p:Int ?= 0, s:Int ?= 2)
-GET     /records/list/account/:id       controllers.Records.listForAccountId(id: Int, p:Int ?= 0, s:Int ?= 2)
+GET     /records/list/domain/:id        controllers.Records.listByDomainId(id: Int, p:Int ?= 0, s:Int ?= 1)
 GET     /records/edit/:id               controllers.Records.edit(id: Int)
 
 GET     /domains/list                   controllers.Domains.list(p:Int ?= 0, s:Int ?= 2)
@@ -83,6 +85,7 @@ GET     /domains/index                  controllers.Domains.index
 
 GET     /accounts                       controllers.Records.listAllAccountIds
 GET     /accounts/list                  controllers.Records.listAllAccountIds
+GET     /accounts/show/:id              controllers.Accounts.show(id: Int)
 
 GET     /accounts/migrate               controllers.BulkOperations.migrate
 

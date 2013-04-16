@@ -12,7 +12,7 @@
             <tbody>
                 @for((accountId, count) <- accounts) {
                     <tr>
-                        <td><a href="@controllers.routes.Records.listForAccountId(accountId)">
+                        <td><a href="@controllers.routes.Accounts.show(accountId)">
                             @accountId
                             </a>
                         </td>

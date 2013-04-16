@@ -147,16 +147,6 @@ object Records extends Controller with Secured {
     }
   }
   
-  def listForAccountId(id: Int, page: Int, orderBy: Int) = withAuth { username => implicit request =>
-    models.Records.findByAccountId(id) match {
-      case Success(r) => {
-        val records = models.Records.findFilteredPage(r, page, orderBy)
-        Ok(views.html.records.list(records.items, id, page, orderBy, r.length))
-      }
-      case Failure(r) => NotFound
-    }
-  }
-  
   def listAllAccountIds() = withAuth { username => implicit request => 
     Ok(views.html.accounts.list(models.Records.listAccountIdsWithCount))
   }

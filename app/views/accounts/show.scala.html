@@ -1,0 +1,42 @@
+@(id: Int, records: List[Record])
+
+@main("Showing Account: ") {
+<div class="container">
+  <h3>Showing Account: @id</h3></br>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>DomainId</th>
+                    <th>RecordType</th>
+                    <th>Content</th>
+                    <th>TTL</th>
+                    <th>Priority</th>
+                    <th>ChangeDate</th>
+                    <th>AccountId</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(record <- records){
+                <tr>
+                    <td>
+                        <a href="@controllers.routes.Records.show((record.id).getOrElse(0))">
+                        @record.id
+                        </a>
+                    </td>
+                    <td>@record.name</dd>
+                    <td>@record.domainId</dd>
+                    <td>@record.recordType</dd>
+                    <td>@record.content</dd>
+                    <td>@record.ttl</dd>
+                    <td>@record.priority</dd>
+                    <td>@record.changeDate</dd>
+                    <td>@record.accountId</dd>
+                </tr>
+        }
+            </tbody>
+        </table>
+</div>
+
+}

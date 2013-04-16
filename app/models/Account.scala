@@ -1,6 +1,27 @@
 package models
 
+import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick.DB
+import play.Logger
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
+import scala.language.reflectiveCalls
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
+
 case class Account(id: Int, records: List[Record])
 
-object Account{
+object Accounts {
+  import play.api.Play.current
+
+  def findById(id: Int) = DB.withSession {
+    implicit session => {
+      Try(Records.byAccountId(id).list) 
+    }
+  }
+
+  implicit val recordFormat = Records.recordFormat
+  implicit val accountFormat = Json.format[Account]
+  
 }
