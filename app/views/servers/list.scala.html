@@ -1,0 +1,34 @@
+@(servers: List[Server])
+
+@main("Servers List") {
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Host Name</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(server <- servers){
+                <tr>
+                    <td>
+                        @server.id
+                    </td>
+                    <td>
+                         @server.hostName
+                    </dd>
+                    <td>@server.ip</dd>
+                </tr>
+        }
+            </tbody>
+        </table>
+    <br/>
+
+    <p><a href="@controllers.routes.Domains.newDomain()" class="btn">
+      <i class="icon-plus"/></i>@Messages("servers.new.command")</a>
+    </p>
+    </div>
+
+}

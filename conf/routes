@@ -85,3 +85,5 @@ GET     /accounts                       controllers.Records.listAllAccountIds
 GET     /accounts/list                  controllers.Records.listAllAccountIds
 
 GET     /accounts/migrate               controllers.BulkOperations.migrate
+
+GET     /servers/list                   controllers.Servers.list(p: Int ?= 0, s: Int ?= 1)

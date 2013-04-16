@@ -111,5 +111,35 @@ and name ~ 'sip[0-9]{5}.media'
 commit;
    """
   }
+  
+  def updateSchemaWithClusterTable() {
+    val SQL = """
+      create table clusters(
+        id serial NOT NULL,
+        name character varying(255) NOT NULL,
+        CONSTRAINT clusters_pkey PRIMARY KEY (id)
+      )
+      WITH (
+        OIDS=FALSE
+      );
+      ALTER TABLE clusters
+        OWNER TO postgres;
+      """
+  }
+  
+  def updateSchemaWithServerTable() {
+    val SQL = """create table servers(
+    id serial NOT NULL,
+    hostname character varying(255) NOT NULL,
+    ip character varying(255) NOT NULL,
+    CONSTRAINT servers_pkey PRIMARY KEY (id)
+  )
+  WITH (
+    OIDS=FALSE
+  );
+  ALTER TABLE servers
+  OWNER TO postgres;
+  """
+  }
 
 }
