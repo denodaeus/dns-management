@@ -11,6 +11,7 @@ import play.api.data.Forms.mapping
 import play.api.data.Forms.nonEmptyText
 import play.api.data.Forms.number
 import play.api.data.Forms.optional
+import play.api.data.Forms.text
 import play.api.libs.functional.syntax.functionalCanBuildApplicative
 import play.api.libs.functional.syntax.toContraFunctorOps
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
@@ -28,11 +29,11 @@ object Domains extends Controller with Secured {
     mapping(
       "id" -> optional(number),
       "name" -> nonEmptyText,
-      "master" -> nonEmptyText,
-      "lastCheck" -> longNumber,
+      "master" -> optional(text),
+      "lastCheck" -> optional(longNumber),
       "domainType" -> nonEmptyText,
       "notifiedSerial" -> longNumber,
-      "account" -> nonEmptyText
+      "account" -> optional(nonEmptyText)
     ) (Domain.apply)(Domain.unapply)
   )
   

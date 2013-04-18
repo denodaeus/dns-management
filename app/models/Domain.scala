@@ -14,11 +14,11 @@ import utils.DateTimeUtils._
 case class Domain (
     id: Option[Int],
     name: String,
-    master: String,
-    lastCheck: Long,
+    master: Option[String],
+    lastCheck: Option[Long],
     domainType: String,
     notifiedSerial: Long,
-    account: String
+    account: Option[String]
 )
 
 object DomainType extends Enumeration {
@@ -38,7 +38,7 @@ object Domains extends Table[Domain]("domains") {
   def domainType = column[String]("type", O.NotNull)
   def notifiedSerial = column[Long]("notified_serial")
   def account = column[String]("account", O.Default(null))
-  def * = id.? ~ name ~ master ~ lastCheck ~ domainType ~ notifiedSerial ~ account <> (Domain, Domain.unapply _)
+  def * = id.? ~ name ~ master.? ~ lastCheck.? ~ domainType ~ notifiedSerial ~ account.? <> (Domain, Domain.unapply _)
   def autoInc = * returning id
     
   val byId = createFinderBy(_.id)
@@ -61,7 +61,7 @@ object Domains extends Table[Domain]("domains") {
   
   def update(id: Int, domain: Domain) = DB.withSession {
     implicit session => {
-      val domainToUpdate = domain.copy(Some(id), domain.name, domain.master, nowInUnixTime, domain.domainType, domain.notifiedSerial, domain.account)
+      val domainToUpdate = domain.copy(Some(id), domain.name, domain.master, Some(nowInUnixTime), domain.domainType, domain.notifiedSerial, domain.account)
       Try(Domains.where(_.id === id).update(domainToUpdate))
     }
   }

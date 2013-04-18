@@ -39,7 +39,7 @@ object Accounts extends Controller with Secured {
   def get(id: Int) = Action { implicit request =>
     models.Accounts.findById(id) match {
       case Success(a) => Ok(Json.toJson(a))
-      case Failure(a) => NotFound
+      case Failure(a) => {Logger.debug("Failed to get account " + id + " because " + a.getMessage()); NotFound}
     }
   }
   
