@@ -43,9 +43,13 @@ object Accounts extends Controller with Secured {
     }
   }
   
+  def list() = Action { implicit request =>
+  	Ok(Json.toJson(models.Accounts.findAll()))
+  }
+  
   // VIEWS SECTION FOR TEMPORARY VIEWS
   
-    def show(id: Int) = withAuth { username => implicit request =>
+  def show(id: Int) = withAuth { username => implicit request =>
     models.Accounts.findById(id) match {
       case Success(a) => Ok(views.html.accounts.show(id, a))
       case Failure(e) => NotFound

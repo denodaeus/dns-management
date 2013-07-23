@@ -27,6 +27,10 @@ object Accounts {
       case Failure(records) => Account(id, List[Record]())
     }
   }
+  
+  def findAll() = DB.withSession {
+    implicit session => Records.listAccountIds
+  }
 
   implicit val recordFormat = Records.recordFormat
   implicit val accountFormat = Json.format[Account]

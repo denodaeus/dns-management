@@ -55,6 +55,13 @@ GET     /api/supermasters/:id           controllers.Supermasters.get(id: Int)
 PUT     /api/supermasters/:id           controllers.Supermasters.updateIfExists(id: Int)
 DELETE  /api/supermasters/:id           controllers.Supermasters.deleteOne(id: Int)
 
+# Clusters
+GET     /api/clusters                   controllers.Clusters.listAll
+POST    /api/clusters                   controllers.Clusters.create
+PUT     /api/clusters                   controllers.Clusters.newCluster
+
+# Accounts
+GET     /api/accounts                   controllers.Accounts.list
 
 ################### DEMO ###############################
 # Demo pages for testing purposes

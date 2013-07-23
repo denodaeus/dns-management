@@ -78,7 +78,7 @@ object Records extends Table[Record]("records"){
     
   def listAccountIds = DB.withSession { 
     implicit session => 
-      (for (r <- Records) yield r.accountId).list.distinct  
+      (for (r <- Records) yield r.accountId).list.distinct.sorted  
   }
   
   def listAccountIdsWithCount: Map[Int, Int] = DB.withSession {
