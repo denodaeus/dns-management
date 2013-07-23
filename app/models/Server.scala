@@ -56,7 +56,7 @@ object Servers extends Table[Server]("servers"){
           } yield s).list
           
           val totalRows = (for (s <- Servers) yield s.id).list.size
-          Page(servers, page, offset, totalRows)
+          Page(servers, page, offset, totalRows, pageSize)
     }
   }
 

@@ -8,60 +8,57 @@ GET     /                           controllers.Domains.list(p:Int ?= 0, s:Int ?
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-
-
 #################### API ###########################
 # Application API Routes, Route API requests as json
 ####################################################
 
 # Accounts
-GET     /api/accounts/:id               controllers.Accounts.get(id: Int)
+GET     /api/v1/accounts                   controllers.Accounts.list
+
+GET     /api/v1/accounts/:id               controllers.Accounts.get(id: Int)
 
 # Records
-GET     /api/records                    controllers.Records.listAll
-POST    /api/records                    controllers.Records.create
-PUT     /api/records                    controllers.Records.updateAll
+GET     /api/v1/records                    controllers.Records.listAll
+POST    /api/v1/records                    controllers.Records.create
+PUT     /api/v1/records                    controllers.Records.updateAll
 
-GET     /api/records/:id                controllers.Records.get(id: Int)
-PUT     /api/records/:id                controllers.Records.updateIfExists(id: Int)
-DELETE  /api/records/:id                controllers.Records.deleteOne(id: Int)
+GET     /api/v1/records/:id                controllers.Records.get(id: Int)
+PUT     /api/v1/records/:id                controllers.Records.updateIfExists(id: Int)
+DELETE  /api/v1/records/:id                controllers.Records.deleteOne(id: Int)
 
 # Domains
-GET     /api/domains                    controllers.Domains.listAll
-POST    /api/domains                    controllers.Domains.create
-PUT     /api/domains                    controllers.Domains.updateAll
+GET     /api/v1/domains                    controllers.Domains.listAll
+POST    /api/v1/domains                    controllers.Domains.create
+PUT     /api/v1/domains                    controllers.Domains.updateAll
 
-GET     /api/domains/:id                controllers.Domains.get(id: Int)
-PUT     /api/domains/:id                controllers.Domains.updateIfExists(id: Int)
-DELETE  /api/domains/:id                controllers.Domains.deleteOne(id: Int)
+GET     /api/v1/domains/:id                controllers.Domains.get(id: Int)
+PUT     /api/v1/domains/:id                controllers.Domains.updateIfExists(id: Int)
+DELETE  /api/v1/domains/:id                controllers.Domains.deleteOne(id: Int)
 
 # Zones
-GET     /api/zones                      controllers.Zones.listAll
-POST    /api/zones                      controllers.Zones.create
-PUT     /api/zones                      controllers.Zones.updateAll
-DELETE  /api/zones                      controllers.Zones.deleteAll
+GET     /api/v1/zones                      controllers.Zones.listAll
+POST    /api/v1/zones                      controllers.Zones.create
+PUT     /api/v1/zones                      controllers.Zones.updateAll
+DELETE  /api/v1/zones                      controllers.Zones.deleteAll
 
-GET     /api/zones/:id                  controllers.Zones.get(id: Int)
-PUT     /api/zones/:id                  controllers.Zones.updateIfExists(id: Int)
-DELETE  /api/zones/:id                  controllers.Zones.deleteOne(id: Int)
+GET     /api/v1/zones/:id                  controllers.Zones.get(id: Int)
+PUT     /api/v1/zones/:id                  controllers.Zones.updateIfExists(id: Int)
+DELETE  /api/v1/zones/:id                  controllers.Zones.deleteOne(id: Int)
 
 # Supermasters
-GET     /api/supermasters               controllers.Supermasters.listAll
-POST    /api/supermasters               controllers.Supermasters.create
-PUT     /api/supermasters               controllers.Supermasters.updateAll
-DELETE  /api/supermasters               controllers.Supermasters.deleteAll
+GET     /api/v1/supermasters               controllers.Supermasters.listAll
+POST    /api/v1/supermasters               controllers.Supermasters.create
+PUT     /api/v1/supermasters               controllers.Supermasters.updateAll
+DELETE  /api/v1/supermasters               controllers.Supermasters.deleteAll
 
-GET     /api/supermasters/:id           controllers.Supermasters.get(id: Int)
-PUT     /api/supermasters/:id           controllers.Supermasters.updateIfExists(id: Int)
-DELETE  /api/supermasters/:id           controllers.Supermasters.deleteOne(id: Int)
+GET     /api/v1/supermasters/:id           controllers.Supermasters.get(id: Int)
+PUT     /api/v1/supermasters/:id           controllers.Supermasters.updateIfExists(id: Int)
+DELETE  /api/v1/supermasters/:id           controllers.Supermasters.deleteOne(id: Int)
 
 # Clusters
-GET     /api/clusters                   controllers.Clusters.listAll
-POST    /api/clusters                   controllers.Clusters.create
-PUT     /api/clusters                   controllers.Clusters.newCluster
-
-# Accounts
-GET     /api/accounts                   controllers.Accounts.list
+GET     /api/v1/clusters                   controllers.Clusters.listAll
+POST    /api/v1/clusters                   controllers.Clusters.create
+PUT     /api/v1/clusters                   controllers.Clusters.newCluster
 
 ################### DEMO ###############################
 # Demo pages for testing purposes

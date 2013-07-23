@@ -109,7 +109,7 @@ object Records extends Table[Record]("records"){
   def findFilteredPage(records: List[Record], page: Int = 0, orderField: Int): Page[Record] = {
     val offset = pageSize * page
     val results = (records.sortBy(r => r.id)).drop(offset).take(pageSize)
-    Page(results, page, offset, records.size)
+    Page(results, page, offset, records.size, pageSize)
   }
 
   def findPage(page: Int = 0, orderField: Int): Page[Record] = {
@@ -129,7 +129,7 @@ object Records extends Table[Record]("records"){
           } yield r).list
           
           val totalRows = (for (r <- Records) yield r.id).list.size
-          Page(records, page, offset, totalRows)
+          Page(records, page, offset, totalRows, pageSize)
     }
   }
   

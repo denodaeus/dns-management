@@ -83,7 +83,7 @@ object Domains extends Table[Domain]("domains") {
           } yield d).list
           
           val totalRows = (for (d <- Domains) yield d.id).list.size
-          Page(domains, page, offset, totalRows)
+          Page(domains, page, offset, totalRows, pageSize)
     }
   }
   
