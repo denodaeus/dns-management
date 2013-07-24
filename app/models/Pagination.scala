@@ -14,3 +14,9 @@ case class Page[+A](items: Seq[A], page: Int, offset: Long, total: Long, pageSiz
   lazy val paginationStart = (page - 2).max(1)
   lazy val paginationEnd = (page + 3).min(maxPages)
 }
+
+trait Pagination {
+  val DEFAULT_OFFSET = 0;
+  val DEFAULT_PAGE = 1;
+  val DEFAULT_PAGESIZE = 25;
+}

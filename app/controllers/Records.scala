@@ -46,10 +46,10 @@ object Records extends Controller with Secured {
     Ok
   }
   
-  def listAll = Action { implicit request =>
-    val json = Json.toJson(models.Records.findAll.map(r => Json.toJson(r)))
+  def listAll(page: Int, orderBy: Int) = Action { implicit request =>
+    val records = Json.toJson(models.Records.findPage(page, orderBy).items)
     Logger.debug(s"${request.method} ${request.path} -> Records.listAll")
-    Ok(json) as JSON
+    Ok(Json.toJson(records)) as JSON
   }
   
   def get(id: Int) = Action { implicit request =>

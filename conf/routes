@@ -18,7 +18,7 @@ GET     /api/v1/accounts                   controllers.Accounts.list
 GET     /api/v1/accounts/:id               controllers.Accounts.get(id: Int)
 
 # Records
-GET     /api/v1/records                    controllers.Records.listAll
+GET     /api/v1/records                    controllers.Records.listAll(page: Int ?= 0, order: Int ?= 1)
 POST    /api/v1/records                    controllers.Records.create
 PUT     /api/v1/records                    controllers.Records.updateAll
 
