@@ -3,4 +3,11 @@ project/project
 project/target
 target
 tmp
+
 .history
+.project
+.cache
+.settings
+.target
+
+bin
