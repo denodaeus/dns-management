@@ -13,7 +13,7 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 ####################################################
 
 # Accounts
-GET     /api/v1/accounts                   controllers.Accounts.list
+GET     /api/v1/accounts                   controllers.Accounts.listAll(page: Int ?= 0, order: Int ?= 1)
 
 GET     /api/v1/accounts/:id               controllers.Accounts.get(id: Int)
 

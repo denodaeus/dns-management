@@ -15,6 +15,8 @@ case class Account(id: Int, records: List[Record])
 object Accounts {
   import play.api.Play.current
 
+  lazy val pageSize = 20
+  
   def findById(id: Int) = DB.withSession {
     implicit session => {
       Try(Records.byAccountId(id).list) 
@@ -30,6 +32,13 @@ object Accounts {
   
   def findAll() = DB.withSession {
     implicit session => Records.listAccountIds
+  }
+  
+  def findPage(page: Int, orderBy: Int) = DB.withSession {
+    implicit session => {
+      val offset = pageSize * page
+      (models.Records.listAccountIds).drop(page).take(offset)
+    }
   }
 
   implicit val recordFormat = Records.recordFormat

@@ -47,6 +47,10 @@ object Accounts extends Controller with Secured {
   	Ok(Json.toJson(models.Accounts.findAll()))
   }
   
+  def listAll(page: Int, orderBy: Int) = Action { implicit request =>
+  	Ok(Json.toJson(models.Accounts.findPage(page, orderBy)))
+  }
+  
   // VIEWS SECTION FOR TEMPORARY VIEWS
   
   def show(id: Int) = withAuth { username => implicit request =>
