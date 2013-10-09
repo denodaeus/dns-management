@@ -18,7 +18,7 @@ object Accounts {
   lazy val pageSize = 20
   
   def findById(id: Int) = DB.withSession {
-    implicit session => {
+    implicit session: Session => {
       Try(Records.byAccountId(id).list) 
     }
   }
@@ -31,11 +31,11 @@ object Accounts {
   }
   
   def findAll() = DB.withSession {
-    implicit session => Records.listAccountIds
+    implicit session: Session => Records.listAccountIds
   }
   
   def findPage(page: Int, orderBy: Int) = DB.withSession {
-    implicit session => {
+    implicit session: Session => {
       val offset = pageSize * page
       (models.Records.listAccountIds).drop(page).take(offset)
     }

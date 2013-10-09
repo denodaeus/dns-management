@@ -49,20 +49,20 @@ object Supermaster {
           {s: Supermaster => Some((s.ip, s.nameServer, s.account)) }) returning id
   }
   
-  def findById (id: Int): Try[Supermaster] = DB.withSession { implicit session =>
+  def findById (id: Int): Try[Supermaster] = DB.withSession { implicit session: Session =>
     Logger.debug(s"findById :: finding by Ip=$id")
     Try(SupermasterTable.findById(id))
   }
   
   def findAll: List[Supermaster] = {
     Logger.debug("find: finding " )
-    val supermasters = DB.withSession { implicit session =>
+    val supermasters = DB.withSession { implicit session: Session =>
       SupermasterTable.findAll
     }
     supermasters
   }
   
-  def create(supermaster: SupermasterForCreate): Try[SupermasterId] = DB.withSession { implicit session =>
+  def create(supermaster: SupermasterForCreate): Try[SupermasterId] = DB.withSession { implicit session: Session =>
     Logger.debug("create for supermaster " + supermaster + " at time ")
     Try(
       SupermasterId(
@@ -72,21 +72,21 @@ object Supermaster {
   }
   
     
-  def update(supermaster: SupermasterForUpdate): Try[Unit] = DB.withSession { implicit session =>
+  def update(supermaster: SupermasterForUpdate): Try[Unit] = DB.withSession { implicit session: Session =>
     Logger.debug("update :: updating for domain " + supermaster + " with id=" + supermaster.id)
     Try((SupermasterTable.filter(s => s.id === supermaster.id).map(s => s.ip ~ s.nameServer ~ s.account))
         .update(supermaster.ip, supermaster.nameServer, supermaster.account))
   }
   
   def delete(id: Int) = {
-    val deleted = DB.withSession { implicit session =>
+    val deleted = DB.withSession { implicit session: Session =>
       SupermasterTable.delete(id)
     }
     deleted
   }
   
   def deleteAll = {
-    val deleted = DB.withSession { implicit session =>
+    val deleted = DB.withSession { implicit session: Session =>
       SupermasterTable.deleteAll
     }
     deleted

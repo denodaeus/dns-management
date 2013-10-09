@@ -57,49 +57,49 @@ object Records extends Table[Record]("records"){
   val byAccountId = createFinderBy(_.accountId)
     
   def findAll = DB.withSession { 
-    implicit session =>
+    implicit session: Session =>
       (for (r <- Records.sortBy(_.id) ) yield r).list 
   }
     
   def findById(id: Int) = DB.withSession {
-    implicit session =>
+    implicit session: Session =>
       Try(Records.byId(id).firstOption) 
   }
     
   def findByAccountId(accountId: Int) = DB.withSession { 
-    implicit session => 
+    implicit session: Session => 
       Try(Records.byAccountId(accountId).list) 
   }
     
   def findByDomainId(domainId: Int) = DB.withSession {
-    implicit session =>
+    implicit session: Session =>
       Try(Records.byDomainId(domainId).list) 
   }
     
   def listAccountIds = DB.withSession { 
-    implicit session => 
+    implicit session: Session => 
       (for (r <- Records) yield r.accountId).list.distinct.sorted  
   }
   
   def listAccountIdsWithCount: Map[Int, Int] = DB.withSession {
-    implicit session => {
+    implicit session: Session => {
       val records = Records.groupBy(_.accountId).map{ case(id, c) => id -> id.count }
       SortedMap(records.toMap.toSeq:_*)
     }
   }
     
   def delete(id: Int) = DB.withSession { 
-    implicit session => 
+    implicit session: Session => 
       Try(Records.where(_.id === id).delete) 
   }
     
   def insert(record: Record) = DB.withSession { 
-    implicit session => 
+    implicit session: Session => 
       Try(Records.autoInc.insert((record)))
   }
     
   def update(id: Int, record: Record) = DB.withSession { 
-    implicit session => {
+    implicit session: Session => {
       val recordToUpdate = record.copy(Some(id), record.domainId, record.name, record.recordType, record.content, record.ttl, record.priority, nowInUnixTime, record.accountId)
       Logger.debug("update: updating recordid=" + id + ", record=" + record + ", previous=" + Records.findById(id))
       Try(Records.where(_.id === id).update(recordToUpdate))
@@ -116,7 +116,7 @@ object Records extends Table[Record]("records"){
     val offset = pageSize * page
     
     DB.withSession {
-      implicit session =>
+      implicit session: Session =>
         val records = (
           for {r <- Records.sortBy(r => orderField match {
             case 1 => r.id.asc

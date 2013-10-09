@@ -30,12 +30,12 @@ object Servers extends Table[Server]("servers"){
   val byIp = createFinderBy(_.ip)
   
   def findAll = DB.withSession {
-    implicit session =>
+    implicit session: Session =>
       (for (s <- Servers.sortBy(_.id)) yield s).list
   }
   
   def findById(id: Int) = DB.withSession {
-    implicit session =>
+    implicit session: Session =>
       Domains.byId(id).firstOption
   }
   
@@ -43,7 +43,7 @@ object Servers extends Table[Server]("servers"){
     val offset = pageSize * page
     
     DB.withSession {
-      implicit session =>
+      implicit session: Session =>
         val servers = (
           for {s <- Servers.sortBy(s => orderField match {
             case 1 => s.id.asc

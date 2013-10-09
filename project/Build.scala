@@ -11,8 +11,9 @@ object ApplicationBuild extends Build {
       filters,
       jdbc,
       anorm,
-      "com.typesafe" % "play-slick_2.10" % "0.3.0",
-      "com.wordnik" %% "swagger-play2" % "1.2.1-SNAPSHOT",
+      cache,
+      "com.typesafe.play" %% "play-slick" % "0.5.0.5",
+      "com.wordnik" %% "swagger-play2" % "1.2.6-SNAPSHOT",
       "org.scalatest" %% "scalatest" % "1.9.1" % "test",
       "postgresql" % "postgresql" % "9.1-901-1.jdbc4"
     )

@@ -45,22 +45,22 @@ object Domains extends Table[Domain]("domains") {
   val byName = createFinderBy(_.name)
     
   def findAll = DB.withSession { 
-    implicit session =>
+    implicit session: Session =>
       (for (d <- Domains.sortBy(_.id) ) yield d).list
   }
     
   def findById(id: Int) = DB.withSession {
-    implicit session =>
+    implicit session: Session =>
       Try(Domains.byId(id).firstOption)
   }
   
   def delete(id: Int) = DB.withSession {
-    implicit session =>
+    implicit session: Session =>
       Try(Domains.where(_.id === id).delete)
   }
   
   def update(id: Int, domain: Domain) = DB.withSession {
-    implicit session => {
+    implicit session: Session => {
       val domainToUpdate = domain.copy(Some(id), domain.name, domain.master, Some(nowInUnixTime), domain.domainType, domain.notifiedSerial, domain.account)
       Try(Domains.where(_.id === id).update(domainToUpdate))
     }
@@ -70,7 +70,7 @@ object Domains extends Table[Domain]("domains") {
     val offset = pageSize * page
     
     DB.withSession {
-      implicit session =>
+      implicit session: Session =>
         val domains = (
           for {d <- Domains.sortBy(d => orderField match {
             case 1 => d.id.asc
@@ -88,7 +88,7 @@ object Domains extends Table[Domain]("domains") {
   }
   
   def insert(domain: Domain) = DB.withSession {
-    implicit session =>
+    implicit session: Session =>
       Try(Domains.autoInc.insert(domain))
   }
   
