@@ -1,6 +1,7 @@
 import sbt._
 import Keys._
 import play.Project._
+import com.typesafe.sbt.SbtNativePackager.NativePackagerKeys._
 
 object ApplicationBuild extends Build {
 
