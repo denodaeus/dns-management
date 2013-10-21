@@ -6,7 +6,7 @@ import com.typesafe.sbt.SbtNativePackager.NativePackagerKeys._
 object ApplicationBuild extends Build {
 
     val appName         = "dns-management"
-    val appVersion      = "1.0"
+    val appVersion      = "1.1"
 
     val appDependencies = Seq(
       filters,
