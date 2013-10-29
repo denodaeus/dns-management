@@ -29,6 +29,9 @@ validation.name.duplicate = A domain with this name already exists.
 records.new.command = New Record
 records.list.navigation = List Records
 records.edit.submit = Update
+records.form = Create A New Record
+records.details = Details
+records.new.submit = Submit
 
 records.list.title = List Records
 domains.list.title = List Domains

@@ -15,7 +15,6 @@
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="@routes.Domains.list()">@Messages("domains.list.title")</a></li>
-                            <li><a href="@routes.Domains.newDomain()">@Messages("domains.create.new")</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -50,7 +49,6 @@
                     </li>
                     <li class="divider-vertical"></li>
                     <form class="navbar-search pull-right">
-                        <!-- input type="text" class="search-query" placeholder="Search"-->
                         @helper.form(action=routes.Records.index()) {
                           <input type="search" id="searchbox" name="f" placeholder="Search">
                         }

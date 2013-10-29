@@ -38,7 +38,10 @@ object Domains extends Controller with Secured {
   )
   
   def index = withAuth { username => implicit request =>
-    Ok(views.html.domains.index("Domains"))
+    val page = 0
+    val orderBy = 2
+    val records = models.Domains.findPage(page, orderBy)
+    Ok(views.html.domains.list(records.items))
   }
   
   def listAll = Action { implicit request =>
