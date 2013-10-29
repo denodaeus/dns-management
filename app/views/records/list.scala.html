@@ -44,15 +44,16 @@
 	  <i class="icon-plus"/></i>@Messages("records.new.command")</a>
 	</p>
     @(paginate(page, orderBy, count, routes.Records.get(_)))
+    @{var origPage = page}
         <div class="pagination pagination-right">
           <ul>
-            <li><a href="#">&lt;&lt;</a></li>
-            <li><a href="?p=0&s=1">1</a></li>
-            <li><a href="?p=1&s=1">2</a></li>
-            <li><a href="?p=2&s=1">3</a></li>
-            <li><a href="?p=3&s=1">4</a></li>
-            <li><a href="?p=4&s=1">5</a></li>
-            <li><a href="#">&gt;&gt;</a></li>
+            <li><a href="?p=@{page-5}&s=1">&lt;&lt;</a></li>
+            <li><a href="?p=@page&s=1">@{page+1}</a></li>
+            <li><a href="?p=@{page+1}&s=1">@{page+2}</a></li>
+            <li><a href="?p=@{page+2}&s=1">@{page+3}</a></li>
+            <li><a href="?p=@{page+3}&s=1">@{page+4}</a></li>
+            <li><a href="?p=@{page+4}&s=1">@{page+5}</a></li>
+            <li><a href="?p=@{page+5}&s=1">&gt;&gt;</a></li>
           </ul>
         </div>
 	</div>

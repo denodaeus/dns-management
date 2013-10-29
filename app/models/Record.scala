@@ -87,6 +87,13 @@ object Records extends Table[Record]("records"){
       SortedMap(records.toMap.toSeq:_*)
     }
   }
+  
+  def listAccountIdsWithCount(page: Int, offset: Int): Map[Int, Int] = DB.withSession {
+    implicit session: Session => {
+      val records = (Records.groupBy(_.accountId).map{ case(id, c) => id -> id.count }).drop(offset).take(pageSize)
+      SortedMap(records.toMap.toSeq:_*)
+    }
+  }
     
   def delete(id: Int) = DB.withSession { 
     implicit session: Session => 
@@ -112,7 +119,7 @@ object Records extends Table[Record]("records"){
     Page(results, page, offset, records.size, pageSize)
   }
 
-  def findPage(page: Int = 0, orderField: Int): Page[Record] = {
+  def findPage(page: Int = 0, orderField: Int, filter: String = ""): Page[Record] = {
     val offset = pageSize * page
     
     DB.withSession {
@@ -124,6 +131,7 @@ object Records extends Table[Record]("records"){
             case 2 => r.name.asc
             case -2 => r.name.desc
           })
+            .filter(r => (r.name.like(s"%${filter}%") || r.content.like(s"%${filter}%")))
             .drop(offset)
             .take(pageSize)
           } yield r).list

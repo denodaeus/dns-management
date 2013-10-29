@@ -24,7 +24,7 @@
 
       <script type="text/coffeescript">
           $("#button").click ->
-            $.ajax '/api/domains',
+            $.ajax '/api/v2/domains',
                 type: 'POST'
                 contentType: 'application/json'
                 data: '{ "name": "testme123", "master": "testme123", "lastCheck": 12345, "domainType": "A", "notifiedSerial": 12345, "account": "12345" }'

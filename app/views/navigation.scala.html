@@ -1,4 +1,5 @@
 @()
+@import helper.twitterBootstrap._
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
@@ -49,7 +50,10 @@
                     </li>
                     <li class="divider-vertical"></li>
                     <form class="navbar-search pull-right">
-                        <input type="text" class="search-query" placeholder="Search">
+                        <!-- input type="text" class="search-query" placeholder="Search"-->
+                        @helper.form(action=routes.Records.index()) {
+                          <input type="search" id="searchbox" name="f" placeholder="Search">
+                        }
                     </form>
                 </ul>
                 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
