@@ -1,6 +1,7 @@
 @(recordForm: Form[Record], domainId: Int, id: Option[Int] = None)
 @import helper._
 @import helper.twitterBootstrap._
+@import models.Domains
 
 @main(Messages("records.form")) {
   <div class="container">
@@ -11,7 +12,7 @@
         <legend>
           @Messages("records.details", recordForm("id").value.getOrElse(Messages("domains.new")))
         </legend>
-        @helper.inputText(recordForm("domainId"), '_label -> "Domain Id")
+        @select(recordForm("domainId"), options(Domains.findAll.map(d => d.id.toString -> Domains.getShortName(d)).toMap), '_label -> "Domain Id")
         @helper.inputText(recordForm("name"), '_label -> "Name")
         @helper.inputText(recordForm("recordType"), '_label -> "Type")
         @helper.inputText(recordForm("content"), '_label -> "Content")

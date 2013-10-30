@@ -93,4 +93,8 @@ object Domains extends Table[Domain]("domains") {
   }
   
   implicit val recordFormat = Json.format[Domain]
+  
+  def getShortName(d: Domain): String = {
+    s"${d.id.get} : ${d.name}"
+  }
 }

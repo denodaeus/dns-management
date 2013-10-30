@@ -40,3 +40,5 @@ records.create.new = New Record
 
 records.delete.command = Delete
 records.edit.command = Edit
+
+servers.new.command = New Server

@@ -157,7 +157,7 @@ object Records extends Controller with Secured {
   }
   
   def listByDomainId(id: Int, page: Int, orderBy: Int) = withAuth { username => implicit request =>
-    models.Records.findByDomainId(id) match {
+    models.Records.findByDomainId(id, page, orderBy) match {
       case Success(r) => {
         Logger.debug(s"listByDomainId :: listing for id $id, page $page, orderBy $orderBy, with success ${r.count(r => true)}")
         Ok(views.html.records.list(r, id, page, orderBy, r.length))

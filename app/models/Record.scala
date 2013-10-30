@@ -73,9 +73,16 @@ object Records extends Table[Record]("records"){
       Try(Records.byAccountId(accountId).list) 
   }
     
-  def findByDomainId(domainId: Int) = DB.withSession {
+  def findByDomainId(domainId: Int, page: Int, offset: Int) = DB.withSession {
+    val offset = pageSize * page
     implicit session: Session =>
-      Try(Records.byDomainId(domainId).list) 
+      Try(
+            (for (r <- Records.where(_.domainId === domainId)) yield r)
+          	.sortBy(_.id)
+          	.drop(offset)
+          	.take(pageSize)
+          	.list
+      )
   }
     
   def listAccountIds(filter: String = "") = DB.withSession { 
