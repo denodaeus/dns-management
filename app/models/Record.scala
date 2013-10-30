@@ -94,6 +94,7 @@ object Records extends Table[Record]("records"){
   }
   
   def listAccountIdsWithCount(page: Int, offset: Int, filter: String = ""): Map[Int, Int] = DB.withSession {
+    val offset = pageSize * page
     implicit session: Session => {
       if (filter != "") {
         val records = (Records.findByAccountId(filter.toInt)).map{ case(r) => filter.toInt -> r.size}
@@ -148,7 +149,10 @@ object Records extends Table[Record]("records"){
             case 2 => r.name.asc
             case -2 => r.name.desc
           })
-            .filter(r => (r.name.like(s"%${filter}%") || r.content.like(s"%${filter}%")))
+            .filter(r => 
+              (r.name.like(s"%${filter}%") 
+           || r.content.like(s"%${filter}%")
+           || r.recordType.like(s"%${filter}%")))
             .drop(offset)
             .take(pageSize)
           } yield r).list
