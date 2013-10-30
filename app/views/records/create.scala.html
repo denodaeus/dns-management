@@ -1,50 +1,47 @@
-@(recordForm: Form[Record], domainId: Int, id: Option[Int] = None)
+@(recordForm: Form[Record], domainId: Int, id: Option[Int] = None)(implicit flash: Flash)
 @import helper._
 @import helper.twitterBootstrap._
 @import models.Domains
 
 @main(Messages("records.form")) {
   <div class="container">
+  
+   @recordForm.globalError.map { error =>
+     <div class="alert alert-error">
+       @error.message
+     </div>
+   } 
+  
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success">
+        @flash.get("success")
+      </div>
+    }
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-error">
+        @flash.get("error")
+      </div>
+    }
+    
   <h2>@Messages("records.form")</h2>
 
-    @helper.form(action = id.map(routes.Records.updateIfExists(_)).getOrElse(routes.Records.create())) {
+    @helper.form(action = id.map(routes.Records.updateIfExists(_)).getOrElse(routes.Records.createRecord())) {
       <fieldset>
         <legend>
           @Messages("records.details", recordForm("id").value.getOrElse(Messages("domains.new")))
         </legend>
-        @select(recordForm("domainId"), options(Domains.findAll.map(d => d.id.toString -> Domains.getShortName(d)).toMap), '_label -> "Domain Id")
+        @helper.inputText(recordForm("domainId"), '_label -> "Domain ID")
         @helper.inputText(recordForm("name"), '_label -> "Name")
-        @helper.inputText(recordForm("recordType"), '_label -> "Type")
+        @select(recordForm("recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "Record Type")
         @helper.inputText(recordForm("content"), '_label -> "Content")
         @helper.inputText(recordForm("ttl"), '_label -> "TTL")
         @helper.inputText(recordForm("priority"), '_label -> "Priority")
         @helper.inputText(recordForm("changeDate"), '_label -> "Change Date")
         @helper.inputText(recordForm("accountId"), '_label -> "Account ID")
       </fieldset>
-      
-      <script type="text/coffeescript">
-          $("#button").click ->
-            $.ajax '/api/v1/records',
-                type: 'POST'
-                contentType: 'application/json'
-                data: '{ 
-                    "domainId": "@{recordForm("domainId").value}", 
-                    "name": "@{recordForm("name").value}", 
-                    "recordType": "@{recordForm("recordType").value}", 
-                    "content": "@{recordForm("content").value}", 
-                    "ttl": @{recordForm("ttl").value}, 
-                    "priority": "@{recordForm("priority").value}",
-                    "changeDate": "@{recordForm("changeDate").value}",
-                    "accountId": @{recordForm("accountId").value}" }'
-                error: (jqXHR, textStatus, errorThrown) ->
-                    alert errorThrown
-                    console.log "Post success"
-                success: (data, textStatus, jqXHR) ->
-                    console.log "Post success"
-
-      </script>
     
-      <p><input type="button" class="btn primary" id="button" value='@id.map(_=> Messages("records.edit.submit")).getOrElse(Messages("records.new.submit"))'></p>
+      <p><input type="submit" class="btn primary" id="button" value='@id.map(_=> Messages("records.edit.submit")).getOrElse(Messages("records.new.submit"))'></p>
     </div>
   }
 }

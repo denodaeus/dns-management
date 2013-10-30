@@ -78,6 +78,8 @@ GET     /records/list                   controllers.Records.list(p: Int ?= 0, s:
 GET     /records/show/:id               controllers.Records.show(id: Int)
 GET     /records/create/domain/:id      controllers.Records.newRecord(id: Int)
 GET     /records/create/account/:id     controllers.Records.newRecord(id: Int)
+GET     /records/create                 controllers.Records.createRecordNoDomainId
+POST    /records/create                 controllers.Records.createRecord()
 GET     /records/list/domain/:id        controllers.Records.listByDomainId(id: Int, p:Int ?= 0, s:Int ?= 1)
 GET     /records/edit/:id               controllers.Records.edit(id: Int)
 

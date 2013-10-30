@@ -1,7 +1,18 @@
-@(record: Record)
+@(record: Record)(implicit flash: Flash)
 
 @main("Showing Record: ") {
     <div class="container">
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success">
+        @flash.get("success")
+      </div>
+    }
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-error">
+        @flash.get("error")
+      </div>
+    }
         <dl class="records">
             <dt>Name: </dt><dd>@record.name</dd>
             <dt>Domain Id: </dt><dd>@record.domainId</dd>

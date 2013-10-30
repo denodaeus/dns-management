@@ -40,7 +40,7 @@
 <!--/div-->
     <br/>
 
-	<p><a href="@routes.Records.newRecord(domainId)" class="btn">
+	<p><a href="@routes.Records.createRecord()" class="btn">
 	  <i class="icon-plus"/></i>@Messages("records.new.command")</a>
 	</p>
     @(paginate(page, orderBy, count, routes.Records.get(_)))

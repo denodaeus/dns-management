@@ -170,4 +170,20 @@ object Records extends Controller with Secured {
     Logger.debug(s"newRecord :: for $domainId")
     Ok(views.html.records.create(recordForm, domainId))
   }
+  
+  def createRecordNoDomainId() = withAuth { username => implicit request =>
+  	Ok(views.html.records.create(recordForm, 0))
+  }
+  
+  def createRecord() = withAuth { username => implicit request =>
+  	recordForm.bindFromRequest.fold(
+  	  formWithErrors => BadRequest(views.html.records.create(formWithErrors, 0)).flashing("error" -> s"Errors on submission: ${formWithErrors.errorsAsJson}"),
+  	  record => {
+  	    models.Records.insert(record) match {
+  	      case Success(r) => Ok(views.html.records.show(record)).flashing("success" -> s"Successfully inserted record $r")
+  	      case Failure(r) => BadRequest(views.html.records.create(recordForm, 0)).flashing("error" -> s"error inserting record $r, error=> ${r.printStackTrace()}")
+  	    }
+  	  }
+  	)
+  }
 }

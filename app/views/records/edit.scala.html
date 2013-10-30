@@ -1,4 +1,4 @@
-@(record: Record, recordForm: Form[Record])
+@(record: Record, recordForm: Form[Record])(implicit flash: Flash)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -8,6 +8,25 @@
 @main("Edit Record: ") {
 
   <div class="container">
+  
+   @recordForm.globalError.map { error =>
+      <div class="alert alert-error">
+        @error.message
+      </div>
+   } 
+ 
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success">
+        @flash.get("success")
+      </div>
+    }
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-error">
+        @flash.get("error")
+      </div>
+    }
+  
   @form(action = record.id.map(routes.Records.updateIfExists(_)).getOrElse(routes.Records.create())) {
     <fieldset>
       <legend>

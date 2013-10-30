@@ -50,7 +50,8 @@ object Records extends Table[Record]("records"){
   def accountId = column[Int]("account_id")
   def domainFK = foreignKey("domain_exists", domainId, Domains)(_.id)
   def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <> (Record, Record.unapply _)    
-  def autoInc = * returning id
+//  def autoInc = * returning id
+  def autoInc = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId returning id
 
   val byId = createFinderBy(_.id)
   val byDomainId = createFinderBy(_.domainId)
@@ -125,9 +126,9 @@ object Records extends Table[Record]("records"){
       Try(Records.where(_.id === id).delete) 
   }
     
-  def insert(record: Record) = DB.withSession { 
+  def insert(r: Record) = DB.withSession { 
     implicit session: Session => 
-      Try(Records.autoInc.insert((record)))
+      Try(Records.autoInc.insert(r.domainId, r.name , r.recordType, r.content, r.ttl, r.priority, r.changeDate, r.accountId))
   }
     
   def update(id: Int, record: Record) = DB.withSession { 
