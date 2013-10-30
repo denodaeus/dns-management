@@ -121,7 +121,7 @@ object Records extends Controller with Secured {
   	  formWithErrors => BadRequest(views.html.records.edit(formWithErrors)),
   	  record => {
   	    models.Records.update(record.id.get, record) match {
-  	      case Success(r) => Ok(views.html.records.show(record)).flashing("success" -> "Successful Edit")
+  	      case Success(r) => Redirect(s"/records/show/${record.id.get}").flashing("success" -> "Successful Edit")
   	      case Failure(e) => {
   	        Logger.debug(s"update :: failed to update record with id=${record.id}, reason=${e.printStackTrace()}")
   	        BadRequest(views.html.records.show(record)).flashing("error" -> s"Error updating record ${record.id}; ${e.getMessage()}")
