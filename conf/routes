@@ -72,6 +72,7 @@ GET     /logout                         controllers.Authentication.logout
 GET     /records                        controllers.Records.index
 GET     /domains                        controllers.Domains.index
 GET     /supermasters                   controllers.Supermasters.index
+GET     /clusters                       controllers.Clusters.index
 GET     /records/index                  controllers.Records.index
 
 GET     /records/list                   controllers.Records.list(p: Int ?= 0, s: Int ?= 1, f: String ?="")
