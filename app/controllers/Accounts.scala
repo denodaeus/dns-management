@@ -28,13 +28,6 @@ object Accounts extends Controller with Secured {
   
   implicit val recordWrites = Json.writes[Record]
   implicit val writes = Json.writes[Account]
-    
-/*  val accountForm = Form(
-    mapping(
-      "id" -> optional(number),
-      "records" -> list(text)
-    )
-  )(Account.apply)(Account.unapply)*/
   
   def get(id: Int) = Action { implicit request =>
     models.Accounts.findById(id) match {
@@ -45,6 +38,10 @@ object Accounts extends Controller with Secured {
   
   def list() = Action { implicit request =>
   	Ok(Json.toJson(models.Accounts.findAll()))
+  }
+  
+  def list(page: Int, orderBy: Int, filter: String) = withAuth { username => implicit request =>
+    Ok(Json.toJson(models.Accounts.findPage(page, orderBy, filter)))
   }
   
   def listAll(page: Int, orderBy: Int) = Action { implicit request =>

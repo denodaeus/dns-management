@@ -31,13 +31,13 @@ object Accounts {
   }
   
   def findAll() = DB.withSession {
-    implicit session: Session => Records.listAccountIds
+    implicit session: Session => Records.listAccountIds()
   }
   
-  def findPage(page: Int, orderBy: Int) = DB.withSession {
+  def findPage(page: Int, orderBy: Int, filter: String = "") = DB.withSession {
     implicit session: Session => {
       val offset = pageSize * page
-      (models.Records.listAccountIds).drop(page).take(offset)
+      (models.Records.listAccountIds(filter)).drop(page).take(offset)
     }
   }
 

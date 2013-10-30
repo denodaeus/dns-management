@@ -7,6 +7,8 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import scala.language.reflectiveCalls
 import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
 import utils.DateTimeUtils._
 import collection.immutable.SortedMap
 
@@ -76,9 +78,12 @@ object Records extends Table[Record]("records"){
       Try(Records.byDomainId(domainId).list) 
   }
     
-  def listAccountIds = DB.withSession { 
+  def listAccountIds(filter: String = "") = DB.withSession { 
     implicit session: Session => 
-      (for (r <- Records) yield r.accountId).list.distinct.sorted  
+      (for (r <- Records) yield r.accountId)
+      	.list
+      	.distinct
+      	.sorted  
   }
   
   def listAccountIdsWithCount: Map[Int, Int] = DB.withSession {
@@ -88,13 +93,25 @@ object Records extends Table[Record]("records"){
     }
   }
   
-  def listAccountIdsWithCount(page: Int, offset: Int): Map[Int, Int] = DB.withSession {
+  def listAccountIdsWithCount(page: Int, offset: Int, filter: String = ""): Map[Int, Int] = DB.withSession {
     implicit session: Session => {
-      val records = (Records.groupBy(_.accountId).map{ case(id, c) => id -> id.count }).drop(offset).take(pageSize)
-      SortedMap(records.toMap.toSeq:_*)
+      if (filter != "") {
+        val records = (Records.findByAccountId(filter.toInt)).map{ case(r) => filter.toInt -> r.size}
+        records match {
+          case Success(r) => Map(r);
+          case Failure(r) => Map(0 -> 0)
+        }
+      }
+      else {
+    	  val records = (Records.groupBy(_.accountId)
+          .map{ case(id, c) => id -> id.count })
+          .drop(offset)
+          .take(pageSize)
+          SortedMap(records.toMap.toSeq:_*)
+      }
     }
   }
-    
+
   def delete(id: Int) = DB.withSession { 
     implicit session: Session => 
       Try(Records.where(_.id === id).delete) 

@@ -147,14 +147,10 @@ object Records extends Controller with Secured {
     }
   }
   
-  def listAllAccountIds(page: Int, orderBy: Int) = withAuth { username => implicit request =>
-  	val accounts = models.Records.listAccountIdsWithCount(page, orderBy)
+  def listAllAccountIds(page: Int, orderBy: Int, filter: String = "") = withAuth { username => implicit request =>
+  	val accounts = models.Records.listAccountIdsWithCount(page, orderBy, filter)
   	Ok (views.html.accounts.list(accounts, page, orderBy, accounts.size.toInt))
   }
-  
-/*  def listAllAccountIds() = withAuth { username => implicit request => 
-    Ok(views.html.accounts.list(models.Records.listAccountIdsWithCount))
-  }*/
   
   def listByDomainId(id: Int, page: Int, orderBy: Int) = withAuth { username => implicit request =>
     models.Records.findByDomainId(id) match {
