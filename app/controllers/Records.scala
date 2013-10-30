@@ -118,43 +118,48 @@ object Records extends Controller with Secured {
   
   def list(page: Int, orderBy: Int, filter: String = "") = withAuth { username => implicit request =>
     val records = models.Records.findPage(page, orderBy, filter)
+    Logger.debug(s"list :: listing ${records.total} for page=$page, orderBy=$orderBy, filter=$filter")
     Ok(views.html.records.list(records.items, 0, page, orderBy, records.total.toInt))
   }
   
   def show(id: Int) = withAuth { username => implicit request =>
     models.Records.findById(id) match {
       case Success(r) => {
+        Logger.debug(s"show :: found for id=$id")
         Ok(views.html.records.show(r.getOrElse(null)))
       }
-      case Failure(e) => NotFound
+      case Failure(e) => { Logger.debug(s"show :: id=$id NotFound"); NotFound }
     }
   }
   
   def edit(id: Int) = withAuth { username => implicit request =>
     models.Records.findById(id) match {
       case Success(r) => {
+        Logger.debug(s"edit :: found id=$id, editing for $r")
         val form = recordForm.fill(r.getOrElse(null))
         Ok(views.html.records.edit(r.getOrElse(null), form))
       }
-      case Failure(e) => NotFound
+      case Failure(e) => { Logger.debug(s"edit :: id=$id NotFound"); NotFound }
     }
   }
   
   def getRecordCount(id: Int) : Int = {
     models.Records.findByAccountId(id) match {
-      case Success(r) => r.length
-      case Failure(r) => 0
+      case Success(r) => { Logger.debug(s"getRecordCount :: returning ${r.length} for id=$id"); r.length }
+      case Failure(r) => { Logger.debug(s"getRecordCount :: returning 0 for id=$id"); 0 }
     }
   }
   
   def listAllAccountIds(page: Int, orderBy: Int, filter: String = "") = withAuth { username => implicit request =>
   	val accounts = models.Records.listAccountIdsWithCount(page, orderBy, filter)
+  	Logger.debug(s"listAllAccountIds :: listing id's for ${accounts.size.toInt} accounts, page $page, orderBy $orderBy, filter $filter")
   	Ok (views.html.accounts.list(accounts, page, orderBy, accounts.size.toInt))
   }
   
   def listByDomainId(id: Int, page: Int, orderBy: Int) = withAuth { username => implicit request =>
     models.Records.findByDomainId(id) match {
       case Success(r) => {
+        Logger.debug(s"listByDomainId :: listing for id $id, page $page, orderBy $orderBy, with success ${r.count(r => true)}")
         Ok(views.html.records.list(r, id, page, orderBy, r.length))
       }
       case Failure(r) => NotFound
@@ -162,6 +167,7 @@ object Records extends Controller with Secured {
   }
   
   def newRecord(domainId: Int) = Action { implicit request =>
+    Logger.debug(s"newRecord :: for $domainId")
     Ok(views.html.records.create(recordForm, domainId))
   }
 }

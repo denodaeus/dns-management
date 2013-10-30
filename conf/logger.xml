@@ -1,7 +1,15 @@
 <configuration>
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+     <file>${application.home}/logs/application.log</file>
+     <encoder>
+       <pattern>%d{HH:mm:ss} [%thread] %-5p %c %class{0}.%method:%L - %m%n</pattern>
+     </encoder>
+   </appender>
+   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%-5level -%msg%n</pattern>
+      <pattern>%d{HH:mm:ss} [%thread] %-5p %c %class{0}.%method:%L - %m%n</pattern>
     </encoder>
   </appender>
   <logger name="com.jolbox.bonecp" level="DEBUG">
@@ -12,5 +20,10 @@
   </logger>
   <logger name="application" level="DEBUG">
     <appender-ref ref="STDOUT"/>
+    <appender-ref ref="FILE" />
   </logger>
+  <root level="INFO">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="FILE"/>
+  </root>
 </configuration>

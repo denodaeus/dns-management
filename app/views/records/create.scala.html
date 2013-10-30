@@ -11,15 +11,37 @@
         <legend>
           @Messages("records.details", recordForm("id").value.getOrElse(Messages("domains.new")))
         </legend>
-        @helper.inputText(recordForm("domainId"))
-        @helper.inputText(recordForm("name"))
-        @helper.inputText(recordForm("recordType"))
-        @helper.inputText(recordForm("content"))
-        @helper.inputText(recordForm("ttl"))
-        @helper.inputText(recordForm("priority"))
-        @helper.inputText(recordForm("changeDate"))
-        @helper.inputText(recordForm("accountId"))
+        @helper.inputText(recordForm("domainId"), '_label -> "Domain Id")
+        @helper.inputText(recordForm("name"), '_label -> "Name")
+        @helper.inputText(recordForm("recordType"), '_label -> "Type")
+        @helper.inputText(recordForm("content"), '_label -> "Content")
+        @helper.inputText(recordForm("ttl"), '_label -> "TTL")
+        @helper.inputText(recordForm("priority"), '_label -> "Priority")
+        @helper.inputText(recordForm("changeDate"), '_label -> "Change Date")
+        @helper.inputText(recordForm("accountId"), '_label -> "Account ID")
       </fieldset>
+      
+      <script type="text/coffeescript">
+          $("#button").click ->
+            $.ajax '/api/v1/records',
+                type: 'POST'
+                contentType: 'application/json'
+                data: '{ 
+                    "domainId": "@{recordForm("domainId").value}", 
+                    "name": "@{recordForm("name").value}", 
+                    "recordType": "@{recordForm("recordType").value}", 
+                    "content": "@{recordForm("content").value}", 
+                    "ttl": @{recordForm("ttl").value}, 
+                    "priority": "@{recordForm("priority").value}",
+                    "changeDate": "@{recordForm("changeDate").value}",
+                    "accountId": @{recordForm("accountId").value}" }'
+                error: (jqXHR, textStatus, errorThrown) ->
+                    alert errorThrown
+                    console.log "Post success"
+                success: (data, textStatus, jqXHR) ->
+                    console.log "Post success"
+
+      </script>
     
       <p><input type="button" class="btn primary" id="button" value='@id.map(_=> Messages("records.edit.submit")).getOrElse(Messages("records.new.submit"))'></p>
     </div>
