@@ -50,7 +50,6 @@ object Records extends Table[Record]("records"){
   def accountId = column[Int]("account_id")
   def domainFK = foreignKey("domain_exists", domainId, Domains)(_.id)
   def * = id.? ~ domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId <> (Record, Record.unapply _)    
-//  def autoInc = * returning id
   def autoInc = domainId ~ name ~ recordType ~ content ~ ttl ~ priority ~ changeDate ~ accountId returning id
 
   val byId = createFinderBy(_.id)

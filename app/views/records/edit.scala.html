@@ -1,4 +1,4 @@
-@(record: Record, recordForm: Form[Record])(implicit flash: Flash)
+@(recordForm: Form[Record])(implicit flash: Flash)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -27,21 +27,22 @@
       </div>
     }
   
-  @form(action = record.id.map(routes.Records.updateIfExists(_)).getOrElse(routes.Records.create())) {
+  @form(action = routes.Records.update()) {
     <fieldset>
       <legend>
         @Messages("record.details", recordForm("name").value.getOrElse(Messages("domains.new")))
       </legend>
-      @select(recordForm("domainId"), options(Domains.findAll.map(d => d.id.toString -> Domains.getShortName(d)).toMap), '_label -> "Domain Id")
+      @inputText(recordForm("id"), '_label -> "Id", 'readonly -> "readonly")
+      @inputText(recordForm("domainId"), '_label -> "Domain Id", 'readonly -> "readonly")
       @inputText(recordForm("name"), '_label -> "Name")
-      @select(recordForm("recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "Record Type")
+      @inputText(recordForm("recordType"), '_label -> "Record Type", 'readonly -> "readonly")
       @inputText(recordForm("content"), '_label -> "Content")
       @inputText(recordForm("ttl"), '_label -> "TTL")
       @inputText(recordForm("priority"), '_label -> "Priority")
       @inputText(recordForm("changeDate"), '_label -> "Change Date")
       @inputText(recordForm("accountId"), '_label -> "Account Id")
     </fieldset>
-    <p><div class="actions"><input type="submit" class="btn primary" value='@record.id.map(_=> Messages("records.edit.submit")).getOrElse(Messages("records.new.submit"))'></div></p>
+    <p><div class="actions"><input type="submit" class="btn primary" value=@Messages("records.edit.submit")></div></p>
   }
   <br/>
   </div>

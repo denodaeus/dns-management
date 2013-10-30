@@ -37,7 +37,7 @@ object Clusters extends Controller with Secured {
 
   def index = withAuth { username =>
     implicit request =>
-      Ok(views.html.domains.index("Clusters"))
+      Ok(views.html.clusters.list(List()))
   }
 
   def newCluster() = withAuth { username =>
@@ -52,7 +52,7 @@ object Clusters extends Controller with Secured {
   
   def listAll() = withAuth { username =>
     implicit request =>
-      Ok(views.html.clusters.index())
+      Ok(views.html.clusters.list(List()))
   }
 
 }

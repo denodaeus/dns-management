@@ -116,6 +116,21 @@ object Records extends Controller with Secured {
 
   // VIEWS SECTION FOR TEMPORARY VIEWS
   
+  def update() = withAuth { username => implicit request =>
+  	recordForm.bindFromRequest.fold(
+  	  formWithErrors => BadRequest(views.html.records.edit(formWithErrors)),
+  	  record => {
+  	    models.Records.update(record.id.get, record) match {
+  	      case Success(r) => Ok(views.html.records.show(record)).flashing("success" -> "Successful Edit")
+  	      case Failure(e) => {
+  	        Logger.debug(s"update :: failed to update record with id=${record.id}, reason=${e.printStackTrace()}")
+  	        BadRequest(views.html.records.show(record)).flashing("error" -> s"Error updating record ${record.id}; ${e.getMessage()}")
+  	      }
+  	    }
+  	  }
+  	)
+  }
+  
   def list(page: Int, orderBy: Int, filter: String = "") = withAuth { username => implicit request =>
     val records = models.Records.findPage(page, orderBy, filter)
     Logger.debug(s"list :: listing ${records.total} for page=$page, orderBy=$orderBy, filter=$filter")
@@ -137,7 +152,7 @@ object Records extends Controller with Secured {
       case Success(r) => {
         Logger.debug(s"edit :: found id=$id, editing for $r")
         val form = recordForm.fill(r.getOrElse(null))
-        Ok(views.html.records.edit(r.getOrElse(null), form))
+        Ok(views.html.records.edit(form))
       }
       case Failure(e) => { Logger.debug(s"edit :: id=$id NotFound"); NotFound }
     }

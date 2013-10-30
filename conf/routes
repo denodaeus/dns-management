@@ -83,6 +83,7 @@ GET     /records/create                 controllers.Records.createRecordNoDomain
 POST    /records/create                 controllers.Records.createRecord()
 GET     /records/list/domain/:id        controllers.Records.listByDomainId(id: Int, p:Int ?= 0, s:Int ?= 1)
 GET     /records/edit/:id               controllers.Records.edit(id: Int)
+POST    /records/update                 controllers.Records.update
 
 GET     /domains/list                   controllers.Domains.list(p:Int ?= 0, s:Int ?= 2)
 GET     /domains/list/:id               controllers.Domains.show(id: Int)
@@ -93,6 +94,8 @@ GET     /domains/index                  controllers.Domains.index
 GET     /accounts                       controllers.Records.listAllAccountIds(p: Int ?= 0, s: Int ?= 1, f: String ?= "")
 GET     /accounts/list                  controllers.Records.listAllAccountIds(p: Int ?= 0, s: Int ?= 1, f: String ?= "")
 GET     /accounts/show/:id              controllers.Accounts.show(id: Int)
+
+GET     /clusters/list                  controllers.Clusters.listAll
 
 GET     /accounts/migrate               controllers.BulkOperations.migrate
 
