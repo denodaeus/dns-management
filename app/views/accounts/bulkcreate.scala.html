@@ -1,0 +1,52 @@
+@(createForm: Form[BulkCreateOperation])
+@import helper._
+@import helper.twitterBootstrap._
+@import models.Domain
+
+@domainField(className: String = "domain") = {
+  <div class="clearfix" id="domainId field2">
+    <label for="domainId">Domains to Apply:</label>  
+    <select name="Domains">
+      @for(d: Domain <- models.Domains.findAll){
+          <option value="@d.id">@d.name</option>
+      }
+    </select>
+    <p/>
+    <label>Action:</label>
+    <select><option value="SRV">Generate SRV with A Records</option></select>
+  </div>
+  
+}
+
+@recordField(field: Field, className: String = "record") = {
+  @{ val defaultPattern = "sip-${accountid}" }
+  <div class="record">
+    @select(createForm("domainId"), 
+      options(RecordType.values.map(_.toString).toList), 
+      '_label -> "Record Type:")
+    @inputText(field, '_label -> "Record Pattern", 'placeholder -> "sip-${accountid}")
+  </div>
+}
+
+@main("Bulk Create Records") {
+  <div class="container">
+    <h2>Bulk Create Records</h2>
+    <p/><p/>
+  @helper.form(action = routes.Records.updateIfExists(0)) {
+    <fieldset>
+      <legend>Account ID's</legend>
+      @textarea(createForm("accounts"), '_rows -> 50, 
+          'cols-> 50, 
+          '_label -> "Accounts List")
+    </fieldset>
+    <fieldset>
+      <legend>Record Templates</legend>
+      @domainField()
+      @repeat(createForm("records"), min = 2) { record =>
+          @recordField(record)
+      }
+    </fieldset>
+  }
+  <p><div class="actions"><input type="submit" class="btn primary" value=@Messages("records.edit.submit")></div></p>
+  </div>
+}

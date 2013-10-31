@@ -24,6 +24,8 @@ case class Record (
   accountId: Int
 )
 
+case class BasicRecord(domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int, accountId: Int)
+
 object RecordType extends Enumeration {
   type Type = Value
   val A,

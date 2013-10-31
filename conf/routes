@@ -98,5 +98,6 @@ GET     /accounts/show/:id              controllers.Accounts.show(id: Int)
 GET     /clusters/list                  controllers.Clusters.listAll
 
 GET     /accounts/migrate               controllers.BulkOperations.migrate
+GET     /accounts/bulkcreate            controllers.BulkOperations.bulkCreate
 
 GET     /servers/list                   controllers.Servers.list(p: Int ?= 0, s: Int ?= 1)
