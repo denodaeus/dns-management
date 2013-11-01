@@ -24,7 +24,7 @@ case class Record (
   accountId: Int
 )
 
-case class BasicRecord(domainId: Int, name: String, recordType: String, ttl: Int, priority: Int)
+case class BasicRecord(domainId: Int, name: String, content: String, recordType: String, ttl: Int, priority: Int)
 case class BasicSRVRecord(proto: String, service: Int, record: BasicRecord, content: SrvContent)
 case class BasicARecord(record: BasicRecord, content: AContent)
 case class AContent(content: IPAddress)

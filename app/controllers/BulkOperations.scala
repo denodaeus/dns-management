@@ -28,6 +28,7 @@ object BulkOperations extends Controller with Secured {
            "domainId" -> number,
            "name" -> nonEmptyText,
            "recordType" -> nonEmptyText,
+           "content" -> nonEmptyText,
            "ttl" -> number,
            "priority" -> number
          )(BasicRecord.apply)(BasicRecord.unapply)
