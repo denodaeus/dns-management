@@ -24,11 +24,12 @@ case class Record (
   accountId: Int
 )
 
+case class BaseRecord(domainId: Int, recordType: String, ttl: Int, priority: Int, changeDate: Int)
 case class BasicRecord(domainId: Int, name: String, content: String, recordType: String, ttl: Int, priority: Int)
-case class BasicSRVRecord(proto: String, service: Int, record: BasicRecord, content: SrvContent)
+case class BasicSRVRecord(proto: String, service: String, content: SrvContent)
 case class BasicARecord(record: BasicRecord, content: AContent)
 case class AContent(content: IPAddress)
-case class SrvContent(weight: String, port: Int, aRecord: String)
+case class SrvContent(weight: Int, port: Int, aRecord: String)
 
 case class IPAddress(address: String)
 

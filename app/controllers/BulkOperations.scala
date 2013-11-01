@@ -7,6 +7,8 @@ import models.Record
 import models.BasicRecord
 import models.BulkOperation
 import models.BulkCreateOperation
+import models.BasicSRVRecord
+import models.SrvContent
 
 import play.Logger
 import play.api.data.Form
@@ -23,6 +25,15 @@ object BulkOperations extends Controller with Secured {
   val bulkCreateForm: Form[BulkCreateOperation] = Form(
     mapping(
       "accounts" -> nonEmptyText,
+      "srv" -> mapping(
+        "proto" -> nonEmptyText,
+        "service" -> nonEmptyText,
+        "content" -> mapping(
+          "weight" -> number,
+          "port" -> number,
+          "aRecord" -> nonEmptyText
+        )(SrvContent.apply)(SrvContent.unapply)
+      )(BasicSRVRecord.apply)(BasicSRVRecord.unapply),
       "records" -> seq(
          mapping(
            "domainId" -> number,

@@ -11,14 +11,13 @@ import scala.collection.immutable.StringOps._
 
 case class BulkAccountOperation(operation: String, accounts: Seq[Int])
 case class BulkOperation(operation: String, accounts: String)
-case class BulkCreateOperation(accounts: String, records: Seq[BasicRecord])
+case class BulkCreateOperation(accounts: String, srv: BasicSRVRecord, records: Seq[BasicRecord])
 
 object BulkOperation {
   
   lazy val domains: Map[Int, String] = models.Domains.findAll.map(d => (d.id.get -> d.name)).toMap
   
   def bulkCreateRecordsForAccount(accountId: Int, task: String = "SRV") = {
-    
   }
   
   def parseAccountsToSeq(accounts: String, delimiter: Char): Seq[Int] = {
@@ -44,7 +43,7 @@ object BulkOperation {
     r
   }
   
-  def createSrvRecordForAccountIfItDoesntExist() = {
+  def createSrvRecordForAccountIfItDoesntExist(accountId: Int) = {
     
   }
   
