@@ -24,7 +24,7 @@ PUT     /api/v1/records                    controllers.Records.updateAll
 
 GET     /api/v1/records/:id                controllers.Records.get(id: Int)
 PUT     /api/v1/records/:id                controllers.Records.updateIfExists(id: Int)
-DELETE  /api/v1/records/:id                controllers.Records.deleteOne(id: Int)
+#DELETE  /api/v1/records/:id                controllers.Records.deleteOne(id: Int)
 
 # Domains
 GET     /api/v1/domains                    controllers.Domains.listAll
@@ -84,6 +84,9 @@ POST    /records/create                 controllers.Records.createRecord()
 GET     /records/list/domain/:id        controllers.Records.listByDomainId(id: Int, p:Int ?= 0, s:Int ?= 1)
 GET     /records/edit/:id               controllers.Records.edit(id: Int)
 POST    /records/update                 controllers.Records.update
+DELETE  /records/delete/:id             controllers.Records.deleteOne(id: Int)
+GET     /records/delete/:id             controllers.Records.deleteOne(id: Int)
+GET     /records/delete                 controllers.Records.deleteOne(id: Int)
 
 GET     /domains/list                   controllers.Domains.list(p:Int ?= 0, s:Int ?= 2)
 GET     /domains/list/:id               controllers.Domains.show(id: Int)

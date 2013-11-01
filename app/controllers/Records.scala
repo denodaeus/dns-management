@@ -108,10 +108,11 @@ object Records extends Controller with Secured {
     }.getOrElse(BadRequest (Json.toJson(Map("status" -> "error request.body", "message" -> "Content Type Not Json"))))
   }
   
-  def deleteOne(id: Int) = Action { implicit request =>
-    val deleted = models.Records.delete(id)
-    val json = Json.arr(s"DELETE /records/$id -> Records.deleteOne $id")
-    Ok(json) as JSON
+  def deleteOne(id: Int) = withAuth { username => implicit request =>
+    models.Records.delete(id) match {
+      case Success(r) => Redirect("/records/list").flashing("success" -> s"Record $id deleted successfully.")
+      case Failure(e) => Redirect(s"/records/show/$id").flashing("error" -> s"Failed to delete record $id, reason=${e.getMessage()}")
+    }
   }
 
   // VIEWS SECTION FOR TEMPORARY VIEWS

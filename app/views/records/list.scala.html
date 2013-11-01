@@ -1,7 +1,20 @@
-@(records: Seq[Record], domainId: Int, page: Int, orderBy: Int, count: Int)
+@(records: Seq[Record], domainId: Int, page: Int, orderBy: Int, count: Int)(implicit flash: Flash)
  
 @main("Records List") {
 	<div class="container">
+ 
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success">
+        @flash.get("success")
+      </div>
+    }
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-error">
+        @flash.get("error")
+      </div>
+    }
+    
 		<table>
 			<thead>
 		  		<tr>
