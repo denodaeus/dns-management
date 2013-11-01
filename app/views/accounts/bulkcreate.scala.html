@@ -39,13 +39,17 @@
   </div>  
 }
 
+@layoutContentText() = {
+
+}
+
 @recordFormRow(className: String = "rft", index: Int) = {
   <tr>
     <td>@select(createForm("records["+index+"].recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "")</td>
     <td>@inputText(createForm("records["+index+"].name"), '_label -> "", 'placeholder -> "sip-${accountid}")</td>
-    <td>@inputText(createForm("records["+index+"].name"), '_label -> "", 'placeholder -> "205.139.46.210")</td>
+    <td>@inputText(createForm("records["+index+"].content"), '_label -> "", 'placeholder -> "ip address")</td>
     <td>@inputText(createForm("records["+index+"].priority"), '_label -> "", 'placeholder -> "1")</td>
-    <td>@inputText(createForm("records.weight"), '_label -> "", 'placeholder -> "1")</td>
+    <td>@inputText(createForm("records["+index+"].weight"), '_label -> "", 'placeholder -> "1")</td>
     <td>@inputText(createForm("records["+index+"].ttl"), '_label -> "", 'placeholder -> "60")</td>
   </tr>
 }
