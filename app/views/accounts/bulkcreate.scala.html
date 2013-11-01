@@ -4,7 +4,8 @@
 @import models.Domain
 
 @domainHiddenField() = {
-  <input type="hidden" name="records[1].domainId" id="hiddenInput"/>
+  <input type="hidden" name="srv.content[1].A.domainId" id="hiddenInput"/>
+  <input type="hidden" name="srv.content[1].port" value="5060"/>
   <script>
     function changeHiddenInput (objDropDown) {
       document.getElementById("hiddenInput").value = objDropDown.value; 
@@ -21,7 +22,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>@inputText(createForm("domain"), '_label -> "SRV Pattern:", 'placeholder -> "_udp._sip.sip-${accountId}")</td>
+          <td>@inputText(createForm("srv.subdomain"), '_label -> "SRV SubDomain Pattern:", 'placeholder -> "sip-${accountId}")</td>
           <td>
             <label for="proto">SRV Proto:</label>
             <select name="srv.proto">
@@ -37,13 +38,13 @@
           </td>
           <td>
             <label for="port">SRV Port:</label>
-            <select name="srv.port">
+            <select name="srv.content[0].port">
               <option value="5060" selected>5060</option>
             </select>
           </td>
           <td>
             <label for="Domains">Domain to Apply:</label>
-            <select name="records[0].domainId" onchange="changeHiddenInput(this)">
+            <select name="srv.content[0].A.domainId" onchange="changeHiddenInput(this)">
               <option value="NULL" selected>-- Select An Option --</option>
               @for(d: Domain <- models.Domains.findAll){
                 <option value="@d.id">@d.name</option>
@@ -62,12 +63,12 @@
 
 @recordFormRow(className: String = "rft", index: Int) = {
   <tr>
-    <td>@select(createForm("records["+index+"].recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "")</td>
-    <td>@inputText(createForm("records["+index+"].name"), '_label -> "", 'placeholder -> "sip-${accountid}")</td>
-    <td>@inputText(createForm("records["+index+"].content"), '_label -> "", 'placeholder -> "ip address")</td>
-    <td>@inputText(createForm("records["+index+"].priority"), '_label -> "", 'placeholder -> "1")</td>
-    <td>@inputText(createForm("records["+index+"].weight"), '_label -> "", 'placeholder -> "1")</td>
-    <td>@inputText(createForm("records["+index+"].ttl"), '_label -> "", 'placeholder -> "60")</td>
+    <td>@select(createForm("srv.content["+index+"].A.recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "")</td>
+    <td>@inputText(createForm("srv.content["+index+"].A.name"), '_label -> "", 'placeholder -> "sip-${accountid}")</td>
+    <td>@inputText(createForm("srv.content["+index+"].A.content"), '_label -> "", 'placeholder -> "ip address")</td>
+    <td>@inputText(createForm("srv.content["+index+"].A.priority"), '_label -> "", 'placeholder -> "1")</td>
+    <td>@inputText(createForm("srv.content["+index+"].weight"), '_label -> "", 'placeholder -> "1")</td>
+    <td>@inputText(createForm("srv.content["+index+"].A.ttl"), '_label -> "", 'placeholder -> "60")</td>
   </tr>
 }
 

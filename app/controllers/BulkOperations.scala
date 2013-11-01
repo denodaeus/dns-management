@@ -26,21 +26,22 @@ object BulkOperations extends Controller with Secured {
     mapping(
       "accounts" -> nonEmptyText,
       "srv" -> mapping(
+        "subdomain" -> nonEmptyText,
         "proto" -> nonEmptyText,
         "service" -> nonEmptyText,
         "content" -> seq(
-            mapping(
-              "weight" -> number,
-              "port" -> number,
-              "A" -> mapping(
-                "domainId" -> number,
-                "name" -> nonEmptyText,
-                "recordType" -> nonEmptyText,
-                "content" -> nonEmptyText,
-                "ttl" -> number,
-                "priority" -> number
-              )(BasicRecord.apply)(BasicRecord.unapply)
-            )(SrvContent.apply)(SrvContent.unapply)
+          mapping(
+            "weight" -> number,
+            "port" -> number,
+            "A" -> mapping(
+              "domainId" -> number,
+              "name" -> nonEmptyText,
+              "recordType" -> nonEmptyText,
+              "content" -> nonEmptyText,
+              "ttl" -> number,
+              "priority" -> number
+            )(BasicRecord.apply)(BasicRecord.unapply)
+          )(SrvContent.apply)(SrvContent.unapply)
         )
       )(BasicSRVRecord.apply)(BasicSRVRecord.unapply)
     )(BulkCreateOperation.apply)(BulkCreateOperation.unapply)
@@ -72,10 +73,12 @@ object BulkOperations extends Controller with Secured {
   
   def bulkCreateRecordsForAccounts = Action { implicit request =>
     bulkCreateForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.accounts.bulkcreate(formWithErrors)),
+      formWithErrors => {
+        //BadRequest(views.html.accounts.bulkcreate(formWithErrors))
+        Logger.debug("bulkCreateRecordsForAccounts :: BadRequest, errors=" +formWithErrors.errorsAsJson + ", request=" + request.body)
+        BadRequest("Please correct the following Errors: " + formWithErrors.errorsAsJson)
+      },
       bulkCreate => {
-        val operation = bulkCreate
-        val records = bulkCreate.records.seq
         val returns: Boolean = runBulkCreateTask(bulkCreate)
         Ok("Bulk Job Successful")
       }

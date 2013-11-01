@@ -24,9 +24,9 @@ case class Record (
   accountId: Int
 )
 
-case class BaseRecord(domainId: Int, recordType: String, ttl: Int, priority: Int, changeDate: Int)
+case class BaseRecord(name: String, domainId: Int, recordType: String, ttl: Int, priority: Int, changeDate: Int)
 case class BasicRecord(domainId: Int, name: String, content: String, recordType: String, ttl: Int, priority: Int)
-case class BasicSRVRecord(proto: String, service: String, content: Seq[SrvContent])
+case class BasicSRVRecord(subdomain: String, proto: String, service: String, content: Seq[SrvContent])
 case class BasicARecord(record: BasicRecord, content: AContent)
 case class AContent(content: IPAddress)
 case class SrvContent(weight: Int, port: Int, aRecord: BasicRecord)
@@ -34,8 +34,8 @@ case class SrvContent(weight: Int, port: Int, aRecord: BasicRecord)
 case class IPAddress(address: String)
 
 object BasicSRVRecord {
-  def formContent(content: SrvContent):String = {
-    s"${content.weight} ${content.port} ${content.aRecord}"
+  def formContent(weight: Int, port: Int, aRecord: String):String = {
+    s"$weight $port $aRecord"
   }
 }
 
