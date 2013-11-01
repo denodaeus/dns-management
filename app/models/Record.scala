@@ -24,7 +24,34 @@ case class Record (
   accountId: Int
 )
 
-case class BasicRecord(domainId: Int, name: String, recordType: String, content: String, ttl: Int, priority: Int, accountId: Int)
+case class BasicRecord(domainId: Int, name: String, recordType: String, ttl: Int, priority: Int)
+case class BasicSRVRecord(proto: String, service: Int, record: BasicRecord, content: SrvContent)
+case class BasicARecord(record: BasicRecord, content: AContent)
+case class AContent(content: IPAddress)
+case class SrvContent(weight: String, port: Int, content: String)
+
+case class IPAddress(address: String)
+
+object IPAddress {
+  
+  def apply(a: String, b: String, c:String, d:String):String = s"$a.$b.$c.$d"
+  
+  def unapply(ip: String): Option[(String, String, String, String)] = {
+    val tokens = ip split "\\."
+    if (tokens.length == 4 && isValid(tokens)) Some(tokens(0), tokens(1), tokens(2), tokens(3)) else None
+  }
+  
+  private def isValid(tokens: Array[String]):Boolean = {
+    tokens forall { elem =>
+      try {
+        val intValue = elem.toInt
+        intValue >= 0 && intValue <= 255
+      } catch {
+        case _: Throwable => false
+      }
+    }
+  }
+}
 
 object RecordType extends Enumeration {
   type Type = Value

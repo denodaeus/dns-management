@@ -3,50 +3,123 @@
 @import helper.twitterBootstrap._
 @import models.Domain
 
-@domainField(className: String = "domain") = {
-  <div class="clearfix" id="domainId field2">
-    <label for="domainId">Domains to Apply:</label>  
-    <select name="Domains">
-      @for(d: Domain <- models.Domains.findAll){
-          <option value="@d.id">@d.name</option>
-      }
-    </select>
-    <p/>
-    <label>Action:</label>
-    <select><option value="SRV">Generate SRV with A Records</option></select>
-  </div>
-  
+@domainHiddenField() = {
+  <input type="hidden" name="records[1].domainId" id="hiddenInput"/>
+  <script>
+    function changeHiddenInput (objDropDown) {
+      document.getElementById("hiddenInput").value = objDropDown.value; 
+    } 
+  </script>
 }
 
-@recordField(field: Field, className: String = "record") = {
+@domainField(className: String = "domain") = {
+  <div class="clearfix" id="domainId field2">
+    <label>Action:</label>
+    <select><option value="GENERATE_SRV">Generate SRV with A Records</option></select>
+    <table style=" width:35%">
+      <thead>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            @inputText(createForm("domain"), '_label -> "SRV Pattern:", 'placeholder -> "_udp._sip.sip-${accountId}")
+          </td>
+          <td>
+            <label for="Domains">Domain to Apply:</label>
+            <select name="records[0].domainId" onchange="changeHiddenInput(this)">
+              <option value="NULL" selected>-- Select An Option --</option>
+              @for(d: Domain <- models.Domains.findAll){
+                <option value="@d.id">@d.name</option>
+              }
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>  
+}
+
+@recordFormRow(className: String = "rft", index: Int) = {
+  <tr>
+    <td>@select(createForm("records["+index+"].recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "")</td>
+    <td>@inputText(createForm("records["+index+"].name"), '_label -> "", 'placeholder -> "sip-${accountid}")</td>
+    <td>@inputText(createForm("records["+index+"].name"), '_label -> "", 'placeholder -> "205.139.46.210")</td>
+    <td>@inputText(createForm("records["+index+"].priority"), '_label -> "", 'placeholder -> "1")</td>
+    <td>@inputText(createForm("records.weight"), '_label -> "", 'placeholder -> "1")</td>
+    <td>@inputText(createForm("records["+index+"].ttl"), '_label -> "", 'placeholder -> "60")</td>
+  </tr>
+}
+
+@recordTable() = {
+  <div id="recordTable">
+    <table>
+      <thead>
+        <tr>
+          <th>Record Type:</th>
+          <th>Record Name Pattern:</th>
+          <th>Record Contents:</th>
+          <th>Record Priority:</th>
+          <th>Record Weight:</th>
+          <th>Record TTL:</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(index <- 0 to 1){
+          @recordField(createForm("records"), "record", index)
+        }  
+      </tbody>
+    </table>
+  </div>
+}
+
+@recordField(field: Field, className: String = "record", index: Int) = {
   @{ val defaultPattern = "sip-${accountid}" }
   <div class="record">
-    @select(createForm("domainId"), 
-      options(RecordType.values.map(_.toString).toList), 
-      '_label -> "Record Type:")
-    @inputText(field, '_label -> "Record Pattern", 'placeholder -> "sip-${accountid}")
+    @recordFormRow(className, index)
   </div>
+}
+
+@accountsField() = {
+   <fieldset>
+     <legend>
+       CSV List of Account IDs:
+     </legend>
+     <div id="textarea accounts">
+       <div class="input">
+         <textarea id="accounts" name="accounts" style="width: 600px; height: 200px"></textarea>
+       </div>
+     </div>
+   </fieldset>
+}
+
+@hasErrors() = {
+  @createForm.globalError.map { error =>
+    <div class="alert alert-error">
+      @error.message
+    </div>
+  } 
 }
 
 @main("Bulk Create Records") {
+  @hasErrors()  
   <div class="container">
     <h2>Bulk Create Records</h2>
     <p/><p/>
-  @helper.form(action = routes.Records.updateIfExists(0)) {
-    <fieldset>
-      <legend>Account ID's</legend>
-      @textarea(createForm("accounts"), '_rows -> 50, 
-          'cols-> 50, 
-          '_label -> "Accounts List")
-    </fieldset>
+  @helper.form(action = routes.BulkOperations.bulkCreateRecordsForAccounts) {
+    @accountsField()
     <fieldset>
       <legend>Record Templates</legend>
       @domainField()
-      @repeat(createForm("records"), min = 2) { record =>
-          @recordField(record)
-      }
+      @domainHiddenField()
+      <br/><br/>
+      @recordTable()
     </fieldset>
+    <p>
+      <div class="actions">
+        <input type="submit" class="btn primary" value=@Messages("records.edit.submit")>
+      </div>
+    </p>
   }
-  <p><div class="actions"><input type="submit" class="btn primary" value=@Messages("records.edit.submit")></div></p>
+  
   </div>
 }

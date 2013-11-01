@@ -28,13 +28,11 @@ object BulkOperations extends Controller with Secured {
            "domainId" -> number,
            "name" -> nonEmptyText,
            "recordType" -> nonEmptyText,
-           "content" -> nonEmptyText,
            "ttl" -> number,
-           "priority" -> number,
-           "accountId" -> number
-         )(BasicRecord.apply _)(BasicRecord.unapply _)
+           "priority" -> number
+         )(BasicRecord.apply)(BasicRecord.unapply)
       )
-    )(BulkCreateOperation.apply)(BulkCreateOperation.unapply _)
+    )(BulkCreateOperation.apply)(BulkCreateOperation.unapply)
   )
   
   def index = withAuth { username => implicit request =>
@@ -59,6 +57,24 @@ object BulkOperations extends Controller with Secured {
   def bulkCreate = withAuth { username =>
     implicit request =>
     Ok(views.html.accounts.bulkcreate(bulkCreateForm))
+  }
+  
+  def bulkCreateRecordsForAccounts = Action { implicit request =>
+    bulkCreateForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.accounts.bulkcreate(formWithErrors)),
+      bulkCreate => {
+        val operation = bulkCreate
+        val records = bulkCreate.records.seq
+        val returns: Boolean = runBulkCreateTask(bulkCreate)
+        Ok("Bulk Job Successful")
+      }
+    )
+  }
+  
+  def runBulkCreateTask(task: BulkCreateOperation): Boolean = {
+    Logger.debug(s"bulkCreateRecordsForAccounts: running with task $task")
+    BulkOperation.performBulkCreateOperation(task)
+    true
   }
 
 }

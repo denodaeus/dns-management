@@ -18,6 +18,26 @@ tr:hover td, tr:focus td { background-color:white; }
 tr:focus { outline:0; }
 td .label { position:absolute; right:0; }
 
+textarea .accounts {
+  width:600px; position:relative;
+}
+
+#recordTable input[type=text] {
+  width: 150px;
+}
+
+#recordTable table { 
+	position: relative; 
+	table-layout:fixed;
+    width: 100%; 
+}
+
+#recordTable select {
+  width: 150px;
+}
+
+textarea { height: auto; }
+
 header h1 {
     padding: 0.4em 1.1em;
     color: white;

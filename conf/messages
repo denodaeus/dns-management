@@ -1,6 +1,6 @@
 # Messages for localization support
 
-application.name = Cluster DNS Management
+application.name = DNS Management
 
 # Domain Messages
 domain.id = "Id"
@@ -24,7 +24,6 @@ domains.edit.submit = Commit Changes
 
 validation.errors = Please correct the following errors:
 validation.name.duplicate = A domain with this name already exists.
-
 
 records.new.command = New Record
 records.list.navigation = List Records

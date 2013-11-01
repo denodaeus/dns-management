@@ -99,5 +99,6 @@ GET     /clusters/list                  controllers.Clusters.listAll
 
 GET     /accounts/migrate               controllers.BulkOperations.migrate
 GET     /accounts/bulkcreate            controllers.BulkOperations.bulkCreate
+POST    /accounts/bulkcreate            controllers.BulkOperations.bulkCreateRecordsForAccounts
 
 GET     /servers/list                   controllers.Servers.list(p: Int ?= 0, s: Int ?= 1)
