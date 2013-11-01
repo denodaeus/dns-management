@@ -28,22 +28,21 @@ object BulkOperations extends Controller with Secured {
       "srv" -> mapping(
         "proto" -> nonEmptyText,
         "service" -> nonEmptyText,
-        "content" -> mapping(
-          "weight" -> number,
-          "port" -> number,
-          "aRecord" -> nonEmptyText
-        )(SrvContent.apply)(SrvContent.unapply)
-      )(BasicSRVRecord.apply)(BasicSRVRecord.unapply),
-      "records" -> seq(
-         mapping(
-           "domainId" -> number,
-           "name" -> nonEmptyText,
-           "recordType" -> nonEmptyText,
-           "content" -> nonEmptyText,
-           "ttl" -> number,
-           "priority" -> number
-         )(BasicRecord.apply)(BasicRecord.unapply)
-      )
+        "content" -> seq(
+            mapping(
+              "weight" -> number,
+              "port" -> number,
+              "A" -> mapping(
+                "domainId" -> number,
+                "name" -> nonEmptyText,
+                "recordType" -> nonEmptyText,
+                "content" -> nonEmptyText,
+                "ttl" -> number,
+                "priority" -> number
+              )(BasicRecord.apply)(BasicRecord.unapply)
+            )(SrvContent.apply)(SrvContent.unapply)
+        )
+      )(BasicSRVRecord.apply)(BasicSRVRecord.unapply)
     )(BulkCreateOperation.apply)(BulkCreateOperation.unapply)
   )
   

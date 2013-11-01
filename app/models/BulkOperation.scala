@@ -11,7 +11,7 @@ import scala.collection.immutable.StringOps._
 
 case class BulkAccountOperation(operation: String, accounts: Seq[Int])
 case class BulkOperation(operation: String, accounts: String)
-case class BulkCreateOperation(accounts: String, srv: BasicSRVRecord, records: Seq[BasicRecord])
+case class BulkCreateOperation(accounts: String, srv: BasicSRVRecord)
 
 object BulkOperation {
   
@@ -43,8 +43,9 @@ object BulkOperation {
     r
   }
   
-  def createSrvRecordForAccountIfItDoesntExist(accountId: Int) = {
-    
+  def createSrvRecordForAccountIfItDoesntExist(accountId: Int, srv: BasicSRVRecord, record: BasicRecord) = {
+    val name = replaceTokenWithAccountId(accountId, domainFragment = record.name) + "." + domains.get(record.domainId).get
+    val content = BasicSRVRecord.formContent(srv.content)
   }
   
   def replaceTokenWithAccountId(accountId: Int, token: String = "\\$\\{accountId\\}", domainFragment: String) = {
