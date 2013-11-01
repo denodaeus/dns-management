@@ -21,8 +21,19 @@
       </thead>
       <tbody>
         <tr>
+          <td>@inputText(createForm("domain"), '_label -> "SRV Pattern:", 'placeholder -> "_udp._sip.sip-${accountId}")</td>
           <td>
-            @inputText(createForm("domain"), '_label -> "SRV Pattern:", 'placeholder -> "_udp._sip.sip-${accountId}")
+            <label for="proto">SRV Proto:</label>
+            <select name="srv.proto">
+              <option value="udp" selected>UDP</option>
+              <option value="tcp">TCP</option>
+            </select>
+          </td>
+          <td>
+            <label for="port">SRV Port:</label>
+            <select name="srv.port">
+              <option value="5060" selected>5060</option>
+            </select>
           </td>
           <td>
             <label for="Domains">Domain to Apply:</label>

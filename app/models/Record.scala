@@ -28,9 +28,15 @@ case class BasicRecord(domainId: Int, name: String, content: String, recordType:
 case class BasicSRVRecord(proto: String, service: Int, record: BasicRecord, content: SrvContent)
 case class BasicARecord(record: BasicRecord, content: AContent)
 case class AContent(content: IPAddress)
-case class SrvContent(weight: String, port: Int, content: String)
+case class SrvContent(weight: String, port: Int, aRecord: String)
 
 case class IPAddress(address: String)
+
+object BasicSRVRecord {
+  def formContent(content: SrvContent):String = {
+    s"${content.weight} ${content.port} ${content.aRecord}"
+  }
+}
 
 object IPAddress {
   

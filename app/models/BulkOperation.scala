@@ -30,14 +30,22 @@ object BulkOperation {
   def performBulkCreateOperation(task: BulkCreateOperation) = {
       val acctList = parseAccountsToSeq(task.accounts, ',')
       for(account <- acctList) {
-        Logger.debug(s"performBulkCreateOperation :: for account $account, parameters=${task.records.size}")
         for(record <- task.records.seq) {
           Logger.debug(s"performBulkCreateOperation :: for account $account, operating on record ${record.toString}")
-          val name = replaceTokenWithAccountId(account, domainFragment = record.name) + "." + domains.get(record.domainId).get
-          val r: Record = Record(None, record.domainId, name, record.recordType, record.name, record.ttl, record.priority, 1, account)
-          Logger.debug(s"performBulkCreateOperation :: for account $account, created record ${r.toString()}")
+          val aRecord = createARecordForAccountIfItDoesntExist(account, record)
         }
       }
+  }
+  
+  def createARecordForAccountIfItDoesntExist(accountId: Int, record: BasicRecord): Record = {
+    val name = replaceTokenWithAccountId(accountId, domainFragment = record.name) + "." + domains.get(record.domainId).get
+    val r = Record(None, record.domainId, name, record.recordType, record.content, record.ttl, record.priority, 1, accountId)
+    Logger.debug(s"createARecordForAccountIfItDoesntExist :: for account $accountId, created record ${r.toString()}, from parameters ${record.toString}")
+    r
+  }
+  
+  def createSrvRecordForAccountIfItDoesntExist() = {
+    
   }
   
   def replaceTokenWithAccountId(accountId: Int, token: String = "\\$\\{accountId\\}", domainFragment: String) = {

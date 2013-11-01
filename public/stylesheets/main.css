@@ -4,6 +4,10 @@ body { color:black; }
 /* Set font size to be approximately 7pt for an 800px screen shot 127mm wide */
 body, p, label { font-size:15px; }
 
+.help-inline {
+  color:red;
+}
+
 /* Set the width to result in a suitable resolution at 127mm wide. */
 .screenshot { width: 1200px; margin:20px; background-color:#D0E7EF; }
 .navbar-fixed-top, .navbar-fixed-bottom { position:relative; }
