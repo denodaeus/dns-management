@@ -42,7 +42,7 @@ object BulkOperation {
   
   def createARecordForAccountIfItDoesntExist(accountId: Int, record: BasicRecord): Record = {
     val name = replaceTokenWithAccountId(accountId, domainFragment = record.name) + "." + domains.get(record.domainId).get
-    val r = Record(None, record.domainId, name, record.recordType, record.content, record.ttl, record.priority, 1, accountId)
+    val r = Record(None, record.domainId, name, "A", record.content, record.ttl, record.priority, 1, accountId)
     Logger.debug(s"createARecordForAccountIfItDoesntExist :: for account $accountId, created record ${r.toString()}, from parameters ${record.toString}")
     r
   }

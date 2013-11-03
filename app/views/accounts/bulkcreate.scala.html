@@ -24,6 +24,15 @@
         <tr>
           <td>@inputText(createForm("srv.subdomain"), '_label -> "SRV SubDomain Pattern:", 'placeholder -> "sip-${accountId}")</td>
           <td>
+            <label for="Domains">Domain to Apply:</label>
+            <select name="srv.content[0].A.domainId" onchange="changeHiddenInput(this)">
+              <option value="NULL" selected>-- Select An Option --</option>
+              @for(d: Domain <- models.Domains.findAll){
+                <option value="@d.id">@d.name</option>
+              }
+            </select>
+          </td>
+          <td>
             <label for="proto">SRV Proto:</label>
             <select name="srv.proto">
               <option value="udp" selected>UDP</option>
@@ -40,15 +49,6 @@
             <label for="port">SRV Port:</label>
             <select name="srv.content[0].port">
               <option value="5060" selected>5060</option>
-            </select>
-          </td>
-          <td>
-            <label for="Domains">Domain to Apply:</label>
-            <select name="srv.content[0].A.domainId" onchange="changeHiddenInput(this)">
-              <option value="NULL" selected>-- Select An Option --</option>
-              @for(d: Domain <- models.Domains.findAll){
-                <option value="@d.id">@d.name</option>
-              }
             </select>
           </td>
         </tr>
