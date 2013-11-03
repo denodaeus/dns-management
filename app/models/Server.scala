@@ -36,7 +36,7 @@ object Servers extends Table[Server]("servers"){
   
   def findById(id: Int) = DB.withSession {
     implicit session: Session =>
-      Domains.byId(id).firstOption
+      Servers.byId(id).firstOption
   }
   
   def findPage(page: Int = 0, orderField: Int): Page[Server] = {

@@ -4,7 +4,6 @@
 @import models.Domain
 
 @domainHiddenField() = {
-  <input type="hidden" name="srv.content[1].A.domainId" id="hiddenInput"/>
   <input type="hidden" name="srv.content[1].port" value="5060"/>
   <script>
     function changeHiddenInput (objDropDown) {
@@ -25,7 +24,7 @@
           <td>@inputText(createForm("srv.subdomain"), '_label -> "SRV SubDomain Pattern:", 'placeholder -> "sip-${accountId}")</td>
           <td>
             <label for="Domains">Domain to Apply:</label>
-            <select name="srv.content[0].A.domainId" onchange="changeHiddenInput(this)">
+            <select name="srv.domainId">
               <option value="NULL" selected>-- Select An Option --</option>
               @for(d: Domain <- models.Domains.findAll){
                 <option value="@d.id">@d.name</option>
@@ -61,14 +60,21 @@
 
 }
 
+@layoutServerList(index: Int) = {   
+  <select name=@{"srv.content["+index+"].serverId"} onchange="changeHiddenInput(this)">
+    <option value="NULL" selected>-- Select An Option --</option>
+    @for(s: Server <- models.Servers.findAll){
+      <option value="@s.id">@s.hostName</option>
+    }
+  </select>
+}
+
 @recordFormRow(className: String = "rft", index: Int) = {
   <tr>
     <td>@select(createForm("srv.content["+index+"].A.recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "")</td>
-    <td>@inputText(createForm("srv.content["+index+"].A.name"), '_label -> "", 'placeholder -> "sip-${accountid}")</td>
-    <td>@inputText(createForm("srv.content["+index+"].A.content"), '_label -> "", 'placeholder -> "ip address")</td>
-    <td>@inputText(createForm("srv.content["+index+"].A.priority"), '_label -> "", 'placeholder -> "1")</td>
+    <td>@layoutServerList(index)</td>
     <td>@inputText(createForm("srv.content["+index+"].weight"), '_label -> "", 'placeholder -> "1")</td>
-    <td>@inputText(createForm("srv.content["+index+"].A.ttl"), '_label -> "", 'placeholder -> "60")</td>
+    <td>@inputText(createForm("srv.ttl"), '_label -> "", 'placeholder -> "60")</td>
   </tr>
 }
 
@@ -78,9 +84,7 @@
       <thead>
         <tr>
           <th>Record Type:</th>
-          <th>Record Name Pattern:</th>
-          <th>Record Contents:</th>
-          <th>Record Priority:</th>
+          <th>Server:</th>
           <th>Record Weight:</th>
           <th>Record TTL:</th>
         </tr>

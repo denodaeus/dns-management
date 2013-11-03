@@ -9,6 +9,7 @@ import models.BulkOperation
 import models.BulkCreateOperation
 import models.BasicSRVRecord
 import models.SrvContent
+import models.BasicHostNameARecord
 
 import play.Logger
 import play.api.data.Form
@@ -26,21 +27,16 @@ object BulkOperations extends Controller with Secured {
     mapping(
       "accounts" -> nonEmptyText,
       "srv" -> mapping(
+        "domainId" -> number,
         "subdomain" -> nonEmptyText,
         "proto" -> nonEmptyText,
         "service" -> nonEmptyText,
+        "ttl" -> number,
         "content" -> seq(
           mapping(
             "weight" -> number,
             "port" -> number,
-            "A" -> mapping(
-              "domainId" -> number,
-              "name" -> nonEmptyText,
-              "recordType" -> nonEmptyText,
-              "content" -> nonEmptyText,
-              "ttl" -> number,
-              "priority" -> number
-            )(BasicRecord.apply)(BasicRecord.unapply)
+            "serverId" -> number
           )(SrvContent.apply)(SrvContent.unapply)
         )
       )(BasicSRVRecord.apply)(BasicSRVRecord.unapply)
@@ -75,7 +71,7 @@ object BulkOperations extends Controller with Secured {
     bulkCreateForm.bindFromRequest.fold(
       formWithErrors => {
         //BadRequest(views.html.accounts.bulkcreate(formWithErrors))
-        Logger.debug("bulkCreateRecordsForAccounts :: BadRequest, errors=" +formWithErrors.errorsAsJson + ", request=" + request.body)
+        Logger.debug("bulkCreateRecordsForAccounts :: BadRequest, errors=" +formWithErrors.errorsAsJson + ", request=" + request.body + ", form=" + formWithErrors.toString())
         BadRequest("Please correct the following Errors: " + formWithErrors.errorsAsJson)
       },
       bulkCreate => {

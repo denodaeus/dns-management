@@ -12,6 +12,7 @@ import scala.collection.immutable.StringOps._
 case class BulkAccountOperation(operation: String, accounts: Seq[Int])
 case class BulkOperation(operation: String, accounts: String)
 case class BulkCreateOperation(accounts: String, srv: BasicSRVRecord)
+case class BasicHostNameARecord(serverId: Int, content: String, priority: Int )
 
 object BulkOperation {
   
@@ -23,21 +24,20 @@ object BulkOperation {
     list
   }
   
+  def getServerFromServerId(id: Int): Server = {
+    models.Servers.findById(id).get
+  }
+  
   def performBulkCreateOperation(task: BulkCreateOperation) = {
-    var records = scala.collection.mutable.Seq[Record]()
     val acctList = parseAccountsToSeq(task.accounts, ',')
     for(account <- acctList) {
       for(content <- task.srv.content.seq) {
         Logger.debug(s"performBulkCreateOperation :: for account $account, operating on record ${content.toString}")
-        val aRecord = createARecordForAccountIfItDoesntExist(account, content.aRecord)
-        val srvRecord = createSrvRecordForAccountIfItDoesntExist(account, content.weight, content.port, task.srv, content.aRecord, aRecord.name)
-        records :+ aRecord :+ srvRecord
-        insertOrUpdateRecord(aRecord)
+        val server = getServerFromServerId(content.serverId)
+        val srvRecord = createSrvRecordForAccountIfItDoesntExist(account, content.weight, content.port, task.srv, server)
         insertOrUpdateRecord(srvRecord)
       }
     }
-    Logger.debug(s"performBulkCreateOperation :: insertOrUpdateRecords for ${records.toString}")
-    insertOrUpdateRecords(records)
   }
   
   def createARecordForAccountIfItDoesntExist(accountId: Int, record: BasicRecord): Record = {
@@ -47,12 +47,13 @@ object BulkOperation {
     r
   }
   
-  def createSrvRecordForAccountIfItDoesntExist(accountId: Int, weight: Int, port: Int, srv: BasicSRVRecord, record: BasicRecord, aRecord: String) = {
-    val name = replaceTokenWithAccountId(accountId, domainFragment = srv.subdomain) + "." + domains.get(record.domainId).get
-    val srvContent = BasicSRVRecord.formContent(weight, port, aRecord)
+  def createSrvRecordForAccountIfItDoesntExist(accountId: Int, weight: Int, port: Int, srv: BasicSRVRecord, server: Server) = {
+    val defaultPriority = 0
+    val name = replaceTokenWithAccountId(accountId, domainFragment = srv.subdomain) + "." + domains.get(srv.domainId).get
+    val srvContent = BasicSRVRecord.formContent(weight, port, server.hostName)
     val srvName = formSrvDomain(srv.service, srv.proto, name)
-    val r = Record(None, record.domainId, srvName, "SRV", srvContent, record.ttl, record.priority, 1, accountId)
-    Logger.debug(s"createSrvRecordForAccountIfItDoesntExist :: created record ${r.toString()}, from content -> account=$accountId, srv=$srv, record=$record")
+    val r = Record(None, srv.domainId, srvName, "SRV", srvContent, srv.ttl, defaultPriority, 1, accountId)
+    Logger.debug(s"createSrvRecordForAccountIfItDoesntExist :: created record ${r.toString()}, from content -> account=$accountId, srv=$srv, record=$srv")
     r
   }
   

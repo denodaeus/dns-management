@@ -26,16 +26,16 @@ case class Record (
 
 case class BaseRecord(name: String, domainId: Int, recordType: String, ttl: Int, priority: Int, changeDate: Int)
 case class BasicRecord(domainId: Int, name: String, content: String, recordType: String, ttl: Int, priority: Int)
-case class BasicSRVRecord(subdomain: String, proto: String, service: String, content: Seq[SrvContent])
+case class BasicSRVRecord(domainId: Int, subdomain: String, proto: String, service: String, ttl: Int, content: Seq[SrvContent])
 case class BasicARecord(record: BasicRecord, content: AContent)
 case class AContent(content: IPAddress)
-case class SrvContent(weight: Int, port: Int, aRecord: BasicRecord)
+case class SrvContent(weight: Int, port: Int, serverId: Int)
 
 case class IPAddress(address: String)
 
 object BasicSRVRecord {
-  def formContent(weight: Int, port: Int, aRecord: String):String = {
-    s"$weight $port $aRecord"
+  def formContent(weight: Int, port: Int, hostName: String):String = {
+    s"$weight $port $hostName"
   }
 }
 
