@@ -2,6 +2,7 @@
 @import helper._
 @import helper.twitterBootstrap._
 @import models.Domains
+@import utils.DateTimeUtils._
 
 @main(Messages("records.form")) {
   <div class="container">
@@ -10,7 +11,14 @@
      <div class="alert alert-error">
        @error.message
      </div>
-   } 
+   }
+   
+  @if(recordForm.hasErrors){
+      <div class="alert alert-error">
+        Please correct the following errors:
+        @recordForm.errorsAsJson
+      </div>
+  } 
   
     @if(flash.get("success").isDefined){
       <div class="alert alert-success">
@@ -31,17 +39,61 @@
         <legend>
           @Messages("records.details", recordForm("id").value.getOrElse(Messages("domains.new")))
         </legend>
-        @helper.inputText(recordForm("domainId"), '_label -> "Domain ID")
-        @helper.inputText(recordForm("name"), '_label -> "Name")
+        <table style="width: 600px; height: 100px">
+          <td><label for="separator">Subdomain:</label>
+            <input type="text" name="subdomain" id="subdomain" onchange="setSubDomain(this)"/>
+          @** <td>@helper.inputText(recordForm("subdomain"), '_label -> "Subdomain:", 'placeholder -> "sip-XXXXX")</td> **@
+          <td><label for="separator">Separator:</label>
+            <select style="width: 75px" name="separator"><option>.</option></select>
+          </td>
+          <td><label for="Domains">DomainId:</label>
+            <select name="domainId" onchange="setDomain(this)">
+              <option value="NULL" selected>-- Select An Option --</option>
+              @for(d: Domain <- models.Domains.findAll){
+                <option value="@d.id">@{d.name}</option>
+              }
+            </select>
+          </td>
+          <td/>
+          <td/>
+        </table>
+        <p/>
         @select(recordForm("recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "Record Type")
-        @helper.inputText(recordForm("content"), '_label -> "Content")
-        @helper.inputText(recordForm("ttl"), '_label -> "TTL")
-        @helper.inputText(recordForm("priority"), '_label -> "Priority")
-        @helper.inputText(recordForm("changeDate"), '_label -> "Change Date")
-        @helper.inputText(recordForm("accountId"), '_label -> "Account ID")
+        @helper.inputText(recordForm("content"), '_label -> "Content", 'placeholder -> "127.0.0.1")
+        @helper.inputText(recordForm("ttl"), '_label -> "TTL", 'placeholder -> "60")
+        @helper.inputText(recordForm("priority"), '_label -> "Priority", 'placeholder -> "1")
+        <input type="hidden" id="changeDate" name="changeDate" value="@{nowInUnixTime}" />
+        @helper.inputText(recordForm("accountId"), '_label -> "Account ID", 'placeholder -> "25016")
       </fieldset>
+        <script>
+          var domain;
+          var subdomain;
+
+          function getName() {
+             return subdomain + "." + domain;
+          }
+
+          function setDomain(domain) {
+              console.log("setDomain for: " + domain.options[domain.selectedIndex].innerHTML);
+              this.domain = domain.options[domain.selectedIndex].innerHTML;
+          }
+
+          function setSubDomain(subDomain) {
+              console.log("setSubDomain for: " + subDomain.value);
+              this.subdomain = subDomain.value;
+          }
+          
+          function getNameValue () {
+            document.getElementById("domain").value = objDropDown.value; 
+          }
+
+          function setName() {
+        	  document.getElementById("name").value = getName();
+          }
+        </script>
+        <input type="hidden" name="name" id="name" value=""/>
     
-      <p><input type="submit" class="btn primary" id="button" value='@id.map(_=> Messages("records.edit.submit")).getOrElse(Messages("records.new.submit"))'></p>
+      <p><input type="submit" class="btn primary" id="button" onclick="setName()" value='@id.map(_=> Messages("records.edit.submit")).getOrElse(Messages("records.new.submit"))'></p>
     </div>
   }
 }

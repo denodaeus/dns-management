@@ -120,6 +120,11 @@ object Records extends Table[Record]("records"){
           	.list
       )
   }
+  
+  def findByContent(content: String) = DB.withSession {
+    implicit session: Session =>
+      (for (r <- Records.where(_.content === content)) yield r).list.toSeq
+  }
     
   def listAccountIds(filter: String = "") = DB.withSession { 
     implicit session: Session => 

@@ -35,7 +35,14 @@ object Records extends Controller with Secured {
       "priority" -> number,
       "changeDate" -> number,
       "accountId" -> number
-    ) (Record.apply)(Record.unapply)
+    ) (Record.apply)(Record.unapply).verifying("Failed form validation: " +
+        " Prefix contains domain value.", fields => fields match {
+      case record => {
+        val domainName = models.Domains.getNameForId(record.domainId);
+        record.name.endsWith(domainName) &&
+        !(record.name.stripSuffix(domainName).contains(domainName))
+      }
+    })
   )
   
   def index = withAuth { username => implicit request =>
@@ -110,8 +117,8 @@ object Records extends Controller with Secured {
   
   def deleteOne(id: Int) = withAuth { username => implicit request =>
     models.Records.delete(id) match {
-      case Success(r) => Redirect("/records/list").flashing("success" -> s"Record $id deleted successfully.")
-      case Failure(e) => Redirect(s"/records/show/$id").flashing("error" -> s"Failed to delete record $id, reason=${e.getMessage()}")
+      case Success(r) => Redirect(routes.Records.list(0,1,"")).flashing("success" -> s"Record $id deleted successfully.")
+      case Failure(e) => Redirect(routes.Records.show(id)).flashing("error" -> s"Failed to delete record $id, reason=${e.getMessage()}")
     }
   }
   
@@ -143,7 +150,7 @@ object Records extends Controller with Secured {
   	      case Success(r) => Redirect(s"/records/show/${record.id.get}").flashing("success" -> "Successful Edit")
   	      case Failure(e) => {
   	        Logger.debug(s"update :: failed to update record with id=${record.id}, reason=${e.printStackTrace()}")
-  	        Redirect(s"/records/show/${record.id.get}").flashing("error" -> s"Error updating record ${record.id}; ${e.getMessage()}")
+  	        Redirect(routes.Records.show(record.id.get)).flashing("error" -> s"Error updating record ${record.id}; ${e.getMessage()}")
   	      }
   	    }
   	  }
@@ -214,7 +221,7 @@ object Records extends Controller with Secured {
   	  formWithErrors => BadRequest(views.html.records.create(formWithErrors, 0)).flashing("error" -> s"Errors on submission: ${formWithErrors.errorsAsJson}"),
   	  record => {
   	    models.Records.insert(record) match {
-  	      case Success(r) => Ok(views.html.records.show(record)).flashing("success" -> s"Successfully inserted record $r")
+  	      case Success(r) => Redirect(routes.Records.show(r)).flashing("success" -> s"Successfully inserted record $r")
   	      case Failure(r) => BadRequest(views.html.records.create(recordForm, 0)).flashing("error" -> s"error inserting record $r, error=> ${r.printStackTrace()}")
   	    }
   	  }

@@ -60,13 +60,17 @@
 
 }
 
-@layoutServerList(index: Int) = {   
+@layoutServerList(index: Int) = {
+  <div class="input">    
   <select name=@{"srv.content["+index+"].serverId"} onchange="changeHiddenInput(this)">
     <option value="NULL" selected>-- Select An Option --</option>
     @for(s: Server <- models.Servers.findAll){
       <option value="@s.id">@s.hostName</option>
     }
   </select>
+        @**<span class="errors">@elements.errors.mkString(", ")</span>
+        <span class="help">@elements.infos.mkString(", ")</span> **@
+  </div>
 }
 
 @recordFormRow(className: String = "rft", index: Int) = {
@@ -119,6 +123,12 @@
 }
 
 @hasErrors() = {
+  @if(createForm.hasErrors){
+      <div class="alert alert-error">
+        Please correct the following errors:
+        @createForm.errorsAsJson
+      </div>
+  }
   @createForm.globalError.map { error =>
     <div class="alert alert-error">
       @error.message
@@ -139,8 +149,8 @@
 }
 
 @main("Bulk Create Records") {
-  @hasErrors()  
   <div class="container">
+    @hasErrors()  
     <h2>Bulk Create Records</h2>
     <p/>
     <p/>

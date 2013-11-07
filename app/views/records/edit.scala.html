@@ -13,7 +13,14 @@
       <div class="alert alert-error">
         @error.message
       </div>
-   } 
+   }
+   
+   @if(recordForm.hasErrors){
+     <div class="alert alert-error">
+       Please correct the following errors:
+       @recordForm.errorsAsJson
+     </div>
+   }  
  
     @if(flash.get("success").isDefined){
       <div class="alert alert-success">
@@ -39,7 +46,7 @@
       @inputText(recordForm("content"), '_label -> "Content")
       @inputText(recordForm("ttl"), '_label -> "TTL")
       @inputText(recordForm("priority"), '_label -> "Priority")
-      @inputText(recordForm("changeDate"), '_label -> "Change Date")
+      <input type="hidden" name="changeDate" value="1"/>
       @inputText(recordForm("accountId"), '_label -> "Account Id")
     </fieldset>
     <p><div class="actions"><input type="submit" class="btn primary" value=@Messages("records.edit.submit")></div></p>

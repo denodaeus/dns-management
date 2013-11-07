@@ -76,7 +76,8 @@ object BulkOperations extends Controller with Secured {
       formWithErrors => {
         //BadRequest(views.html.accounts.bulkcreate(formWithErrors))
         Logger.debug("bulkCreateRecordsForAccounts :: BadRequest, errors=" +formWithErrors.errorsAsJson + ", request=" + request.body + ", form=" + formWithErrors.toString())
-        BadRequest("Please correct the following Errors: " + formWithErrors.errorsAsJson)
+        Ok(views.html.accounts.bulkcreate(formWithErrors))
+        //BadRequest("Please correct the following Errors: " + formWithErrors.errorsAsJson)
       },
       bulkCreate => {
         val (id, results ) = runBulkCreateTask(bulkCreate)

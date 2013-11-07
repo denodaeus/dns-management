@@ -66,6 +66,12 @@ object Domains extends Table[Domain]("domains") {
     }
   }
   
+  def getNameForId(id: Int) = DB.withSession {
+    implicit session: Session => {
+      (Domains.byId(id).first).name
+    }
+  }
+  
   def findPage(page: Int = 0, orderField: Int): Page[Domain] = {
     val offset = pageSize * page
     
