@@ -3,18 +3,40 @@ package models
 import play.Logger
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.iteratee._
 
 import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
 import scala.collection.immutable.StringOps._
+import play.api.mvc.WebSocket
 
 case class BulkAccountOperation(operation: String, accounts: Seq[Int])
 case class BulkOperation(operation: String, accounts: String)
 case class BulkCreateOperation(accounts: String, srv: BasicSRVRecord)
 case class BasicHostNameARecord(serverId: Int, content: String, priority: Int )
 
-object BulkOperation {
+case class Job()
+
+trait withStatus {
+  
+  val(out, channel) = Concurrent.broadcast[JsValue]
+  
+  def pushMessage(channel: Concurrent.Channel[JsValue], accountId: String, status: String, success: String, log: String) = {
+    val returns = Json.toJson(
+      Map(
+        "accountId" -> accountId,
+        "status" -> status,
+        "success" -> success,
+        "log" -> log
+      )
+    )
+    Logger.debug(s"pushMessage :: pushing message to channel $channel, message=${returns.toString()}")
+    channel.push(returns)
+  }
+}
+
+object BulkOperation extends withStatus {
   
   lazy val domains: Map[Int, String] = models.Domains.findAll.map(d => (d.id.get -> d.name)).toMap
   
@@ -28,7 +50,8 @@ object BulkOperation {
     models.Servers.findById(id).get
   }
   
-  def performBulkCreateOperation(task: BulkCreateOperation) = {
+  def performBulkCreateOperation(task: BulkCreateOperation, jobId: Long) = {
+    val statuses = scala.collection.mutable.ListBuffer[Tuple4[String, String, String, String]]()
     val acctList = parseAccountsToSeq(task.accounts, ',')
     for(account <- acctList) {
       for(content <- task.srv.content.seq) {
@@ -36,8 +59,11 @@ object BulkOperation {
         val server = getServerFromServerId(content.serverId)
         val srvRecord = createSrvRecordForAccountIfItDoesntExist(account, content.weight, content.port, task.srv, server)
         insertOrUpdateRecord(srvRecord)
+        pushMessage(channel, "$account", content.toString(), "${account}", "${account}")
+        statuses += Tuple4(account.toString(), "Success", srvRecord.toString(), "")
       }
     }
+    statuses
   }
   
   def createARecordForAccountIfItDoesntExist(accountId: Int, record: BasicRecord): Record = {
@@ -84,5 +110,4 @@ object BulkOperation {
       case Failure(e) => Logger.debug(s"insertOrUpdateRecord :: failure inserting for $record, failure $e")
     }
   }
-  
 }

@@ -87,6 +87,7 @@ POST    /records/update                 controllers.Records.update
 DELETE  /records/delete/:id             controllers.Records.deleteOne(id: Int)
 GET     /records/delete/:id             controllers.Records.deleteOne(id: Int)
 GET     /records/delete                 controllers.Records.deleteOne(id: Int)
+POST    /records/delete                 controllers.Records.delete()
 
 GET     /domains/list                   controllers.Domains.list(p:Int ?= 0, s:Int ?= 2)
 GET     /domains/list/:id               controllers.Domains.show(id: Int)
@@ -105,3 +106,4 @@ GET     /accounts/bulkcreate            controllers.BulkOperations.bulkCreate
 POST    /accounts/bulkcreate            controllers.BulkOperations.bulkCreateRecordsForAccounts
 
 GET     /servers/list                   controllers.Servers.list(p: Int ?= 0, s: Int ?= 1)
+GET     /accounts/wsstatus/:id          controllers.BulkOperations.watchOperationStatus(id: Long)

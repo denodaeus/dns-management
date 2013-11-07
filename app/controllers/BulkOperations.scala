@@ -19,7 +19,11 @@ import play.api.data.Forms.nonEmptyText
 import play.api.data.Forms.number
 import play.api.data.Forms.optional
 import play.api.mvc.Action
+import play.api.mvc.WebSocket
 import play.api.mvc.Controller
+import play.api.libs.json._
+import play.api.libs.iteratee._
+
 
 object BulkOperations extends Controller with Secured {
   
@@ -75,16 +79,29 @@ object BulkOperations extends Controller with Secured {
         BadRequest("Please correct the following Errors: " + formWithErrors.errorsAsJson)
       },
       bulkCreate => {
-        val returns: Boolean = runBulkCreateTask(bulkCreate)
-        Ok("Bulk Job Successful")
+        val (id, results ) = runBulkCreateTask(bulkCreate)
+        Ok(views.html.accounts.bulkstatus(id, results)).flashing("success" -> s"Task Started for id=$id")
       }
     )
   }
   
-  def runBulkCreateTask(task: BulkCreateOperation): Boolean = {
+  def runBulkCreateTask(task: BulkCreateOperation) = {
+    import play.api.libs.concurrent.Execution.Implicits._
     Logger.debug(s"bulkCreateRecordsForAccounts: running with task $task")
-    BulkOperation.performBulkCreateOperation(task)
-    true
+    val id = System.currentTimeMillis / 1000L
+    val results = BulkOperation.performBulkCreateOperation(task, id)
+    (id, results)
   }
-
+  
+  def watchOperationStatus(jobId: Long) = WebSocket.using[JsValue] { implicit request =>
+    import play.api.libs.concurrent.Execution.Implicits._
+    val(out, channel) = (BulkOperation.out, BulkOperation.channel)
+    Logger.debug(s"watchOperationStatus :: for job=$jobId, out=$out, channel=$channel")
+    val in = Iteratee.foreach[JsValue] {
+      msg => Logger.debug(s" pushing message to channel :: $msg")
+      channel.push(msg)
+    }
+    (in, out)
+  }
+  
 }

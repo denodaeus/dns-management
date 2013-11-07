@@ -163,7 +163,7 @@ object Records extends Table[Record]("records"){
     
   def insert(r: Record) = DB.withSession { 
     implicit session: Session => 
-      Try(Records.autoInc.insert(r.domainId, r.name , r.recordType, r.content, r.ttl, r.priority, r.changeDate, r.accountId))
+      Try(Records.autoInc.insert(r.domainId, r.name , r.recordType, r.content, r.ttl, r.priority, nowInUnixTime, r.accountId))
   }
     
   def update(id: Int, record: Record) = DB.withSession { 

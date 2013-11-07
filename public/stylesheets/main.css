@@ -30,6 +30,13 @@ textarea .accounts {
   width: 150px;
 }
 
+
+#success tr {
+  color: #468847;
+  border-color: #d6e9c6;
+  border: 1px solid #fbeed5;
+}
+
 #recordTable table { 
 	position: relative; 
 	table-layout:fixed;

@@ -114,6 +114,24 @@ object Records extends Controller with Secured {
       case Failure(e) => Redirect(s"/records/show/$id").flashing("error" -> s"Failed to delete record $id, reason=${e.getMessage()}")
     }
   }
+  
+  def delete() = withAuth { username => implicit request =>
+    request.body.asJson.map { json =>
+      json.validate[Seq[Int]].fold(
+        invalid => BadRequest(s"delete :: error deleting, malformed json=$json"),
+        valid => {
+          for (record <- valid) {
+            Logger.debug(s"delete :: deleting record $record")
+            models.Records.delete(record) match {
+              case Success(r) => Logger.debug("successfully deleted " + r)
+              case Failure(e) => Logger.debug("failed to delete, reason=" + e)
+            }
+          }
+          Ok(s"Successfully deleted json=$json")
+        }
+      )
+    }.getOrElse(BadRequest)
+  }
 
   // VIEWS SECTION FOR TEMPORARY VIEWS
   
@@ -125,7 +143,7 @@ object Records extends Controller with Secured {
   	      case Success(r) => Redirect(s"/records/show/${record.id.get}").flashing("success" -> "Successful Edit")
   	      case Failure(e) => {
   	        Logger.debug(s"update :: failed to update record with id=${record.id}, reason=${e.printStackTrace()}")
-  	        BadRequest(views.html.records.show(record)).flashing("error" -> s"Error updating record ${record.id}; ${e.getMessage()}")
+  	        Redirect(s"/records/show/${record.id.get}").flashing("error" -> s"Error updating record ${record.id}; ${e.getMessage()}")
   	      }
   	    }
   	  }
