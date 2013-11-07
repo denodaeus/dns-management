@@ -60,6 +60,9 @@ GET     /api/v1/clusters                   controllers.Clusters.listAll
 POST    /api/v1/clusters                   controllers.Clusters.create
 PUT     /api/v1/clusters                   controllers.Clusters.newCluster
 
+# Servers
+PUT     /api/v1/servers/:id                  controllers.Servers.updateIfExists(id: Int)
+
 ################### DEMO ###############################
 # Demo pages for testing purposes
 ########################################################
@@ -106,4 +109,8 @@ GET     /accounts/bulkcreate            controllers.BulkOperations.bulkCreate
 POST    /accounts/bulkcreate            controllers.BulkOperations.bulkCreateRecordsForAccounts
 
 GET     /servers/list                   controllers.Servers.list(p: Int ?= 0, s: Int ?= 1)
+GET     /servers/create                 controllers.Servers.create
+POST    /servers/create                 controllers.Servers.createServer
+GET     /servers/show/:id               controllers.Servers.show(id: Int)
+
 GET     /accounts/wsstatus/:id          controllers.BulkOperations.watchOperationStatus(id: Long)

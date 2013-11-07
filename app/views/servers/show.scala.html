@@ -1,0 +1,30 @@
+@(server: Server)(implicit flash: Flash)
+
+@main("Showing Server: ") {
+    <div class="container">
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success">
+        @flash.get("success")
+      </div>
+    }
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-error">
+        @flash.get("error")
+      </div>
+    }
+        <dl class="servers">
+            <dt>Name: </dt><dd>@server.id</dd>
+            <dt>Domain Id: </dt><dd>@server.hostName</dd>
+            <dt>Record Type: </dt><dd>@server.ip</dd>
+        </dl>
+
+    <br/>
+    <p>
+        <a href="@routes.Records.edit((server.id).getOrElse(0))" class="btn">
+            @Messages("records.edit.command")</a>
+        <a href="@controllers.routes.Records.deleteOne((server.id).getOrElse(0))" class="btn">
+            @Messages("records.delete.command")</a>
+    </p>
+    </div>
+}

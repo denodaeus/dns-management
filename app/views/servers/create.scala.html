@@ -1,0 +1,49 @@
+@(serverForm: Form[Server], id: Option[Int] = None)(implicit flash: Flash)
+@import helper._
+@import helper.twitterBootstrap._
+@import models.Domains
+@import utils.DateTimeUtils._
+
+@main(Messages("servers.form")) {
+  <div class="container">
+  
+   @serverForm.globalError.map { error =>
+     <div class="alert alert-error">
+       @error.message
+     </div>
+   }
+   
+  @if(serverForm.hasErrors){
+      <div class="alert alert-error">
+        Please correct the following errors:
+        @serverForm.errorsAsJson
+      </div>
+  } 
+  
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success">
+        @flash.get("success")
+      </div>
+    }
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-error">
+        @flash.get("error")
+      </div>
+    }
+    
+  <h2>@Messages("servers.form")</h2>
+
+    @helper.form(action = id.map(routes.Servers.updateIfExists(_)).getOrElse(routes.Servers.createServer())) {
+      <fieldset>
+        <legend>
+          @Messages("servers.details", serverForm("id").value.getOrElse(Messages("servers.new")))
+        </legend>
+        @helper.inputText(serverForm("hostName"), '_label -> "Resolvable Host Name:", 'placeholder -> "my.server.com")
+        @helper.inputText(serverForm("ip"), '_label -> "IP Address", 'placeholder -> "127.0.0.1")
+      </fieldset>
+    
+      <p><input type="submit" class="btn primary" id="button" onclick="setName()" value='@id.map(_=> Messages("servers.edit.submit")).getOrElse(Messages("servers.new.submit"))'></p>
+    </div>
+  }
+}

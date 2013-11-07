@@ -10,6 +10,8 @@ import scala.util.Success
 import scala.util.Failure
 import scala.collection.immutable.StringOps._
 import play.api.mvc.WebSocket
+import play.api.db.slick.Config.driver.simple._
+import play.api.db.slick.DB
 
 case class BulkAccountOperation(operation: String, accounts: Seq[Int])
 case class BulkOperation(operation: String, accounts: String)
@@ -37,6 +39,7 @@ trait withStatus {
 }
 
 object BulkOperation extends withStatus {
+  import play.api.Play.current
   
   lazy val domains: Map[Int, String] = models.Domains.findAll.map(d => (d.id.get -> d.name)).toMap
   
@@ -46,8 +49,9 @@ object BulkOperation extends withStatus {
     list
   }
   
-  def getServerFromServerId(id: Int): Server = {
-    models.Servers.findById(id).get
+  def getServerFromServerId(id: Int) = DB.withSession {
+    implicit session:Session =>
+      models.Servers.byId(id).firstOption
   }
   
   def performBulkCreateOperation(task: BulkCreateOperation, jobId: Long) = {
@@ -57,7 +61,7 @@ object BulkOperation extends withStatus {
       for(content <- task.srv.content.seq) {
         Logger.debug(s"performBulkCreateOperation :: for account $account, operating on record ${content.toString}")
         val server = getServerFromServerId(content.serverId)
-        val srvRecord = createSrvRecordForAccountIfItDoesntExist(account, content.weight, content.port, task.srv, server)
+        val srvRecord = createSrvRecordForAccountIfItDoesntExist(account, content.weight, content.port, task.srv, server.get)
         insertOrUpdateRecord(srvRecord)
         pushMessage(channel, "$account", content.toString(), "${account}", "${account}")
         statuses += Tuple4(account.toString(), "Success", srvRecord.toString(), "")

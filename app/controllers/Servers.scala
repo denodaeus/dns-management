@@ -37,12 +37,62 @@ object Servers extends Controller with Secured {
     Ok(json) as JSON
   }
   
+  def updateIfExists(id: Int) = Action { implicit request =>
+    implicit val writes = Json.writes[Server]
+    implicit val reads = Json.reads[Server]
+    request.body.asJson.map { json =>
+      json.validate[Server].fold(
+        invalid => {
+          BadRequest(Json.toJson(Map("error" -> invalid.head.toString)))
+        },
+        valid => {
+          models.Servers.update(id, valid) match {
+            case Success(r) => {
+              Ok (Json.toJson(r))
+            }
+            case Failure(e) => {
+              Logger.error(s"updateIfExists :: error updating record $id, cause=", e)
+              BadRequest(Json.toJson(Map("error" -> e.getMessage)))
+            }
+          }
+        }
+      )
+    }.getOrElse(BadRequest (Json.toJson(Map("status" -> "error request.body", "message" -> "Content Type Not Json"))))
+  }
+  
   // VIEWS SECTION FOR TEMPORARY VIEWS
   
   def list(page: Int, orderBy: Int) = withAuth { username =>
     implicit request =>
       val servers = models.Servers.findPage(page, orderBy)
       Ok(views.html.servers.list(servers.items))
+  }
+  
+  def create() = withAuth { username =>
+    implicit request =>
+    Ok(views.html.servers.create(serverForm))
+  }
+  
+  def createServer() = withAuth { username => implicit request =>
+  	serverForm.bindFromRequest.fold(
+  	  formWithErrors => BadRequest(views.html.servers.create(formWithErrors)).flashing("error" -> s"Errors on submission: ${formWithErrors.errorsAsJson}"),
+  	  server => {
+  	    models.Servers.insert(server) match {
+  	      case Success(r) => Redirect(routes.Servers.show(r)).flashing("success" -> s"Successfully inserted server $r")
+  	      case Failure(r) => BadRequest(views.html.servers.create(serverForm)).flashing("error" -> s"error inserting server $r, error=> ${r.printStackTrace()}")
+  	    }
+  	  }
+  	)
+  }
+  
+  def show(id: Int) = withAuth { username => implicit request =>
+    models.Servers.findById(id) match {
+      case Success(s) => {
+        Logger.debug(s"show :: found for id=$id")
+        Ok(views.html.servers.show(s.getOrElse(null)))
+      }
+      case Failure(e) => { Logger.debug(s"show :: id=$id NotFound"); NotFound }
+    }
   }
 
 }
