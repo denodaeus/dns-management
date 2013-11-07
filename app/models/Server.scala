@@ -23,7 +23,7 @@ object Servers extends Table[Server]("servers"){
   def hostName = column[String]("hostname", O.NotNull)
   def ip = column[String]("ip", O.NotNull)
   def * = id.? ~ hostName ~ ip <> (Server, Server.unapply _)
-  def autoInc = * returning id
+  def autoInc = hostName ~ ip returning id
   
   val byId = createFinderBy(_.id)
   val byHostName = createFinderBy(_.hostName)
@@ -36,7 +36,7 @@ object Servers extends Table[Server]("servers"){
   
   def findById(id: Int) = DB.withSession {
     implicit session: Session =>
-      Servers.byId(id).firstOption
+      Try(Servers.byId(id).firstOption)
   }
   
   def findPage(page: Int = 0, orderField: Int): Page[Server] = {
@@ -57,6 +57,19 @@ object Servers extends Table[Server]("servers"){
           
           val totalRows = (for (s <- Servers) yield s.id).list.size
           Page(servers, page, offset, totalRows, pageSize)
+    }
+  }
+  
+  def insert(s: Server) = DB.withSession { 
+    implicit session: Session => 
+      Try(Servers.autoInc.insert(s.hostName, s.ip))
+  }
+    
+  def update(id: Int, server: Server) = DB.withSession { 
+    implicit session: Session => {
+      val serverToUpdate = server.copy(Some(id), server.hostName, server.ip)
+      Logger.debug("update: updating serverid=" + id + ", server=" + server + ", previous=" + Servers.findById(id))
+      Try(Servers.where(_.id === id).update(serverToUpdate))
     }
   }
 

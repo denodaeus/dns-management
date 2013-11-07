@@ -8,7 +8,7 @@ object ApplicationBuild extends Build {
     val appName         = "dns-management"
     val major           = "1"
     val minor           = "1"
-    val release         = "10"
+    val release         = "11"
     val appVersion      = s"${major}.${minor}.${release}"
 
     val appDependencies = Seq(
