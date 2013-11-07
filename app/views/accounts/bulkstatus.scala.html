@@ -1,0 +1,85 @@
+@(id: Long, results: scala.collection.mutable.ListBuffer[(String, String, String, String)])(implicit flash: Flash, request: RequestHeader)
+
+@import play.api.libs.iteratee._
+@import play.api.libs.json.JsValue
+@import play.api.mvc.WebSocket
+
+<script type="text/javascript" language="javascript">
+    function changeHiddenInput (objDropDown) {
+      //document.getElementById("hiddenInput").value = objDropDown.value; 
+    }
+    var socket = new WebSocket("ws:@request.host/accounts/wsstatus/@id");
+    
+    socket.onopen = function() {
+        //alert("Socket has been opened!");
+    }
+    
+    socket.onmessage = function(msg) {
+        alert("received message");
+        var message = JSON.parse(msg);
+        alert(" " + message + " updated successfully");
+        writeToScreen(message);
+    }
+    
+    function createCell(text) {
+      var cell = document.createElement("td");
+      var wrapper = document.createTextNode(text);
+      cell.appendChild(wrapper);
+    }
+      
+    function writeToScreen(msg) { 
+      var tbl = document.getElementById('output');
+      var lastRow = tbl.rows.length;
+      var iteration = lastRow;
+      var row = tbl.insertRow(lastRow);
+      var cellCol0 = row.insertCell(0);
+      cellCol0.appendChild(document.createTextNode(msg.accountId));
+      var cellCol1 = row.insertCell(1);
+      cellCol1.appendChild(document.createTextNode(msg.status));
+      var cellCol2 = row.insertCell(2);
+      cellCol2.appendChild(document.createTextNode(msg.success));
+      var cellCol3 = row.insertCell(3);
+      cellCol3.appendChild(document.createTextNode(msg.log));
+    }       
+    
+    //window.addEventListener("load", init, false);  
+
+</script>
+
+@status() = {
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success">
+        @flash.get("success")
+      </div>
+    }
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-error">
+        @flash.get("error")
+      </div>
+    }
+}
+
+@main("Bulk Job Status") {
+    <div class="container">
+        @status()
+        <table id="output">
+          <tr>
+            <td>AccountID</td>
+            <td>Status</td>
+            <td>Success</td>
+            <td>Log</td>
+          <tr>
+          @for(result <- results) {
+            <div id="success">
+              <tr>
+                <td id="success">@result._1</td></div>
+                <td id="success" style="color: #468847; border-color: #d6e9c6; border: 1px solid #fbeed5;">@result._2</td></div>
+                <td id="success">@result._3</td></div>
+                <td id="success">@result._4</td></div>
+              </tr>
+            </div>
+          } 
+        </table>
+    </div>
+}
