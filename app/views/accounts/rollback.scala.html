@@ -1,0 +1,38 @@
+@(createForm: Form[RollbackOperation])(implicit request: RequestHeader)
+
+@hasErrors() = {
+  @if(createForm.hasErrors){
+      <div class="alert alert-error">
+        Please correct the following errors:
+        @createForm.errorsAsJson
+      </div>
+  }
+  @createForm.globalError.map { error =>
+    <div class="alert alert-error">
+      @error.message
+    </div>
+  } 
+}
+
+@main("Bulk Create Records") {
+  <div class="container">
+    @hasErrors()  
+    <h2>Bulk Create Records</h2>
+    <p/>
+    <p/>
+  @helper.form(action = routes.BulkOperations.bulkCreateRecordsForAccounts) {
+    <fieldset>
+      <legend>Record Templates</legend>
+      @** @domainHiddenField() **@
+      <br/><br/>
+      @** @recordTable() **@
+    </fieldset>
+    <p>
+      <div class="actions">
+        <input type="submit" class="btn primary" value=@Messages("records.edit.submit")>
+      </div>
+    </p>
+  }
+  
+  </div>
+}
