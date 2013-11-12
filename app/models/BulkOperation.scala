@@ -18,6 +18,8 @@ case class BulkOperation(operation: String, accounts: String)
 case class BulkCreateOperation(accounts: String, srv: BasicSRVRecord)
 case class BasicHostNameARecord(serverId: Int, content: String, priority: Int )
 
+case class RollbackOperation(id: Int)
+
 case class Job()
 
 trait withStatus {
@@ -106,6 +108,10 @@ object BulkOperation extends withStatus {
         }
       }
     }
+  }
+  
+  def rollback() = {
+    
   }
   
   def insertOrUpdateRecord(record: Record) = {

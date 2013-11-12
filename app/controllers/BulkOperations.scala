@@ -10,6 +10,7 @@ import models.BulkCreateOperation
 import models.BasicSRVRecord
 import models.SrvContent
 import models.BasicHostNameARecord
+import models.RollbackOperation
 
 import play.Logger
 import play.api.data.Form
@@ -45,6 +46,12 @@ object BulkOperations extends Controller with Secured {
         )
       )(BasicSRVRecord.apply)(BasicSRVRecord.unapply)
     )(BulkCreateOperation.apply)(BulkCreateOperation.unapply)
+  )
+  
+  val rollbackForm: Form[RollbackOperation] = Form(
+    mapping(
+      "id" -> number
+    )(RollbackOperation.apply)(RollbackOperation.unapply)
   )
   
   def index = withAuth { username => implicit request =>
@@ -101,6 +108,11 @@ object BulkOperations extends Controller with Secured {
       channel.push(msg)
     }
     (in, out)
+  }
+  
+  def rollback() = withAuth { username =>
+    implicit request =>
+    Ok(views.html.accounts.rollback(rollbackForm))
   }
   
 }
