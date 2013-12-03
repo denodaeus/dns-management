@@ -1,5 +1,15 @@
 @(record: Record)(implicit flash: Flash)
 
+@renderDelete() = {
+  <a href="@controllers.routes.Records.deleteOne((record.id).getOrElse(0))" class="btn btn-danger"
+    onclick="return confirm('Are you sure you wish to delete record @{record.id}');">
+    @Messages("records.delete.command")</a>
+}
+
+@renderMasked() = {
+    <button type "button" disabled>Delete is Disabled for this Type</button>
+}
+
 @main("Showing Record: ") {
     <div class="container">
     @if(flash.get("success").isDefined){
@@ -13,6 +23,7 @@
         @flash.get("error")
       </div>
     }
+    
         <dl class="records">
             <dt>Name: </dt><dd>@record.name</dd>
             <dt>Domain Id: </dt><dd>@record.domainId</dd>
@@ -28,10 +39,14 @@
     <p>
         <a href="@routes.Records.edit((record.id).getOrElse(0))" class="btn">
             @Messages("records.edit.command")</a>
-        <a href="@controllers.routes.Records.deleteOne((record.id).getOrElse(0))" class="btn btn-danger"
-           onclick="return confirm('Are you sure you wish to delete record @{record.id}');">
-            @Messages("records.delete.command")</a>
+        @{
+          record.recordType match {
+            case "A" => renderDelete()
+            case "SRV" => renderDelete()
+            case _ => renderMasked()
+          }
+        }
+
     </p>
     </div>
-
 }
