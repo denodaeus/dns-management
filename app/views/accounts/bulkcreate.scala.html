@@ -21,7 +21,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>@inputText(createForm("srv.subdomain"), '_label -> "SRV SubDomain Pattern:", 'placeholder -> "sip-${accountId}")</td>
+          <td>@inputText(createForm("srv.subdomain").copy(value=Some("sip-${accountId}")), args = '_label -> "SRV SubDomain Pattern:")</td>
           <td>
             <label for="Domains">Domain to Apply:</label>
             <select name="srv.domainId">
@@ -68,8 +68,6 @@
       <option value="@s.id">@s.hostName</option>
     }
   </select>
-        @**<span class="errors">@elements.errors.mkString(", ")</span>
-        <span class="help">@elements.infos.mkString(", ")</span> **@
   </div>
 }
 
@@ -77,8 +75,8 @@
   <tr>
     <td>@select(createForm("srv.content["+index+"].A.recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "")</td>
     <td>@layoutServerList(index)</td>
-    <td>@inputText(createForm("srv.content["+index+"].weight"), '_label -> "", 'placeholder -> "1")</td>
-    <td>@inputText(createForm("srv.ttl"), '_label -> "", 'placeholder -> "60")</td>
+    <td>@inputText(createForm("srv.content["+index+"].weight").copy(value=Some("1")), '_label -> "", 'placeholder -> "1")</td>
+    <td>@inputText(createForm("srv.ttl").copy(value=Some("60")), '_label -> "", 'placeholder -> "60")</td>
   </tr>
 }
 
