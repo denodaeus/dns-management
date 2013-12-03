@@ -28,7 +28,8 @@
     <p>
         <a href="@routes.Records.edit((record.id).getOrElse(0))" class="btn">
             @Messages("records.edit.command")</a>
-        <a href="@controllers.routes.Records.deleteOne((record.id).getOrElse(0))" class="btn">
+        <a href="@controllers.routes.Records.deleteOne((record.id).getOrElse(0))" class="btn btn-danger"
+           onclick="return confirm('Are you sure you wish to delete record @{record.id}');">
             @Messages("records.delete.command")</a>
     </p>
     </div>
