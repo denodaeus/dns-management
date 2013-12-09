@@ -5,7 +5,9 @@ import play.api._
 import play.api.mvc._
 import controllers.Secured
 
-object Global extends GlobalSettings with Secured{
+object Global extends GlobalSettings with Secured {
+  
+  val apiVersion = "/api/v1"
   
   override def onStart(app: Application) {
   }

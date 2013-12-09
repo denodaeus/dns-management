@@ -12,6 +12,10 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 # Application API Routes, Route API requests as json
 ####################################################
 
+# Swagger API Doc
+GET     /api-docs.json                     controllers.ApiHelpController.getResources
+GET     /api-docs.json/domains             controllers.ApiHelpController.getResource(path = "/api/v1/domains")
+
 # Accounts
 GET     /api/v1/accounts                   controllers.Accounts.listAll(page: Int ?= 0, order: Int ?= 1)
 

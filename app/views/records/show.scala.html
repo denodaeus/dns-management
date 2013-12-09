@@ -41,8 +41,7 @@
             @Messages("records.edit.command")</a>
         @{
           record.recordType match {
-            case "A" => renderDelete()
-            case "SRV" => renderDelete()
+            case "A" | "SRV" => renderDelete()
             case _ => renderMasked()
           }
         }

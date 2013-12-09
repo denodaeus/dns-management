@@ -6,8 +6,11 @@
 @domainHiddenField() = {
   <input type="hidden" name="srv.content[1].port" value="5060"/>
   <script>
-    function changeHiddenInput (objDropDown) {
+    function changeHiddenInput(objDropDown) {
       //document.getElementById("hiddenInput").value = objDropDown.value; 
+    }
+    function setCreationType(objDropDown) {
+      document.getElementById("submitType").value = objDropDown.value;
     }
   </script>
 }
@@ -15,7 +18,11 @@
 @domainField(className: String = "domain") = {
   <div class="clearfix" id="domainId field2">
     <label>Action:</label>
-    <select><option value="GENERATE_SRV">Generate SRV with A Records</option></select>
+    <select>
+      <option value="NULL" selected>-- Select An Option --</option>
+      <option value="GENERATE_SRV">Generate New SRV with A Records</option>
+      <option value="CHANGE_SRV">Change current SRV contents for accounts</option>
+    </select>
     <table style=" width:35%">
       <thead>
       </thead>
@@ -24,7 +31,7 @@
           <td>@inputText(createForm("srv.subdomain").copy(value=Some("sip-${accountId}")), args = '_label -> "SRV SubDomain Pattern:")</td>
           <td>
             <label for="Domains">Domain to Apply:</label>
-            <select name="srv.domainId">
+            <select name="srv.domainId" onchange="setCreationType(this)">
               <option value="NULL" selected>-- Select An Option --</option>
               @for(d: Domain <- models.Domains.findAll){
                 <option value="@d.id">@d.name</option>
@@ -152,6 +159,7 @@
     <h2>Bulk Create Records</h2>
     <p/>
     <p/>
+    
   @helper.form(action = routes.BulkOperations.bulkCreateRecordsForAccounts) {
     @accountsField()
     <fieldset>
@@ -161,6 +169,7 @@
       <br/><br/>
       @recordTable()
     </fieldset>
+    <input type="hidden" name="submitType" value="#NONE#"/>
     <p>
       <div class="actions">
         <input type="submit" class="btn primary" value=@Messages("records.edit.submit")>
