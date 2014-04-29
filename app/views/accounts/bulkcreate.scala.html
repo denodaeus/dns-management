@@ -82,6 +82,7 @@
   <tr>
     <td>@select(createForm("srv.content["+index+"].A.recordType"), options(RecordType.values.map(_.toString).toList), '_label -> "")</td>
     <td>@layoutServerList(index)</td>
+    <td>@inputText(createForm("srv.content["+index+"].priority").copy(value=Some("0")), '_label -> "", 'placeholder -> "0")</td>
     <td>@inputText(createForm("srv.content["+index+"].weight").copy(value=Some("1")), '_label -> "", 'placeholder -> "1")</td>
     <td>@inputText(createForm("srv.ttl").copy(value=Some("60")), '_label -> "", 'placeholder -> "60")</td>
   </tr>
@@ -94,6 +95,7 @@
         <tr>
           <th>Record Type:</th>
           <th>Server:</th>
+          <th>Record Priority:</th>
           <th>Record Weight:</th>
           <th>Record TTL:</th>
         </tr>

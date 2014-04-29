@@ -39,6 +39,7 @@ object BulkOperations extends Controller with Secured {
         "ttl" -> number,
         "content" -> seq(
           mapping(
+            "priority" -> number,
             "weight" -> number,
             "port" -> number,
             "serverId" -> number

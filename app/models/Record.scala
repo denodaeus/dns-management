@@ -29,7 +29,7 @@ case class BasicRecord(domainId: Int, name: String, content: String, recordType:
 case class BasicSRVRecord(domainId: Int, subdomain: String, proto: String, service: String, ttl: Int, content: Seq[SrvContent])
 case class BasicARecord(record: BasicRecord, content: AContent)
 case class AContent(content: IPAddress)
-case class SrvContent(weight: Int, port: Int, serverId: Int)
+case class SrvContent(priority: Int, weight: Int, port: Int, serverId: Int)
 
 case class IPAddress(address: String)
 

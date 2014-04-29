@@ -63,7 +63,7 @@ object BulkOperation extends withStatus {
       for(content <- task.srv.content.seq) {
         Logger.debug(s"performBulkCreateOperation :: for account $account, operating on record ${content.toString}")
         val server = getServerFromServerId(content.serverId)
-        val srvRecord = createSrvRecordForAccountIfItDoesntExist(account, content.weight, content.port, task.srv, server.get)
+        val srvRecord = createSrvRecordForAccountIfItDoesntExist(account, content.priority, content.weight, content.port, task.srv, server.get)
         insertOrUpdateRecord(srvRecord)
         pushMessage(channel, "$account", content.toString(), "${account}", "${account}")
         statuses += Tuple4(account.toString(), "Success", srvRecord.toString(), "")
@@ -79,13 +79,13 @@ object BulkOperation extends withStatus {
     r
   }
   
-  def createSrvRecordForAccountIfItDoesntExist(accountId: Int, weight: Int, port: Int, srv: BasicSRVRecord, server: Server) = {
+  def createSrvRecordForAccountIfItDoesntExist(accountId: Int, priority: Int, weight: Int, port: Int, srv: BasicSRVRecord, server: Server) = {
     val defaultPriority = 0
     val name = replaceTokenWithAccountId(accountId, domainFragment = srv.subdomain) + "." + domains.get(srv.domainId).get
     val srvContent = BasicSRVRecord.formContent(weight, port, server.hostName)
     val srvName = formSrvDomain(srv.service, srv.proto, name)
-    val r = Record(None, srv.domainId, srvName, "SRV", srvContent, srv.ttl, defaultPriority, 1, accountId)
-    Logger.debug(s"createSrvRecordForAccountIfItDoesntExist :: created record ${r.toString()}, from content -> account=$accountId, srv=$srv, record=$srv")
+    val r = Record(None, srv.domainId, srvName, "SRV", srvContent, srv.ttl, priority, 1, accountId)
+    Logger.debug(s"createSrvRecordForAccountIfItDoesntExist :: created record ${r.toString()}, from content -> account=$accountId, srv=$srv, record=$srv, priority=$priority")
     r
   }
   
