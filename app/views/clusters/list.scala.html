@@ -1,4 +1,4 @@
-@(clusters: List[Cluster])
+@(clusters: List[Server])
 
 @main("Clusters List") {
     <div class="container">
@@ -8,6 +8,8 @@
                     <th>Id</th>
                     <th>Controller Host</th>
                     <th>Accounts</th>
+                    <th>A Records Assigned</th>
+                    <th>SRV Records Assigned</th>
                 </tr>
             </thead>
             <tbody>
@@ -17,9 +19,15 @@
                         @cluster.id
                     </td>
                     <td>
-                         @cluster.controllerHost
-                    </dd>
-                    <td>@cluster.accounts</dd>
+                        @cluster.hostName
+                    </td>
+                    <td>@cluster.ip</td>
+                    <td>
+                      @{models.Records.listRecordCountForHost(cluster.ip, "A")}
+                    </td>
+                    <td>
+                      @{models.Records.listRecordCountForHost(cluster.hostName, "SRV")}
+                    </td>
                 </tr>
         }
             </tbody>

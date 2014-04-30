@@ -160,6 +160,12 @@ object Records extends Table[Record]("records"){
       }
     }
   }
+  
+  def listRecordCountForHost(host: String, recordType: String): Int = DB.withSession {
+    implicit sesion: Session => {
+      Records.where(r => r.content.like(s"$host") && r.recordType === recordType).length.run
+    }
+  }
 
   def delete(id: Int) = DB.withSession { 
     implicit session: Session => 

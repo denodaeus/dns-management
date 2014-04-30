@@ -3,6 +3,7 @@ package controllers
 import models.Cluster
 import models.Account
 import models.Record
+import models.Server
 import play.Logger
 import play.api.data.Form
 import play.api.data.Forms.longNumber
@@ -37,7 +38,8 @@ object Clusters extends Controller with Secured {
 
   def index = withAuth { username =>
     implicit request =>
-      Ok(views.html.clusters.list(List()))
+      val servers = models.Servers.findAll
+      Ok(views.html.clusters.list(servers))
   }
 
   def newCluster() = withAuth { username =>
@@ -52,7 +54,8 @@ object Clusters extends Controller with Secured {
   
   def listAll() = withAuth { username =>
     implicit request =>
-      Ok(views.html.clusters.list(List()))
+      val servers = models.Servers.findAll
+      Ok(views.html.clusters.list(servers))
   }
 
 }
