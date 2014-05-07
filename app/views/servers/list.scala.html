@@ -14,7 +14,9 @@
                 @for(server <- servers){
                 <tr>
                     <td>
+                      <a href="@controllers.routes.Servers.show((server.id).getOrElse(0))">
                         @server.id
+                      </a>
                     </td>
                     <td>
                          @server.hostName
