@@ -72,5 +72,10 @@ object Servers extends Table[Server]("servers"){
       Try(Servers.where(_.id === id).update(serverToUpdate))
     }
   }
+  
+  def delete(id: Int) = DB.withSession { 
+    implicit session: Session => 
+      Try(Servers.where(_.id === id).delete) 
+  }
 
 }

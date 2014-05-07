@@ -14,16 +14,16 @@
       </div>
     }
         <dl class="servers">
-            <dt>Name: </dt><dd>@server.id</dd>
-            <dt>Domain Id: </dt><dd>@server.hostName</dd>
-            <dt>Record Type: </dt><dd>@server.ip</dd>
+            <dt>Id: </dt><dd>@server.id</dd>
+            <dt>Host Name: </dt><dd>@server.hostName</dd>
+            <dt>IP Address: </dt><dd>@server.ip</dd>
         </dl>
 
     <br/>
     <p>
-        <a href="@routes.Records.edit((server.id).getOrElse(0))" class="btn">
+        <a href="@routes.Servers.edit((server.id).getOrElse(0))" class="btn">
             @Messages("records.edit.command")</a>
-        <a href="@controllers.routes.Records.deleteOne((server.id).getOrElse(0))" class="btn">
+        <a href="@routes.Servers.deleteOne((server.id).getOrElse(0))" class="btn">
             @Messages("records.delete.command")</a>
     </p>
     </div>

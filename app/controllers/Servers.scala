@@ -94,5 +94,38 @@ object Servers extends Controller with Secured {
       case Failure(e) => { Logger.debug(s"show :: id=$id NotFound"); NotFound }
     }
   }
+  
+  def edit(id: Int) = withAuth { username => implicit request =>
+    models.Servers.findById(id) match {
+      case Success(s) => {
+        Logger.debug(s"edit :: found id=$id, editing for $s")
+        val form = serverForm.fill(s.getOrElse(null))
+        Ok(views.html.servers.edit(form))
+      }
+      case Failure(e) => { Logger.debug(s"edit :: id=$id NotFound"); NotFound }
+    }
+  }
+  
+  def deleteOne(id: Int) = withAuth { username => implicit request =>
+    models.Servers.delete(id) match {
+      case Success(r) => Redirect(routes.Servers.list(0,1)).flashing("success" -> s"Server $id deleted successfully.")
+      case Failure(e) => Redirect(routes.Servers.show(id)).flashing("error" -> s"Failed to delete server $id, reason=${e.getMessage()}")
+    }
+  }
+  
+  def update() = withAuth { username => implicit request =>
+  	serverForm.bindFromRequest.fold(
+  	  formWithErrors => BadRequest(views.html.servers.edit(formWithErrors)),
+  	  server => {
+  	    models.Servers.update(server.id.get, server) match {
+  	      case Success(s) => Redirect(s"/servers/show/${server.id.get}").flashing("success" -> "Successful Edit")
+  	      case Failure(e) => {
+  	        Logger.debug(s"update :: failed to update server with id=${server.id}, reason=${e.printStackTrace()}")
+  	        Redirect(routes.Servers.show(server.id.get)).flashing("error" -> s"Error updating server ${server.id}; ${e.getMessage()}")
+  	      }
+  	    }
+  	  }
+  	)
+  }
 
 }

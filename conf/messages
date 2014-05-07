@@ -41,3 +41,8 @@ records.delete.command = Delete
 records.edit.command = Edit
 
 servers.new.command = New Server
+servers.edit = Edit Server
+servers.details = Server Details
+servers.edit.submit = Submit
+servers.new.submit = Submit
+servers.form = New Server

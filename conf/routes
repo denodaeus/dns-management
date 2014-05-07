@@ -117,5 +117,8 @@ GET     /servers/list                   controllers.Servers.list(p: Int ?= 0, s:
 GET     /servers/create                 controllers.Servers.create
 POST    /servers/create                 controllers.Servers.createServer
 GET     /servers/show/:id               controllers.Servers.show(id: Int)
+GET     /servers/edit/:id               controllers.Servers.edit(id: Int)
+GET     /servers/delete/:id             controllers.Servers.deleteOne(id: Int)
+POST    /servers/update                 controllers.Servers.update
 
 GET     /accounts/wsstatus/:id          controllers.BulkOperations.watchOperationStatus(id: Long)
