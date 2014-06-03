@@ -1,0 +1,50 @@
+@(serverForm: Form[Server])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+@import models.RecordType
+@import models.Domains
+
+@main("Edit Server: ") {
+
+  <div class="container">
+  
+   @serverForm.globalError.map { error =>
+      <div class="alert alert-error">
+        @error.message
+      </div>
+   }
+   
+   @if(serverForm.hasErrors){
+     <div class="alert alert-error">
+       Please correct the following errors:
+       @serverForm.errorsAsJson
+     </div>
+   }  
+ 
+    @if(flash.get("success").isDefined){
+      <div class="alert alert-success">
+        @flash.get("success")
+      </div>
+    }
+
+    @if(flash.get("error").isDefined){
+      <div class="alert alert-error">
+        @flash.get("error")
+      </div>
+    }
+  
+  @form(action = routes.Servers.update()) {
+    <fieldset>
+      <legend>
+        @Messages("servers.details", serverForm("name").value.getOrElse(Messages("servers.new")))
+      </legend>
+      @inputText(serverForm("id"), '_label -> "Id", 'readonly -> "readonly")
+      @inputText(serverForm("hostName"), '_label -> "Host Name")
+      @inputText(serverForm("ip"), '_label -> "IP Address")
+    </fieldset>
+    <p><div class="actions"><input type="submit" class="btn primary" value=@Messages("servers.edit.submit")></div></p>
+  }
+  <br/>
+  </div>
+}
